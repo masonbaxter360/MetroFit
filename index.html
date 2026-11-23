@@ -20,8 +20,7 @@
       --zune-pink: #ec008c;
       --zune-orange: #f26522;
       --zune-gradient: linear-gradient(135deg, #ec008c 0%, #f26522 100%);
-      --wp-green: #00a300;
-      --wp-cyan: #00aba9;
+      --wp-cyan: #008299;
       --font-metro: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
     }
 
@@ -75,7 +74,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .brand-title {
@@ -96,28 +95,29 @@
       background: var(--zune-gradient);
     }
 
-    .date-pill {
+    .header-actions {
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    .timer-pill-btn {
+      background: #141414;
+      border: 1px solid #2b2b2b;
+      color: #fff;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-primary);
-      background: #141414;
-      border: 1px solid #2b2b2b;
       padding: 4px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
     }
 
-    .date-nav-btn {
-      background: none;
-      border: none;
+    .timer-pill-btn.running {
+      border-color: var(--zune-pink);
       color: var(--zune-pink);
-      font-size: 14px;
-      font-weight: 700;
-      padding: 0 4px;
-      cursor: pointer;
     }
 
     /* Pivot Title Strip */
@@ -126,7 +126,7 @@
       gap: 22px;
       overflow-x: auto;
       scrollbar-width: none;
-      padding-bottom: 8px;
+      padding-bottom: 6px;
     }
     .pivot-strip::-webkit-scrollbar { display: none; }
 
@@ -146,6 +146,72 @@
       font-weight: 300;
     }
 
+    /* FitNotes-style Day Navigation Strip */
+    .day-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 18px;
+      border-top: 1px solid #1b1b1b;
+      border-bottom: 1px solid #1b1b1b;
+      background: #070707;
+      flex-shrink: 0;
+    }
+
+    .day-arrow {
+      background: none;
+      border: none;
+      color: var(--zune-pink);
+      font-size: 26px;
+      font-weight: 300;
+      line-height: 1;
+      padding: 2px 10px;
+      cursor: pointer;
+    }
+
+    .day-title-wrap {
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .day-title {
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.03em;
+      color: #fff;
+    }
+
+    .day-subtitle {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    /* Collapsible Rest Timer Drawer */
+    .rest-drawer {
+      background: #121212;
+      border-bottom: 1px solid #2c2c2c;
+      padding: 8px 18px;
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .rest-drawer.open {
+      display: flex;
+    }
+
+    .rest-clock {
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--zune-pink);
+      font-variant-numeric: tabular-nums;
+    }
+
     /* Panes Viewport */
     .panes-container {
       flex: 1 1 auto;
@@ -159,7 +225,7 @@
       inset: 0;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 10px 18px 96px 18px;
+      padding: 12px 18px 96px 18px;
       display: none;
     }
 
@@ -167,998 +233,24 @@
       display: block;
     }
 
-    /* Metro Tiles & Cards */
-    .metro-section-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--zune-orange);
-      margin: 14px 0 8px 0;
-    }
-
-    .exercise-card {
-      background: var(--card);
-      border-left: 3px solid var(--zune-pink);
-      padding: 12px 14px;
-      margin-bottom: 12px;
-    }
-
-    .exercise-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 10px;
-    }
-
-    .exercise-name {
-      font-size: 20px;
-      font-weight: 400;
-      color: #fff;
-      line-height: 1.15;
-    }
-
-    .exercise-meta {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
-
-    .set-row {
-      display: grid;
-      grid-template-columns: 32px 1fr 1fr 48px 34px;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 0;
-      border-top: 1px solid #1e1e1e;
-      font-size: 15px;
-    }
-
-    .set-num {
-      color: var(--text-secondary);
-      font-weight: 600;
-      font-size: 12px;
-    }
-
-    .set-val {
-      font-size: 17px;
-      font-weight: 400;
-      color: #fff;
-    }
-
-    .set-val span {
-      font-size: 11px;
-      color: var(--text-secondary);
-      margin-left: 2px;
-      text-transform: uppercase;
-    }
-
-    .pr-badge {
-      display: inline-block;
-      background: var(--zune-gradient);
-      color: #fff;
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      padding: 2px 5px;
-      text-transform: uppercase;
-    }
-
-    .icon-btn {
-      background: none;
-      border: 1px solid #333;
-      color: #ccc;
-      width: 28px;
-      height: 28px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    /* Quick Set Logger Bar inside Card */
-    .quick-add-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 8px;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid #242424;
-    }
-
-    .metro-input {
-      background: #000;
-      border: 1px solid #383838;
-      color: #fff;
-      padding: 8px 10px;
-      font-size: 15px;
-      width: 100%;
-      border-radius: 0;
-    }
-
-    .metro-input:focus {
-      outline: none;
-      border-color: var(--zune-pink);
-    }
-
-    .metro-btn {
-      background: var(--zune-gradient);
-      border: none;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 10px 14px;
-      cursor: pointer;
-    }
-
-    .metro-btn-outline {
-      background: transparent;
-      border: 1px solid #555;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 8px 12px;
-      cursor: pointer;
-    }
-
-    /* Metro Tiles Grid (Stats & Routines) */
-    .tile-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .metro-tile {
-      padding: 14px;
-      min-height: 92px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      cursor: pointer;
-    }
-
-    .tile-pink { background: #ec008c; }
-    .tile-orange { background: #f26522; }
-    .tile-dark { background: #161616; border: 1px solid #2a2a2a; }
-    .tile-cyan { background: #008299; }
-
-    .tile-value {
-      font-size: 28px;
-      font-weight: 300;
-      line-height: 1;
-    }
-
-    .tile-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      opacity: 0.9;
-    }
-
-    /* Exercise Library List + Zune Letter Tiles */
-    .letter-tile {
-      width: 42px;
-      height: 42px;
-      background: var(--zune-gradient);
-      color: #fff;
-      font-size: 22px;
-      font-weight: 300;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 14px 0 8px 0;
-      text-transform: lowercase;
-      cursor: pointer;
-    }
-
-    .lib-item {
-      padding: 11px 0;
-      border-bottom: 1px solid #1b1b1b;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-    }
-
-    .lib-item-title {
-      font-size: 19px;
-      font-weight: 300;
-    }
-
-    .lib-item-cat {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--zune-orange);
-    }
-
-    /* Windows Phone App Bar (Bottom) */
-    .wp-appbar {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding-bottom: env(safe-area-inset-bottom);
-      background: #0d0d0d;
-      border-top: 1px solid #222;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      height: calc(64px + env(safe-area-inset-bottom));
-      z-index: 30;
-    }
-
-    .appbar-action {
+    /* Clean FitNotes Empty Day State in Zune Metro Style */
+    .empty-day-stage {
+      min-height: calc(100% - 16px);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      gap: 44px;
+      padding: 20px 0;
+      transition: transform 0.18s ease, opacity 0.18s ease;
+    }
+
+    .empty-action-btn {
       background: none;
       border: none;
       color: #fff;
-      cursor: pointer;
-      padding: 4px 12px;
-    }
-
-    .circle-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      border: 2px solid #fff;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .appbar-label {
-      font-size: 9px;
-      text-transform: lowercase;
-      letter-spacing: 0.06em;
-      color: #bbb;
-    }
-
-    /* Rest Timer Floating Strip */
-    .rest-banner {
-      background: #141414;
-      border-bottom: 1px solid #2c2c2c;
-      padding: 6px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-    }
-
-    .rest-clock {
-      font-size: 18px;
-      font-weight: 300;
-      color: var(--zune-pink);
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* Jump Overlay Grid */
-    .jump-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.96);
-      z-index: 100;
-      display: none;
-      padding: calc(24px + env(safe-area-inset-top)) 20px 24px 20px;
-      overflow-y: auto;
-    }
-
-    .jump-overlay.open {
-      display: block;
-    }
-
-    .jump-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      max-width: 380px;
-      margin: 0 auto;
-    }
-
-    .jump-cell {
-      aspect-ratio: 1;
-      background: var(--zune-gradient);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      font-weight: 300;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    .jump-cell.empty {
-      background: #161616;
-      color: #444;
-      pointer-events: none;
-    }
-
-    /* Canvas Chart */
-    canvas {
-      width: 100%;
-      height: 190px;
-      background: #0c0c0c;
-      border: 1px solid #222;
-      display: block;
-    }
-  </style>
-</head>
-<body>
-<div id="appShell">
-  <header class="metro-header">
-    <div class="brand-bar">
-      <div class="brand-title"><span class="zune-glyph"></span> ZUNEFIT // STUDIO</div>
-      <div class="date-pill">
-        <button class="date-nav-btn" onclick="shiftDate(-1)">‹</button>
-        <span id="activeDateLabel">TODAY</span>
-        <button class="date-nav-btn" onclick="shiftDate(1)">›</button>
-      </div>
-    </div>
-    <nav class="pivot-strip" id="pivotStrip">
-      <div class="pivot-tab active" data-pane="0" onclick="switchPane(0)">workout</div>
-      <div class="pivot-tab" data-pane="1" onclick="switchPane(1)">exercises</div>
-      <div class="pivot-tab" data-pane="2" onclick="switchPane(2)">routines</div>
-      <div class="pivot-tab" data-pane="3" onclick="switchPane(3)">progress</div>
-      <div class="pivot-tab" data-pane="4" onclick="switchPane(4)">body</div>
-    </nav>
-  </header>
-
-  <div class="rest-banner">
-    <div>REST TIMER: <span class="rest-clock" id="restDisplay">01:30</span></div>
-    <div style="display:flex; gap:6px;">
-      <button class="metro-btn-outline" style="padding:4px 8px;" onclick="adjustRest(-15)">-15s</button>
-      <button class="metro-btn-outline" style="padding:4px 8px;" onclick="adjustRest(15)">+15s</button>
-      <button class="metro-btn" style="padding:4px 10px;" id="restToggleBtn" onclick="toggleRestTimer()">START</button>
-    </div>
-  </div>
-
-  <main class="panes-container">
-    <!-- PANE 0: WORKOUT LOG -->
-    <section class="pane active" id="pane-0">
-      <div id="workoutSummaryRow" class="tile-grid" style="margin-top:6px;"></div>
-      <div id="workoutExercisesContainer"></div>
-    </section>
-
-    <!-- PANE 1: EXERCISE LIBRARY -->
-    <section class="pane" id="pane-1">
-      <div style="display:flex; gap:8px; margin-bottom:10px;">
-        <input id="exerciseSearch" class="metro-input" placeholder="filter exercises or muscle..." oninput="renderExerciseLibrary()" />
-        <button class="metro-btn" onclick="promptNewExercise()">+ NEW</button>
-      </div>
-      <div id="categoryFilterBar" style="display:flex; gap:6px; overflow-x:auto; padding-bottom:8px;"></div>
-      <div id="exerciseLibraryList"></div>
-    </section>
-
-    <!-- PANE 2: PPL + SHOULDERS/TRICEPS ROUTINES -->
-    <section class="pane" id="pane-2">
-      <div class="metro-section-label">ONE-TAP SPLIT TEMPLATES</div>
-      <div id="routinesContainer"></div>
-      <div class="metro-section-label" style="margin-top:20px;">BACKUP & EXPORT</div>
-      <div style="display:flex; gap:8px;">
-        <button class="metro-btn-outline" onclick="exportBackupJSON()">EXPORT JSON</button>
-        <button class="metro-btn-outline" onclick="copyLastWorkout()">COPY PREVIOUS DAY</button>
-      </div>
-    </section>
-
-    <!-- PANE 3: ANALYTICS & 1RM PROGRESS -->
-    <section class="pane" id="pane-3">
-      <div class="metro-section-label">SELECT EXERCISE FOR PROGRESSION</div>
-      <select id="progressExerciseSelect" class="metro-input" style="margin-bottom:12px;" onchange="renderProgressChart()"></select>
-      <div class="tile-grid" id="progressTiles"></div>
-      <div class="metro-section-label">ESTIMATED 1RM & MAX WEIGHT TREND</div>
-      <canvas id="progressCanvas" width="600" height="220"></canvas>
-      <div class="metro-section-label">RECENT HISTORY</div>
-      <div id="exerciseHistoryList"></div>
-    </section>
-
-    <!-- PANE 4: BODYWEIGHT & HYDRATION TRACKER -->
-    <section class="pane" id="pane-4">
-      <div class="metro-section-label">LOG BODY METRICS</div>
-      <div class="exercise-card">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
-          <div>
-            <div class="exercise-meta" style="margin-bottom:4px;">WEIGHT (LBS)</div>
-            <input id="bodyWeightInput" type="number" step="0.1" class="metro-input" placeholder="180.0" />
-          </div>
-          <div>
-            <div class="exercise-meta" style="margin-bottom:4px;">BODY FAT (%)</div>
-            <input id="bodyFatInput" type="number" step="0.1" class="metro-input" placeholder="12.5" />
-          </div>
-        </div>
-        <button class="metro-btn" style="width:100%;" onclick="saveBodyEntry()">SAVE BODY METRICS</button>
-      </div>
-      <div id="bodyMetricsList"></div>
-    </section>
-  </main>
-
-  <!-- Windows Phone 7 Bottom Application Bar -->
-  <footer class="wp-appbar">
-    <button class="appbar-action" onclick="switchPane(1)">
-      <div class="circle-icon">+</div>
-      <span class="appbar-label">add exercise</span>
-    </button>
-    <button class="appbar-action" onclick="switchPane(2)">
-      <div class="circle-icon">☰</div>
-      <span class="appbar-label">routines</span>
-    </button>
-    <button class="appbar-action" onclick="copyLastWorkout()">
-      <div class="circle-icon">⎘</div>
-      <span class="appbar-label">copy prev</span>
-    </button>
-    <button class="appbar-action" onclick="switchPane(3)">
-      <div class="circle-icon">↗</div>
-      <span class="appbar-label">stats</span>
-    </button>
-  </footer>
-</div>
-
-<!-- Zune Alphabet Jump Overlay -->
-<div class="jump-overlay" id="jumpOverlay" onclick="closeJumpOverlay()">
-  <div class="jump-grid" id="jumpGrid" onclick="event.stopPropagation()"></div>
-</div>
-
-<script>
-  const STORAGE_KEY = 'zunefit_db_v1';
-
-  const DEFAULT_EXERCISES = [
-    { id: 'ex_bench', name: 'Barbell Bench Press', category: 'Chest' },
-    { id: 'ex_inc_db', name: 'Incline Dumbbell Press', category: 'Chest' },
-    { id: 'ex_cable_fly', name: 'Cable Chest Fly', category: 'Chest' },
-    { id: 'ex_lat_pull', name: 'Lat Pulldown', category: 'Back' },
-    { id: 'ex_bb_row', name: 'Barbell Bent-Over Row', category: 'Back' },
-    { id: 'ex_seated_row', name: 'Seated Cable Row', category: 'Back' },
-    { id: 'ex_squat', name: 'Barbell Back Squat', category: 'Legs' },
-    { id: 'ex_leg_press', name: 'Leg Press', category: 'Legs' },
-    { id: 'ex_rdl', name: 'Romanian Deadlift', category: 'Legs' },
-    { id: 'ex_leg_curl', name: 'Seated Leg Curl', category: 'Legs' },
-    { id: 'ex_ohp', name: 'Seated Dumbbell Shoulder Press', category: 'Shoulders' },
-    { id: 'ex_lat_raise', name: 'Dumbbell Lateral Raise', category: 'Shoulders' },
-    { id: 'ex_tri_push', name: 'Cable Tricep Pushdown', category: 'Triceps' },
-    { id: 'ex_skull', name: 'EZ-Bar Skullcrusher', category: 'Triceps' },
-    { id: 'ex_db_curl', name: 'Incline Dumbbell Curl', category: 'Biceps' },
-    { id: 'ex_hammer', name: 'Hammer Curl', category: 'Biceps' },
-    { id: 'ex_hang_leg', name: 'Hanging Leg Raise', category: 'Core' },
-    { id: 'ex_cable_crunch', name: 'Cable Rope Crunch', category: 'Core' }
-  ];
-
-  const DEFAULT_ROUTINES = [
-    {
-      name: 'Push Day (Chest / Front Delts)',
-      color: 'tile-pink',
-      exerciseIds: ['ex_bench', 'ex_inc_db', 'ex_cable_fly', 'ex_lat_raise', 'ex_tri_push']
-    },
-    {
-      name: 'Pull Day (Back / Biceps)',
-      color: 'tile-orange',
-      exerciseIds: ['ex_lat_pull', 'ex_bb_row', 'ex_seated_row', 'ex_db_curl', 'ex_hammer']
-    },
-    {
-      name: 'Leg Day (Quads / Hamstrings)',
-      color: 'tile-cyan',
-      exerciseIds: ['ex_squat', 'ex_leg_press', 'ex_rdl', 'ex_leg_curl']
-    },
-    {
-      name: 'Shoulders, Triceps & Core',
-      color: 'tile-dark',
-      exerciseIds: ['ex_ohp', 'ex_lat_raise', 'ex_tri_push', 'ex_skull', 'ex_hang_leg', 'ex_cable_crunch']
-    }
-  ];
-
-  function getTodayISO() {
-    const d = new Date();
-    const offset = d.getTimezoneOffset();
-    return new Date(d.getTime() - offset * 60000).toISOString().split('T')[0];
-  }
-
-  let state = {
-    activeDate: getTodayISO(),
-    activePane: 0,
-    selectedCategory: 'All',
-    restSeconds: 90,
-    restRunning: false,
-    restInterval: null,
-    db: loadDB()
-  };
-
-  function loadDB() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return JSON.parse(raw);
-    } catch (e) {}
-    return {
-      exercises: DEFAULT_EXERCISES,
-      routines: DEFAULT_ROUTINES,
-      logs: {},
-      body: []
-    };
-  }
-
-  function saveDB() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.db));
-  }
-
-  function formatDateHeader(iso) {
-    const today = getTodayISO();
-    if (iso === today) return 'TODAY';
-    const [y, m, d] = iso.split('-').map(Number);
-    const dt = new Date(y, m - 1, d);
-    return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
-  }
-
-  function shiftDate(delta) {
-    const [y, m, d] = state.activeDate.split('-').map(Number);
-    const dt = new Date(y, m - 1, d + delta);
-    const nextIso = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
-    state.activeDate = nextIso;
-    document.getElementById('activeDateLabel').textContent = formatDateHeader(nextIso);
-    renderWorkoutPane();
-  }
-
-  function switchPane(idx) {
-    state.activePane = idx;
-    document.querySelectorAll('.pivot-tab').forEach((el, i) => {
-      el.classList.toggle('active', i === idx);
-      if (i === idx) el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-    });
-    document.querySelectorAll('.pane').forEach((el, i) => {
-      el.classList.toggle('active', i === idx);
-    });
-    if (idx === 0) renderWorkoutPane();
-    if (idx === 1) renderExerciseLibrary();
-    if (idx === 2) renderRoutinesPane();
-    if (idx === 3) renderProgressPane();
-    if (idx === 4) renderBodyPane();
-  }
-
-  /* Rest Timer */
-  function formatSeconds(sec) {
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-  }
-
-  function updateRestDisplay() {
-    document.getElementById('restDisplay').textContent = formatSeconds(state.restSeconds);
-  }
-
-  function adjustRest(delta) {
-    state.restSeconds = Math.max(15, state.restSeconds + delta);
-    updateRestDisplay();
-  }
-
-  function toggleRestTimer() {
-    const btn = document.getElementById('restToggleBtn');
-    if (state.restRunning) {
-      clearInterval(state.restInterval);
-      state.restRunning = false;
-      btn.textContent = 'START';
-    } else {
-      state.restRunning = true;
-      btn.textContent = 'STOP';
-      state.restInterval = setInterval(() => {
-        if (state.restSeconds > 0) {
-          state.restSeconds--;
-          updateRestDisplay();
-        } else {
-          clearInterval(state.restInterval);
-          state.restRunning = false;
-          state.restSeconds = 90;
-          btn.textContent = 'START';
-          updateRestDisplay();
-          if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-        }
-      }, 1000);
-    }
-  }
-
-  /* Workout Logging */
-  function getDayEntries(dateIso) {
-    if (!state.db.logs[dateIso]) state.db.logs[dateIso] = [];
-    return state.db.logs[dateIso];
-  }
-
-  function calcE1RM(weight, reps) {
-    if (!weight || !reps) return 0;
-    return Math.round(weight * (1 + reps / 30));
-  }
-
-  function getHistoricalBestWeight(exId, excludeDate) {
-    let maxW = 0;
-    Object.entries(state.db.logs).forEach(([date, entries]) => {
-      if (date === excludeDate) return;
-      entries.forEach(entry => {
-        if (entry.exerciseId === exId) {
-          entry.sets.forEach(s => { if (s.weight > maxW) maxW = s.weight; });
-        }
-      });
-    });
-    return maxW;
-  }
-
-  function addExerciseToWorkout(exId) {
-    const entries = getDayEntries(state.activeDate);
-    if (!entries.some(e => e.exerciseId === exId)) {
-      entries.push({ exerciseId: exId, sets: [] });
-      saveDB();
-    }
-    switchPane(0);
-  }
-
-  function logSet(exId) {
-    const wInput = document.getElementById(`w_${exId}`);
-    const rInput = document.getElementById(`r_${exId}`);
-    const weight = parseFloat(wInput.value) || 0;
-    const reps = parseInt(rInput.value, 10) || 0;
-    if (reps <= 0) return;
-
-    const entries = getDayEntries(state.activeDate);
-    const target = entries.find(e => e.exerciseId === exId);
-    if (target) {
-      target.sets.push({ weight, reps, ts: Date.now() });
-      saveDB();
-      renderWorkoutPane();
-      // Auto-start rest timer on set log
-      if (!state.restRunning) {
-        state.restSeconds = 90;
-        updateRestDisplay();
-        toggleRestTimer();
-      }
-    }
-  }
-
-  function deleteSet(exId, setIdx) {
-    const entries = getDayEntries(state.activeDate);
-    const target = entries.find(e => e.exerciseId === exId);
-    if (target) {
-      target.sets.splice(setIdx, 1);
-      saveDB();
-      renderWorkoutPane();
-    }
-  }
-
-  function removeExerciseFromDay(exId) {
-    state.db.logs[state.activeDate] = getDayEntries(state.activeDate).filter(e => e.exerciseId !== exId);
-    saveDB();
-    renderWorkoutPane();
-  }
-
-  function renderWorkoutPane() {
-    const entries = getDayEntries(state.activeDate);
-    let totalSets = 0;
-    let totalVolume = 0;
-
-    entries.forEach(entry => {
-      entry.sets.forEach(s => {
-        totalSets++;
-        totalVolume += (s.weight * s.reps);
-      });
-    });
-
-    document.getElementById('workoutSummaryRow').innerHTML = `
-      <div class="metro-tile tile-pink">
-        <div class="tile-value">${totalSets}</div>
-        <div class="tile-label">sets logged</div>
-      </div>
-      <div class="metro-tile tile-dark">
-        <div class="tile-value">${totalVolume.toLocaleString()}</div>
-        <div class="tile-label">volume (lbs)</div>
-      </div>
-    `;
-
-    const container = document.getElementById('workoutExercisesContainer');
-    if (entries.length === 0) {
-      container.innerHTML = `
-        <div class="exercise-card" style="border-left-color:#444;">
-          <div class="exercise-name" style="font-weight:300;">No exercises logged for ${formatDateHeader(state.activeDate)}</div>
-          <div class="exercise-meta" style="margin:8px 0 14px 0;">Tap + add exercise below or load a split template from routines.</div>
-          <div style="display:flex; gap:8px;">
-            <button class="metro-btn" onclick="switchPane(1)">+ ADD EXERCISE</button>
-            <button class="metro-btn-outline" onclick="switchPane(2)">LOAD ROUTINE</button>
-          </div>
-        </div>
-      `;
-      return;
-    }
-
-    container.innerHTML = entries.map(entry => {
-      const ex = state.db.exercises.find(x => x.id === entry.exerciseId) || { name: 'Exercise', category: 'General' };
-      const priorBest = getHistoricalBestWeight(entry.exerciseId, state.activeDate);
-      const lastSet = entry.sets[entry.sets.length - 1] || { weight: priorBest || '', reps: '' };
-
-      const setsHtml = entry.sets.map((s, idx) => {
-        const isPR = s.weight > 0 && s.weight > priorBest;
-        return `
-          <div class="set-row">
-            <div class="set-num">#${idx + 1}</div>
-            <div class="set-val">${s.weight}<span>lbs</span></div>
-            <div class="set-val">${s.reps}<span>reps</span></div>
-            <div>${isPR ? '<span class="pr-badge">PR</span>' : ''}</div>
-            <button class="icon-btn" onclick="deleteSet('${entry.exerciseId}', ${idx})">×</button>
-          </div>
-        `;
-      }).join('');
-
-      return `
-        <div class="exercise-card">
-          <div class="exercise-card-header">
-            <div>
-              <div class="exercise-name">${ex.name}</div>
-              <div class="exercise-meta">${ex.category} ${priorBest ? `• PREV MAX: ${priorBest} LBS` : ''}</div>
-            </div>
-            <button class="icon-btn" onclick="removeExerciseFromDay('${entry.exerciseId}')">🗑</button>
-          </div>
-          ${setsHtml}
-          <div class="quick-add-row">
-            <input id="w_${entry.exerciseId}" type="number" step="2.5" class="metro-input" placeholder="lbs" value="${lastSet.weight}" />
-            <input id="r_${entry.exerciseId}" type="number" class="metro-input" placeholder="reps" value="${lastSet.reps}" />
-            <button class="metro-btn" onclick="logSet('${entry.exerciseId}')">LOG</button>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  /* Exercise Library & Zune Alphabet Jump */
-  function renderExerciseLibrary() {
-    const categories = ['All', 'Chest', 'Back', 'Legs', 'Shoulders', 'Triceps', 'Biceps', 'Core'];
-    document.getElementById('categoryFilterBar').innerHTML = categories.map(cat => `
-      <button class="${state.selectedCategory === cat ? 'metro-btn' : 'metro-btn-outline'}"
-              style="padding:5px 10px; white-space:nowrap;"
-              onclick="state.selectedCategory='${cat}'; renderExerciseLibrary();">
-        ${cat}
-      </button>
-    `).join('');
-
-    const q = (document.getElementById('exerciseSearch').value || '').toLowerCase();
-    const filtered = state.db.exercises
-      .filter(ex => state.selectedCategory === 'All' || ex.category === state.selectedCategory)
-      .filter(ex => ex.name.toLowerCase().includes(q) || ex.category.toLowerCase().includes(q))
-      .sort((a, b) => a.name.localeCompare(b.name));
-
-    let currentLetter = '';
-    const html = filtered.map(ex => {
-      const first = ex.name.charAt(0).toLowerCase();
-      let header = '';
-      if (first !== currentLetter) {
-        currentLetter = first;
-        header = `<div class="letter-tile" id="letter_${first}" onclick="openJumpOverlay()">${first}</div>`;
-      }
-      return `
-        ${header}
-        <div class="lib-item" onclick="addExerciseToWorkout('${ex.id}')">
-          <div>
-            <div class="lib-item-title">${ex.name}</div>
-            <div class="lib-item-cat">${ex.category}</div>
-          </div>
-          <span style="color:var(--zune-pink); font-size:20px;">+</span>
-        </div>
-      `;
-    }).join('');
-
-    document.getElementById('exerciseLibraryList').innerHTML = html || '<div class="exercise-meta">No matching exercises.</div>';
-  }
-
-  function promptNewExercise() {
-    const name = prompt('Exercise Name (e.g., Cable Lateral Raise):');
-    if (!name || !name.trim()) return;
-    const category = prompt('Muscle Group (Chest, Back, Legs, Shoulders, Triceps, Biceps, Core):', 'Chest') || 'General';
-    const newEx = { id: 'ex_' + Date.now(), name: name.trim(), category: category.trim() };
-    state.db.exercises.push(newEx);
-    saveDB();
-    renderExerciseLibrary();
-  }
-
-  function openJumpOverlay() {
-    const letters = 'abcdefghijklmnopqrstuvwxyz'.split('');
-    const present = new Set(state.db.exercises.map(e => e.name.charAt(0).toLowerCase()));
-    document.getElementById('jumpGrid').innerHTML = letters.map(l => `
-      <div class="jump-cell ${present.has(l) ? '' : 'empty'}" onclick="jumpToLetter('${l}')">${l}</div>
-    `).join('');
-    document.getElementById('jumpOverlay').classList.add('open');
-  }
-
-  function closeJumpOverlay() {
-    document.getElementById('jumpOverlay').classList.remove('open');
-  }
-
-  function jumpToLetter(letter) {
-    closeJumpOverlay();
-    const pane = document.getElementById('pane-1');
-    const target = document.getElementById(`letter_${letter}`);
-    if (pane && target) {
-      pane.scrollTo({ top: target.offsetTop - 12, behavior: 'smooth' });
-    }
-  }
-
-  /* Routines */
-  function renderRoutinesPane() {
-    document.getElementById('routinesContainer').innerHTML = state.db.routines.map((rt, idx) => {
-      const names = rt.exerciseIds.map(id => (state.db.exercises.find(e => e.id === id) || {}).name).filter(Boolean);
-      return `
-        <div class="metro-tile ${rt.color}" style="margin-bottom:10px;" onclick="loadRoutine(${idx})">
-          <div style="font-size:20px; font-weight:400;">${rt.name}</div>
-          <div style="font-size:12px; opacity:0.9; margin-top:6px;">${names.join(' • ')}</div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  function loadRoutine(idx) {
-    const rt = state.db.routines[idx];
-    if (!rt) return;
-    const entries = getDayEntries(state.activeDate);
-    rt.exerciseIds.forEach(exId => {
-      if (!entries.some(e => e.exerciseId === exId)) {
-        entries.push({ exerciseId: exId, sets: [] });
-      }
-    });
-    saveDB();
-    switchPane(0);
-  }
-
-  function copyLastWorkout() {
-    const dates = Object.keys(state.db.logs)
-      .filter(d => d < state.activeDate && state.db.logs[d].length > 0)
-      .sort();
-    if (dates.length === 0) {
-      alert('No previous workout found to copy.');
-      return;
-    }
-    const prevDate = dates[dates.length - 1];
-    const cloned = state.db.logs[prevDate].map(entry => ({
-      exerciseId: entry.exerciseId,
-      sets: entry.sets.map(s => ({ weight: s.weight, reps: s.reps, ts: Date.now() }))
-    }));
-    state.db.logs[state.activeDate] = cloned;
-    saveDB();
-    switchPane(0);
-  }
-
-  /* Progress & Analytics */
-  function renderProgressPane() {
-    const sel = document.getElementById('progressExerciseSelect');
-    const prevVal = sel.value;
-    sel.innerHTML = state.db.exercises
-      .slice()
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map(ex => `<option value="${ex.id}">${ex.name}</option>`)
-      .join('');
-    if (prevVal) sel.value = prevVal;
-    renderProgressChart();
-  }
-
-  function renderProgressChart() {
-    const exId = document.getElementById('progressExerciseSelect').value;
-    const points = [];
-    let allTimeMax = 0;
-    let allTimeE1RM = 0;
-
-    Object.keys(state.db.logs).sort().forEach(date => {
-      const entry = state.db.logs[date].find(e => e.exerciseId === exId);
-      if (entry && entry.sets.length > 0) {
-        let dayMax = 0;
-        let dayE1RM = 0;
-        entry.sets.forEach(s => {
-          if (s.weight > dayMax) dayMax = s.weight;
-          const e1 = calcE1RM(s.weight, s.reps);
-          if (e1 > dayE1RM) dayE1RM = e1;
-        });
-        if (dayMax > allTimeMax) allTimeMax = dayMax;
-        if (dayE1RM > allTimeE1RM) allTimeE1RM = dayE1RM;
-        points.push({ date, max: dayMax, e1rm: dayE1RM, sets: entry.sets });
-      }
-    });
-
-    document.getElementById('progressTiles').innerHTML = `
-      <div class="metro-tile tile-orange">
-        <div class="tile-value">${allTimeMax} <span style="font-size:14px;">lbs</span></div>
-        <div class="tile-label">max weight pr</div>
-      </div>
-      <div class="metro-tile tile-pink">
-        <div class="tile-value">${allTimeE1RM} <span style="font-size:14px;">lbs</span></div>
-        <div class="tile-label">est. 1rm pr</div>
-      </div>
-    `;
-
-    const canvas = document.getElementById('progressCanvas');
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (points.length === 0) {
-      ctx.fillStyle = '#666';
-      ctx.font = '16px Segoe UI, sans-serif';
-      ctx.fillText('Log sets for this exercise to plot progression', 24, 110);
-      document.getElementById('exerciseHistoryList').innerHTML = '';
-      return;
-    }
-
-    const pad = 28;
-    const w = canvas.width - pad * 2;
-    const h = canvas.height - pad * 2;
-    const vals = points.map(p => p.e1rm);
-    const minV = Math.min(...vals) * 0.9;
-    const maxV = Math.max(...vals) * 1.05 || 100;
-
-    ctx.strokeStyle = '#ec008c';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    points.forEach((pt, i) => {
-      const x = pad + (points.length === 1 ? w / 2 : (i / (points.length - 1)) * w);
-      const y = pad + h - ((pt.e1rm - minV) / (maxV - minV || 1)) * h;
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-
-    points.forEach((pt, i) => {
-      const x = pad + (points.length === 1 ? w / 2 : (i / (points.length - 1)) * w);
-      const y = pad + h - ((pt.e1rm - minV) / (maxV - minV || 1)) * h;
-      ctx.fillStyle = '#f26522';
-      ctx.fillRect(x - 4, y - 4, 8, 8);
-    });
-
-    document.getElementById('exerciseHistoryList').innerHTML = points.slice().reverse().map(pt => `
-      <div class="exercise-card">
-        <div class="exercise-meta">${pt.date} • EST 1RM: ${pt.e1rm} LBS</div>
-        <div style="margin-top:6px; font-size:14px;">
-          ${pt.sets.map(s => `${s.weight}×${s.reps}`).join('  |  ')}
-        </div>
-      </div>
-    `).join('');
-  }
-
-  /* Bodyweight Tracker */
-  function saveBodyEntry() {
-    const wt = parseFloat(document.getElementById('bodyWeightInput').value);
-    const bf = parseFloat(document.getElementById('bodyFatInput').value);
-    if (!wt) return;
-    state.db.body.unshift({ date: state.activeDate, weight: wt, bf: isNaN(bf) ? null : bf });
-    saveDB();
-    document.getElementById('bodyWeightInput').value = '';
-    document.getElementById('bodyFatInput').value = '';
-    renderBodyPane();
-  }
-
-  function renderBodyPane() {
-    document.getElementById('bodyMetricsList').innerHTML = state.db.body.map((b, i) => `
-      <div class="lib-item">
-        <div>
-          <div class="lib-item-title">${b.weight} lbs ${b.bf !== null ? `• ${b.bf}% BF` : ''}</div>
-          <div class="lib-item-cat">${b.date}</div>
-        </div>
-        <button class="icon-btn" onclick="state.db.body.splice(${i},1); saveDB(); renderBodyPane();">×</button>
-      </div>
-    `).join('') || '<div class="exercise-meta">No body metrics logged yet.</div>';
-  }
-
-  function exportBackupJSON() {
-    const blob = new Blob([JSON.stringify(state.db, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `zunefit-backup-${getTodayISO()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  // Bootstrap
-  document.getElementById('activeDateLabel').textContent = formatDateHeader(state.activeDate);
-  updateRestDisplay();
-  renderWorkoutPane();
-</script>
-</body>
-</html>
+      gap: 14px;
+      
