@@ -7,90 +7,84 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-mobile-web-app-title" content="ZuneFit" />
   <meta name="theme-color" content="#000000" />
-  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%23000000'/%3E%3Cpath d='M36 36H144L90 90L144 144H36L90 90L36 36Z' stroke='%23EC008C' stroke-width='14' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E" />
-  <title>ZuneFit // Metro Workout & FitNotes Hub</title>
+  <title>ZuneFit // Metro Workout Log</title>
   <style>
     /* ==========================================================================
-       ZUNEFIT METRO DESIGN TOKENS: DARK, LIGHT & FROSTED / GRADIENT THEMES
+       ZUNEFIT METRO DESIGN TOKENS (DARK / LIGHT / FROSTED)
        ========================================================================== */
     :root,
     html[data-theme="dark"] {
-      --bg-page: #000000;
       --bg-shell: #000000;
       --bg-header: #000000;
       --bg-subbar: #080808;
       --bg-card: #111111;
-      --bg-card-elevated: #1a1a1a;
-      --bg-input: #050505;
+      --bg-card-alt: #181818;
+      --bg-input: #000000;
       --bg-appbar: #0c0c0c;
-      --bg-overlay: rgba(0, 0, 0, 0.96);
-      --border-subtle: #222222;
-      --border-strong: #3a3a3a;
+      --bg-modal: rgba(0, 0, 0, 0.96);
+      --border-subtle: #202020;
+      --border-strong: #383838;
       --text-primary: #ffffff;
-      --text-secondary: #9a9a9a;
-      --text-muted: #525252;
+      --text-secondary: #9c9c9c;
+      --text-muted: #555555;
       --zune-pink: #ec008c;
       --zune-orange: #f26522;
       --zune-gradient: linear-gradient(135deg, #ec008c 0%, #f26522 100%);
       --wp-cyan: #008299;
-      --card-blur: none;
-      --shell-shadow: 0 32px 80px rgba(0, 0, 0, 0.92);
-      --tile-action-bg: rgba(236, 0, 140, 0.08);
-      --tile-action-sec-bg: rgba(242, 101, 34, 0.08);
+      --glass-blur: none;
+      --tile-tint-pink: rgba(236, 0, 140, 0.09);
+      --tile-tint-orange: rgba(242, 101, 34, 0.09);
       --font-metro: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
     }
 
     html[data-theme="light"] {
-      --bg-page: #e5e5e5;
-      --bg-shell: #f7f7f7;
+      --bg-shell: #f4f4f4;
       --bg-header: #ffffff;
-      --bg-subbar: #efefef;
+      --bg-subbar: #ececec;
       --bg-card: #ffffff;
-      --bg-card-elevated: #f0f0f0;
+      --bg-card-alt: #f0f0f0;
       --bg-input: #ffffff;
       --bg-appbar: #ffffff;
-      --bg-overlay: rgba(247, 247, 247, 0.97);
+      --bg-modal: rgba(244, 244, 244, 0.97);
       --border-subtle: #dcdcdc;
-      --border-strong: #bcbcbc;
+      --border-strong: #bdbdbd;
       --text-primary: #111111;
-      --text-secondary: #5c5c5c;
-      --text-muted: #a6a6a6;
+      --text-secondary: #5a5a5a;
+      --text-muted: #9e9e9e;
       --zune-pink: #d8007f;
-      --zune-orange: #e35614;
-      --zune-gradient: linear-gradient(135deg, #e00084 0%, #f26522 100%);
-      --wp-cyan: #007a91;
-      --card-blur: none;
-      --shell-shadow: 0 24px 60px rgba(0, 0, 0, 0.16);
-      --tile-action-bg: rgba(224, 0, 132, 0.06);
-      --tile-action-sec-bg: rgba(242, 101, 34, 0.06);
+      --zune-orange: #e05310;
+      --zune-gradient: linear-gradient(135deg, #d8007f 0%, #f26522 100%);
+      --wp-cyan: #00778c;
+      --glass-blur: none;
+      --tile-tint-pink: rgba(216, 0, 127, 0.07);
+      --tile-tint-orange: rgba(224, 83, 16, 0.07);
     }
 
     html[data-theme="frosted"] {
-      --bg-page: #0c0612;
-      --bg-shell: radial-gradient(circle at 12% 14%, rgba(236, 0, 140, 0.42) 0%, transparent 48%),
-                  radial-gradient(circle at 88% 22%, rgba(242, 101, 34, 0.36) 0%, transparent 52%),
-                  radial-gradient(circle at 50% 88%, rgba(114, 24, 148, 0.45) 0%, transparent 58%),
-                  linear-gradient(160deg, #16091d 0%, #0b0914 55%, #180d14 100%);
-      --bg-header: rgba(14, 10, 20, 0.56);
+      --bg-shell:
+        radial-gradient(circle at 12% 14%, rgba(236, 0, 140, 0.45) 0%, transparent 48%),
+        radial-gradient(circle at 88% 24%, rgba(242, 101, 34, 0.42) 0%, transparent 52%),
+        radial-gradient(circle at 46% 86%, rgba(102, 24, 158, 0.48) 0%, transparent 58%),
+        linear-gradient(160deg, #16091e 0%, #090c18 52%, #1d0c14 100%);
+      --bg-header: rgba(14, 10, 22, 0.56);
       --bg-subbar: rgba(255, 255, 255, 0.05);
-      --bg-card: rgba(255, 255, 255, 0.09);
-      --bg-card-elevated: rgba(255, 255, 255, 0.14);
-      --bg-input: rgba(0, 0, 0, 0.36);
-      --bg-appbar: rgba(14, 10, 20, 0.72);
-      --bg-overlay: rgba(12, 8, 18, 0.92);
+      --bg-card: rgba(255, 255, 255, 0.10);
+      --bg-card-alt: rgba(255, 255, 255, 0.15);
+      --bg-input: rgba(0, 0, 0, 0.34);
+      --bg-appbar: rgba(12, 10, 20, 0.72);
+      --bg-modal: rgba(10, 8, 18, 0.92);
       --border-subtle: rgba(255, 255, 255, 0.16);
       --border-strong: rgba(255, 255, 255, 0.32);
       --text-primary: #ffffff;
-      --text-secondary: rgba(255, 255, 255, 0.72);
+      --text-secondary: rgba(255, 255, 255, 0.75);
       --text-muted: rgba(255, 255, 255, 0.42);
       --zune-pink: #ff2ea6;
       --zune-orange: #ff7a33;
       --zune-gradient: linear-gradient(135deg, #ec008c 0%, #f26522 100%);
       --wp-cyan: #00a3bf;
-      --card-blur: blur(18px) saturate(165%);
-      --shell-shadow: 0 32px 90px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.15);
-      --tile-action-bg: rgba(255, 255, 255, 0.1);
-      --tile-action-sec-bg: rgba(255, 255, 255, 0.08);
+      --glass-blur: blur(18px) saturate(165%);
+      --tile-tint-pink: rgba(255, 255, 255, 0.11);
+      --tile-tint-orange: rgba(255, 255, 255, 0.09);
     }
 
     * {
@@ -111,54 +105,47 @@
       height: 100vh;
       height: -webkit-fill-available;
       height: 100dvh;
-      background-color: #000000;
-      background: var(--bg-page);
+      background: #000000;
       color: var(--text-primary);
       font-family: var(--font-metro);
       overflow: hidden;
       position: fixed;
       inset: 0;
-      -webkit-font-smoothing: antialiased;
     }
 
-    /* Main Responsive Metro Shell (Always visible, never gated by opacity:0) */
     #appShell {
       display: flex;
       flex-direction: column;
       width: 100%;
-      max-width: 460px;
-      margin: 0 auto;
       height: 100%;
-      padding-top: env(safe-area-inset-top, 0px);
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-      padding-left: env(safe-area-inset-left, 0px);
-      padding-right: env(safe-area-inset-right, 0px);
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
       background: var(--bg-shell);
       color: var(--text-primary);
       position: relative;
-      overflow: hidden;
+      z-index: 1;
     }
 
-    @media (min-width: 520px) {
-      body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      #appShell {
-        height: min(880px, 95dvh);
-        border: 1px solid var(--border-subtle);
-        box-shadow: var(--shell-shadow);
-      }
+    /* Runtime error banner (hidden unless an error occurs) */
+    #errorBanner {
+      display: none;
+      background: #b00020;
+      color: #ffffff;
+      font-size: 11px;
+      padding: 6px 14px;
+      z-index: 9999;
+      word-break: break-word;
     }
 
     /* Top Metro Header */
     .metro-header {
-      padding: 12px 18px 0 18px;
+      padding: 10px 18px 0 18px;
       flex-shrink: 0;
       background: var(--bg-header);
-      backdrop-filter: var(--card-blur);
-      -webkit-backdrop-filter: var(--card-blur);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       z-index: 20;
     }
 
@@ -166,7 +153,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .brand-title {
@@ -180,25 +167,28 @@
       gap: 7px;
     }
 
+    .zune-glyph {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: var(--zune-gradient);
+    }
+
     .theme-pill-btn {
       background: var(--bg-card);
       border: 1px solid var(--border-strong);
       color: var(--text-primary);
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.11em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       padding: 5px 10px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       cursor: pointer;
-      backdrop-filter: var(--card-blur);
-      -webkit-backdrop-filter: var(--card-blur);
-    }
-
-    .theme-pill-btn:active {
-      opacity: 0.75;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
     }
 
     .theme-dot {
@@ -211,7 +201,7 @@
     /* Pivot Title Strip */
     .pivot-strip {
       display: flex;
-      gap: 20px;
+      gap: 22px;
       overflow-x: auto;
       scrollbar-width: none;
       padding-bottom: 6px;
@@ -221,7 +211,7 @@
     .pivot-tab {
       font-size: 36px;
       font-weight: 200;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.02em;
       line-height: 1.05;
       color: var(--text-muted);
       white-space: nowrap;
@@ -234,7 +224,7 @@
       font-weight: 300;
     }
 
-    /* FitNotes Day Navigation Strip (Swipe Left / Right Supported) */
+    /* FitNotes Day Navigation Strip */
     .day-nav-bar {
       display: flex;
       align-items: center;
@@ -243,8 +233,8 @@
       border-top: 1px solid var(--border-subtle);
       border-bottom: 1px solid var(--border-subtle);
       background: var(--bg-subbar);
-      backdrop-filter: var(--card-blur);
-      -webkit-backdrop-filter: var(--card-blur);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       flex-shrink: 0;
     }
 
@@ -265,7 +255,7 @@
     }
 
     .day-title {
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 400;
       letter-spacing: 0.02em;
       color: var(--text-primary);
@@ -307,7 +297,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 38px;
+      gap: 40px;
       padding: 20px 0;
     }
 
@@ -332,18 +322,17 @@
       width: 68px;
       height: 68px;
       border: 2px solid var(--zune-pink);
-      background: var(--tile-action-bg);
-      backdrop-filter: var(--card-blur);
-      -webkit-backdrop-filter: var(--card-blur);
+      background: var(--tile-tint-pink);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
     }
 
     .metro-action-tile.secondary {
       border-color: var(--zune-orange);
-      background: var(--tile-action-sec-bg);
+      background: var(--tile-tint-orange);
     }
 
     .empty-action-label {
@@ -358,10 +347,9 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
-    /* Slide animation when swiping days */
     @keyframes slideFromRight {
       from { opacity: 0.35; transform: translateX(28px); }
       to { opacity: 1; transform: translateX(0); }
@@ -389,8 +377,8 @@
       border-left: 3px solid var(--zune-pink);
       padding: 12px 14px;
       margin-bottom: 12px;
-      backdrop-filter: var(--card-blur);
-      -webkit-backdrop-filter: var(--card-blur);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
     }
 
     .exercise-card-header {
@@ -432,24 +420,22 @@
     }
 
     .set-val {
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 400;
       color: var(--text-primary);
     }
 
     .set-val span {
-      font-size: 10px;
+      font-size: 11px;
       color: var(--text-secondary);
       margin-left: 2px;
       text-transform: uppercase;
     }
 
-    .set-note {
-      grid-column: 2 / -1;
+    .set-note-line {
       font-size: 11px;
       color: var(--text-secondary);
-      font-style: italic;
-      padding-bottom: 2px;
+      padding: 0 0 6px 30px;
     }
 
     .pr-badge {
@@ -504,7 +490,7 @@
       background: var(--zune-gradient);
       border: none;
       color: #ffffff;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -520,10 +506,10 @@
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      padding: 9px 12px;
+      padding: 8px 12px;
       cursor: pointer;
-      backdrop-filter: var(--card-blur);
-      -webkit-backdrop-filter: var(--card-blur);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
     }
 
     .tile-grid {
@@ -549,8 +535,8 @@
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       color: var(--text-primary);
-      backdrop-filter: var(--card-blur);
-      -webkit-backdrop-filter: var(--card-blur);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
     }
 
     .tile-value {
@@ -605,23 +591,175 @@
       color: var(--zune-orange);
     }
 
-    /* Windows Phone 7 Bottom Application Bar (Clean 4-Button Layout) */
+    /* Multi-Dimensional FitNotes Charts UI */
+    .chart-filter-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+
+    .chart-dropdown-btn {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      padding: 9px 14px;
+      font-size: 14px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+    }
+
+    .chart-dropdown-caret {
+      font-size: 10px;
+      color: var(--zune-pink);
+    }
+
+    .range-segmented {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .range-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .range-btn.active {
+      background: var(--zune-gradient);
+      border-color: transparent;
+      color: #ffffff;
+    }
+
+    .chart-canvas-wrap {
+      position: relative;
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 6px;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+    }
+
+    canvas {
+      width: 100%;
+      height: 240px;
+      display: block;
+    }
+
+    .point-inspector {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 4px;
+      margin-top: 6px;
+    }
+
+    .point-step-btn {
+      background: none;
+      border: 1px solid var(--border-strong);
+      color: var(--zune-pink);
+      font-size: 20px;
+      width: 36px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .point-readout {
+      text-align: center;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+    }
+
+    .point-readout-sub {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--zune-orange);
+      margin-top: 2px;
+    }
+
+    .chart-subtabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .chart-subtab {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      padding: 8px 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .chart-subtab.active {
+      border-color: var(--zune-pink);
+      color: var(--text-primary);
+      background: var(--tile-tint-pink);
+    }
+
+    .breakdown-bar-row {
+      margin-bottom: 12px;
+    }
+
+    .breakdown-bar-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .breakdown-bar-track {
+      width: 100%;
+      height: 8px;
+      background: var(--border-subtle);
+    }
+
+    .breakdown-bar-fill {
+      height: 100%;
+      background: var(--zune-gradient);
+    }
+
+    /* Windows Phone 7 Bottom Application Bar */
     .wp-appbar {
       position: fixed;
       left: 0;
       right: 0;
       bottom: 0;
-      max-width: 460px;
-      margin: 0 auto;
-      padding-bottom: env(safe-area-inset-bottom, 0px);
+      padding-bottom: env(safe-area-inset-bottom);
       background: var(--bg-appbar);
       border-top: 1px solid var(--border-subtle);
-      backdrop-filter: var(--card-blur);
-      -webkit-backdrop-filter: var(--card-blur);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       display: flex;
       justify-content: space-around;
       align-items: center;
-      height: calc(66px + env(safe-area-inset-bottom, 0px));
+      height: calc(66px + env(safe-area-inset-bottom));
       z-index: 30;
     }
 
@@ -656,21 +794,23 @@
       color: var(--text-secondary);
     }
 
-    /* Jump, New Exercise & Date Modal Overlays */
+    /* Overlays (Strictly hidden & pointer-events:none until .open) */
     .jump-overlay {
       position: fixed;
       inset: 0;
-      background: var(--bg-overlay);
-      backdrop-filter: var(--card-blur);
-      -webkit-backdrop-filter: var(--card-blur);
+      background: var(--bg-modal);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       z-index: 100;
       display: none;
-      padding: calc(24px + env(safe-area-inset-top, 0px)) 20px 24px 20px;
+      pointer-events: none;
+      padding: calc(24px + env(safe-area-inset-top)) 20px 24px 20px;
       overflow-y: auto;
     }
 
     .jump-overlay.open {
       display: block;
+      pointer-events: auto;
     }
 
     .jump-grid {
@@ -699,213 +839,35 @@
       pointer-events: none;
     }
 
-    /* Progress Bar for Large CSV Imports */
-    .csv-progress-wrap {
-      width: 100%;
-      height: 6px;
-      background: var(--border-subtle);
-      margin-top: 10px;
-      overflow: hidden;
-      display: none;
-    }
-    .csv-progress-bar {
-      height: 100%;
-      width: 0%;
-      background: var(--zune-gradient);
-      transition: width 0.15s ease;
-    }
-
     /* Toast Notification Banner */
-    .zune-toast {
+    #toastBanner {
       position: fixed;
-      left: 16px;
-      right: 16px;
-      bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-      max-width: 428px;
-      margin: 0 auto;
+      left: 18px;
+      right: 18px;
+      bottom: calc(80px + env(safe-area-inset-bottom));
       background: var(--zune-gradient);
       color: #ffffff;
+      padding: 10px 14px;
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.06em;
-      padding: 11px 14px;
-      z-index: 120;
-      opacity: 0;
+      z-index: 90;
+      display: none;
       pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-
-    .zune-toast.show {
-      opacity: 1;
-    }
-
-    canvas {
-      width: 100%;
-      height: 230px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      display: block;
-      touch-action: pan-y;
-    }
-
-    /* FitNotes Multi-Dimensional Chart Controls (Metro Styled) */
-    .chart-filter-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      margin-bottom: 10px;
-    }
-
-    .chart-dropdown-pill {
-      width: 100%;
-      background: var(--bg-card);
-      border: 1px solid var(--border-strong);
-      color: var(--text-primary);
-      padding: 9px 14px;
-      font-size: 14px;
-      font-weight: 400;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      cursor: pointer;
-      backdrop-filter: var(--card-blur);
-      -webkit-backdrop-filter: var(--card-blur);
-    }
-
-    .chart-dropdown-pill:active {
-      border-color: var(--zune-pink);
-    }
-
-    .chart-caret {
-      font-size: 10px;
-      color: var(--zune-pink);
-    }
-
-    .range-strip {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 5px;
-      margin-bottom: 10px;
-    }
-
-    .range-pill {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 7px 4px;
-      text-align: center;
-      cursor: pointer;
-    }
-
-    .range-pill.active {
-      background: var(--zune-gradient);
-      border-color: transparent;
-      color: #ffffff;
-    }
-
-    .point-inspector-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 4px;
-      margin-top: 6px;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .point-step-btn {
-      background: none;
-      border: 1px solid var(--border-strong);
-      color: var(--zune-pink);
-      font-size: 18px;
-      width: 34px;
-      height: 30px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
-    .point-readout {
-      text-align: center;
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--text-primary);
-    }
-
-    .point-readout-sub {
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--zune-orange);
-    }
-
-    .chart-subnav {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      margin-top: 12px;
-    }
-
-    .chart-subnav-btn {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
-      padding: 8px 6px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      cursor: pointer;
-    }
-
-    .chart-subnav-btn.active {
-      border-color: var(--zune-pink);
-      color: var(--text-primary);
-      background: var(--bg-card-elevated);
-    }
-
-    .breakdown-row {
-      margin-bottom: 11px;
-    }
-
-    .breakdown-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-
-    .breakdown-track {
-      width: 100%;
-      height: 8px;
-      background: var(--border-subtle);
-      overflow: hidden;
-    }
-
-    .breakdown-fill {
-      height: 100%;
-      background: var(--zune-gradient);
     }
   </style>
 </head>
 <body>
 <div id="appShell">
+  <div id="errorBanner"></div>
+
   <header class="metro-header">
     <div class="brand-bar">
       <div class="brand-title"><span class="zune-glyph"></span> ZUNEFIT // STUDIO</div>
-      <div class="header-actions">
-        <button class="theme-pill-btn" id="themeToggleBtn" onclick="cycleTheme()">
-          <span class="theme-dot"></span>
-          <span id="themeLabel">THEME: DARK</span>
-        </button>
-      </div>
+      <button class="theme-pill-btn" id="themeToggleBtn" onclick="cycleTheme()">
+        <span class="theme-dot"></span>
+        <span id="themeLabel">THEME: DARK</span>
+      </button>
     </div>
     <nav class="pivot-strip" id="pivotStrip">
       <div class="pivot-tab active" data-pane="0" onclick="switchPane(0)">workout</div>
@@ -936,133 +898,113 @@
     <section class="pane" id="pane-1">
       <div style="display:flex; gap:8px; margin-bottom:10px;">
         <input id="exerciseSearch" class="metro-input" placeholder="filter exercises or muscle..." oninput="renderExerciseLibrary()" />
-        <button class="metro-btn" onclick="openNewExerciseModal()">+ NEW</button>
+        <button class="metro-btn" onclick="promptNewExercise()">+ NEW</button>
       </div>
       <div id="categoryFilterBar" style="display:flex; gap:6px; overflow-x:auto; padding-bottom:8px;"></div>
       <div id="exerciseLibraryList"></div>
     </section>
 
-    <!-- PANE 2: ROUTINES & COPY PREVIOUS WORKOUT -->
+    <!-- PANE 2: ROUTINES -->
     <section class="pane" id="pane-2">
       <div class="metro-section-label">ONE-TAP SPLIT TEMPLATES</div>
       <div id="routinesContainer"></div>
-      <div class="metro-section-label" style="margin-top:20px;">WORKOUT ACTIONS</div>
+      <div class="metro-section-label" style="margin-top:20px;">WORKOUT SHORTCUTS</div>
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
         <button class="metro-btn-outline" onclick="copyLastWorkout()">COPY PREVIOUS WORKOUT</button>
-        <button class="metro-btn-outline" onclick="exportFitNotesCSV()">EXPORT FITNOTES .CSV</button>
+        <button class="metro-btn-outline" onclick="exportFitNotesCSV()">EXPORT .CSV</button>
       </div>
     </section>
 
-    <!-- PANE 3: FITNOTES MULTI-DIMENSIONAL ANALYTICS & CHARTS -->
+    <!-- PANE 3: MULTI-DIMENSIONAL FITNOTES CHARTS -->
     <section class="pane" id="pane-3">
       <div class="chart-filter-stack">
-        <button class="chart-dropdown-pill" onclick="openChartPicker('metric')">
-          <span class="chart-caret">▶</span>
+        <button class="chart-dropdown-btn" onclick="openChartDropdown('metric')">
+          <span class="chart-dropdown-caret">▶</span>
           <span id="chartMetricLabel">Volume</span>
         </button>
-        <button class="chart-dropdown-pill" onclick="openChartPicker('interval')">
-          <span class="chart-caret">▶</span>
+        <button class="chart-dropdown-btn" onclick="openChartDropdown('interval')">
+          <span class="chart-dropdown-caret">▶</span>
           <span id="chartIntervalLabel">Per Workout</span>
         </button>
-        <button class="chart-dropdown-pill" onclick="openChartPicker('scope')">
-          <span class="chart-caret">▶</span>
+        <button class="chart-dropdown-btn" onclick="openChartDropdown('scope')">
+          <span class="chart-dropdown-caret">▶</span>
           <span id="chartScopeLabel">All</span>
         </button>
       </div>
 
-      <div class="range-strip" id="chartRangeStrip">
-        <button class="range-pill active" data-range="all" onclick="setChartRange('all')">All</button>
-        <button class="range-pill" data-range="1y" onclick="setChartRange('1y')">1y</button>
-        <button class="range-pill" data-range="6mo" onclick="setChartRange('6mo')">6mo</button>
-        <button class="range-pill" data-range="3mo" onclick="setChartRange('3mo')">3mo</button>
-        <button class="range-pill" data-range="1mo" onclick="setChartRange('1mo')">1mo</button>
+      <div class="range-segmented" id="chartRangeBar">
+        <button class="range-btn active" data-range="all" onclick="setChartRange('all')">All</button>
+        <button class="range-btn" data-range="1y" onclick="setChartRange('1y')">1y</button>
+        <button class="range-btn" data-range="6mo" onclick="setChartRange('6mo')">6mo</button>
+        <button class="range-btn" data-range="3mo" onclick="setChartRange('3mo')">3mo</button>
+        <button class="range-btn" data-range="1mo" onclick="setChartRange('1mo')">1mo</button>
       </div>
 
-      <!-- Sub-View 1: Workouts Trend Graph -->
       <div id="chartViewWorkouts">
-        <canvas id="progressCanvas" width="640" height="300"></canvas>
-        <div class="point-inspector-bar">
+        <div class="chart-canvas-wrap">
+          <canvas id="progressCanvas" width="660" height="320"></canvas>
+        </div>
+        <div class="point-inspector">
           <button class="point-step-btn" onclick="stepChartPoint(-1)" aria-label="Previous point">‹</button>
-          <div class="point-readout" id="chartPointReadout">
+          <div class="point-readout" id="pointReadout">
             <div>Select a point on the graph</div>
-            <div class="point-readout-sub" id="chartPointSub">TAP GRAPH OR USE ARROWS</div>
+            <div class="point-readout-sub" id="pointReadoutSub">TAP GRAPH OR USE ARROWS</div>
           </div>
           <button class="point-step-btn" onclick="stepChartPoint(1)" aria-label="Next point">›</button>
         </div>
-        <div class="tile-grid" id="progressTiles" style="margin-top:12px;"></div>
       </div>
 
-      <!-- Sub-View 2: Category Breakdown -->
       <div id="chartViewBreakdown" style="display:none;">
-        <div class="metro-section-label">MUSCLE GROUP DISTRIBUTION</div>
+        <div class="metro-section-label">CATEGORY VOLUME BREAKDOWN</div>
         <div id="breakdownContainer"></div>
       </div>
 
-      <!-- Sub-View 3: Exercises PR Leaderboard -->
       <div id="chartViewExercises" style="display:none;">
-        <div class="metro-section-label">TOP EXERCISES BY VOLUME & MAX WEIGHT</div>
-        <div id="exerciseLeaderboardList"></div>
+        <div class="metro-section-label">TOP EXERCISES IN RANGE</div>
+        <div id="chartExercisesList"></div>
       </div>
 
-      <!-- Bottom Chart Sub-Views Switcher (Breakdown / Workouts / Exercises) -->
-      <div class="chart-subnav">
-        <button class="chart-subnav-btn" id="subChartBtn_breakdown" onclick="setChartSubView('breakdown')">
-          <span>◔</span>
-          <span>Breakdown</span>
-        </button>
-        <button class="chart-subnav-btn active" id="subChartBtn_workouts" onclick="setChartSubView('workouts')">
-          <span>📈</span>
-          <span>Workouts</span>
-        </button>
-        <button class="chart-subnav-btn" id="subChartBtn_exercises" onclick="setChartSubView('exercises')">
-          <span>☰</span>
-          <span>Exercises</span>
-        </button>
+      <div class="chart-subtabs">
+        <button class="chart-subtab" id="subtab_breakdown" onclick="setChartSubView('breakdown')">Breakdown</button>
+        <button class="chart-subtab active" id="subtab_workouts" onclick="setChartSubView('workouts')">Workouts</button>
+        <button class="chart-subtab" id="subtab_exercises" onclick="setChartSubView('exercises')">Exercises</button>
       </div>
     </section>
 
-    <!-- PANE 4: FITNOTES .CSV IMPORT / EXPORT & HISTORY STATS -->
+    <!-- PANE 4: FITNOTES CSV IMPORT / EXPORT & DATA -->
     <section class="pane" id="pane-4">
-      <div class="metro-section-label">DATABASE SUMMARY</div>
-      <div class="tile-grid" id="dbStatsTiles"></div>
+      <div class="metro-section-label">WORKOUT DATABASE</div>
+      <div class="tile-grid" id="dataSummaryTiles"></div>
 
-      <div class="metro-section-label">IMPORT FITNOTES .CSV WORKOUT HISTORY</div>
+      <div class="metro-section-label">IMPORT FITNOTES .CSV</div>
       <div class="exercise-card">
-        <div class="exercise-name" style="font-size:17px;">Restore FitNotes Backup (.csv)</div>
+        <div class="exercise-name" style="font-size:17px;">Restore FitNotes Workout History</div>
         <div class="exercise-meta" style="margin:6px 0 12px 0; text-transform:none; letter-spacing:0.02em; line-height:1.4;">
-          Supports full FitNotes CSV exports (Date, Exercise, Category, Weight (kg), Weight (lbs), Reps, Distance, Distance Unit, Time, Notes, Kind) including 50,000+ rows.
+          Supports full FitNotes .csv exports (Date, Exercise, Category, Weight (kg), Weight (lbs), Reps, Distance, Distance Unit, Time, Notes, Kind) including 57,000+ rows.
         </div>
+        <input type="file" id="csvFileInput" accept=".csv,text/csv" style="display:none;" onchange="importFitNotesCSV(event)" />
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <label class="metro-btn" style="display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex:1;">
-            <span>IMPORT FITNOTES .CSV</span>
-            <input type="file" id="csvFileInput" accept=".csv,text/csv" style="display:none;" onchange="handleCSVFileSelect(event)" />
-          </label>
-          <select id="importModeSelect" class="metro-input" style="width:auto; font-size:12px;">
-            <option value="merge">MERGE WITH EXISTING</option>
-            <option value="replace">REPLACE ALL DATA</option>
-          </select>
+          <button class="metro-btn" onclick="document.getElementById('csvFileInput').click()">SELECT .CSV FILE</button>
+          <button class="metro-btn-outline" onclick="loadSampleWorkoutData()">LOAD SAMPLE DATA</button>
         </div>
-        <div class="csv-progress-wrap" id="csvProgressWrap">
-          <div class="csv-progress-bar" id="csvProgressBar"></div>
-        </div>
-        <div class="exercise-meta" id="csvStatusText" style="margin-top:8px;"></div>
+        <div id="csvImportStatus" class="exercise-meta" style="margin-top:10px; color:var(--zune-pink);"></div>
       </div>
 
       <div class="metro-section-label">EXPORT FITNOTES .CSV</div>
-      <div class="exercise-card" style="border-left-color: var(--zune-orange);">
-        <div class="exercise-name" style="font-size:17px;">Download FitNotes-Compatible CSV</div>
+      <div class="exercise-card" style="border-left-color:var(--zune-orange);">
+        <div class="exercise-name" style="font-size:17px;">Backup Workout History to .CSV</div>
         <div class="exercise-meta" style="margin:6px 0 12px 0; text-transform:none; letter-spacing:0.02em; line-height:1.4;">
-        Exports every logged set with exact FitNotes columns, kg/lbs conversion, notes, and Kind codes so you can re-import into FitNotes or ZuneFit anytime.
+          Downloads a FitNotes-compatible .csv file of all recorded workouts to your iPhone Files / iCloud Drive.
+        </div>
+        <button class="metro-btn-outline" onclick="exportFitNotesCSV()">EXPORT FITNOTES .CSV</button>
       </div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <button class="metro-btn-outline" style="flex:1;" onclick="exportFitNotesCSV()">EXPORT WORKOUT HISTORY (.CSV)</button>
-        <button class="metro-btn-outline" onclick="seedSampleWorkouts()">LOAD SAMPLE DATA</button>
-      </div>
-    </div>
-  </section>
-</main>
 
-  <!-- Windows Phone 7 Bottom Application Bar (Clean 4 Actions, No Body Button) -->
+      <div class="metro-section-label">DANGER ZONE</div>
+      <button class="metro-btn-outline" style="border-color:#a02020; color:#ff6b6b;" onclick="clearAllData()">RESET ALL LOCAL WORKOUT DATA</button>
+    </section>
+  </main>
+
+  <!-- Windows Phone 7 Bottom Application Bar (No Body button) -->
   <footer class="wp-appbar">
     <button class="appbar-action" onclick="openDatePickerModal()">
       <div class="circle-icon">▦</div>
@@ -1101,13 +1043,11 @@
 </div>
 
 <!-- New Exercise Modal -->
-<div class="jump-overlay" id="newExerciseOverlay" onclick="closeNewExerciseModal()">
-  <div class="exercise-card" style="max-width:360px; margin:60px auto;" onclick="event.stopPropagation()">
-    <div class="metro-section-label" style="margin-top:0;">CREATE NEW EXERCISE</div>
-    <div class="exercise-meta" style="margin-bottom:4px;">EXERCISE NAME</div>
-    <input type="text" id="newExNameInput" class="metro-input" placeholder="e.g., Cable Lateral Raise" style="margin-bottom:10px;" />
-    <div class="exercise-meta" style="margin-bottom:4px;">MUSCLE GROUP</div>
-    <select id="newExCatSelect" class="metro-input" style="margin-bottom:14px;">
+<div class="jump-overlay" id="newExOverlay" onclick="closeNewExModal()">
+  <div class="exercise-card" style="max-width:340px; margin:60px auto;" onclick="event.stopPropagation()">
+    <div class="metro-section-label" style="margin-top:0;">NEW EXERCISE</div>
+    <input type="text" id="newExNameInput" class="metro-input" placeholder="Exercise name..." style="margin-bottom:10px;" />
+    <select id="newExCatSelect" class="metro-input" style="margin-bottom:12px;">
       <option value="Chest">Chest</option>
       <option value="Back">Back</option>
       <option value="Legs">Legs</option>
@@ -1117,1680 +1057,1429 @@
       <option value="Calves">Calves</option>
       <option value="Abs">Abs</option>
       <option value="Cardio">Cardio</option>
-      <option value="Forearms">Forearms</option>
     </select>
     <div style="display:flex; gap:8px;">
-      <button class="metro-btn" style="flex:1;" onclick="saveNewExercise()">ADD EXERCISE</button>
-      <button class="metro-btn-outline" onclick="closeNewExerciseModal()">CANCEL</button>
+      <button class="metro-btn" style="flex:1;" onclick="confirmNewExercise()">SAVE</button>
+      <button class="metro-btn-outline" onclick="closeNewExModal()">CANCEL</button>
     </div>
   </div>
 </div>
 
-<!-- Chart Filter Picker Overlay (Metric / Interval / All-Category-Exercise) -->
-<div class="jump-overlay" id="chartPickerOverlay" onclick="closeChartPicker()">
-  <div class="exercise-card" style="max-width:380px; margin:30px auto; max-height:80dvh; display:flex; flex-direction:column;" onclick="event.stopPropagation()">
+<!-- Chart Filter Selector Modal -->
+<div class="jump-overlay" id="chartFilterOverlay" onclick="closeChartDropdown()">
+  <div class="exercise-card" style="max-width:380px; margin:30px auto; max-height:78vh; overflow-y:auto;" onclick="event.stopPropagation()">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-      <div class="metro-section-label" style="margin:0;" id="chartPickerTitle">SELECT FILTER</div>
-      <button class="icon-btn" onclick="closeChartPicker()">×</button>
+      <div class="metro-section-label" style="margin:0;" id="chartModalTitle">SELECT FILTER</div>
+      <button class="icon-btn" onclick="closeChartDropdown()">×</button>
     </div>
-    <input type="text" id="chartPickerSearch" class="metro-input" placeholder="search..." style="display:none; margin-bottom:10px;" oninput="renderChartPickerList()" />
-    <div id="chartPickerList" style="overflow-y:auto; flex:1 1 auto;"></div>
+    <div id="chartModalBody"></div>
   </div>
 </div>
 
-<!-- Toast Message -->
-<div class="zune-toast" id="zuneToast"></div>
+<div id="toastBanner"></div>
 
 <script>
-  /* ==========================================================================
-     1. THEME ENGINE (DARK / LIGHT / FROSTED)
-     ========================================================================== */
-  const THEME_ORDER = ['dark', 'light', 'frosted'];
-  const THEME_STORAGE_KEY = 'zunefit_theme_v1';
-
-  function applyTheme(themeName) {
-    const valid = THEME_ORDER.includes(themeName) ? themeName : 'dark';
-    document.documentElement.setAttribute('data-theme', valid);
-    const labelEl = document.getElementById('themeLabel');
-    if (labelEl) {
-      labelEl.textContent = `THEME: ${valid.toUpperCase()}`;
-    }
-    try {
-      localStorage.setItem(THEME_STORAGE_KEY, valid);
-    } catch (e) {}
-    if (state && state.activePane === 3) {
-      renderProgressChart();
-    }
-  }
-
-  function cycleTheme() {
-    const current = document.documentElement.getAttribute('data-theme') || 'dark';
-    const next = THEME_ORDER[(THEME_ORDER.indexOf(current) + 1) % THEME_ORDER.length];
-    applyTheme(next);
-  }
-
-  /* ==========================================================================
-     2. INDEXEDDB HIGH-CAPACITY STORAGE (SUPPORTS 57,000+ FITNOTES CSV ROWS)
-     ========================================================================== */
-  const IDB_NAME = 'ZuneFitIndexedDB';
-  const IDB_STORE = 'keyval';
-  const DB_KEY = 'zunefit_master_v2';
-
-  const DEFAULT_EXERCISES = [
-    { id: 'Barbell Bench Press', name: 'Barbell Bench Press', category: 'Chest' },
-    { id: 'Incline Dumbbell Press', name: 'Incline Dumbbell Press', category: 'Chest' },
-    { id: 'Cable Chest Fly', name: 'Cable Chest Fly', category: 'Chest' },
-    { id: 'Lat Pulldown', name: 'Lat Pulldown', category: 'Back' },
-    { id: 'Barbell Bent-Over Row', name: 'Barbell Bent-Over Row', category: 'Back' },
-    { id: 'Seated Cable Row', name: 'Seated Cable Row', category: 'Back' },
-    { id: 'Barbell Back Squat', name: 'Barbell Back Squat', category: 'Legs' },
-    { id: 'Leg Press', name: 'Leg Press', category: 'Legs' },
-    { id: 'Romanian Deadlift', name: 'Romanian Deadlift', category: 'Legs' },
-    { id: 'Seated Leg Curl', name: 'Seated Leg Curl', category: 'Legs' },
-    { id: 'Seated Dumbbell Shoulder Press', name: 'Seated Dumbbell Shoulder Press', category: 'Shoulders' },
-    { id: 'Dumbbell Lateral Raise', name: 'Dumbbell Lateral Raise', category: 'Shoulders' },
-    { id: 'Cable Tricep Pushdown', name: 'Cable Tricep Pushdown', category: 'Triceps' },
-    { id: 'EZ-Bar Skullcrusher', name: 'EZ-Bar Skullcrusher', category: 'Triceps' },
-    { id: 'Incline Dumbbell Curl', name: 'Incline Dumbbell Curl', category: 'Biceps' },
-    { id: 'Hammer Curl', name: 'Hammer Curl', category: 'Biceps' },
-    { id: 'Hanging Leg Raise', name: 'Hanging Leg Raise', category: 'Abs' },
-    { id: 'Cable Rope Crunch', name: 'Cable Rope Crunch', category: 'Abs' }
-  ];
-
-  const DEFAULT_ROUTINES = [
-    {
-      name: 'Push Day (Chest / Front Delts)',
-      color: 'tile-pink',
-      exerciseIds: ['Barbell Bench Press', 'Incline Dumbbell Press', 'Cable Chest Fly', 'Dumbbell Lateral Raise', 'Cable Tricep Pushdown']
-    },
-    {
-      name: 'Pull Day (Back / Biceps)',
-      color: 'tile-orange',
-      exerciseIds: ['Lat Pulldown', 'Barbell Bent-Over Row', 'Seated Cable Row', 'Incline Dumbbell Curl', 'Hammer Curl']
-    },
-    {
-      name: 'Leg Day (Quads / Hamstrings)',
-      color: 'tile-cyan',
-      exerciseIds: ['Barbell Back Squat', 'Leg Press', 'Romanian Deadlift', 'Seated Leg Curl']
-    },
-    {
-      name: 'Shoulders, Triceps & Abs',
-      color: 'tile-dark',
-      exerciseIds: ['Seated Dumbbell Shoulder Press', 'Dumbbell Lateral Raise', 'Cable Tricep Pushdown', 'EZ-Bar Skullcrusher', 'Hanging Leg Raise', 'Cable Rope Crunch']
-    }
-  ];
-
-  function openIDB() {
-    return new Promise((resolve, reject) => {
-      if (!window.indexedDB) {
-        reject(new Error('IndexedDB unavailable'));
-        return;
-      }
-      const req = indexedDB.open(IDB_NAME, 1);
-      req.onupgradeneeded = () => {
-        const db = req.result;
-        if (!db.objectStoreNames.contains(IDB_STORE)) {
-          db.createObjectStore(IDB_STORE);
-        }
-      };
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-  }
-
-  async function idbGet(key) {
-    try {
-      const db = await openIDB();
-      return await new Promise((resolve, reject) => {
-        const tx = db.transaction(IDB_STORE, 'readonly');
-        const req = tx.objectStore(IDB_STORE).get(key);
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
-      });
-    } catch (e) {
-      try {
-        const raw = localStorage.getItem(key);
-        return raw ? JSON.parse(raw) : null;
-      } catch (err) {
-        return null;
-      }
-    }
-  }
-
-  async function idbSet(key, val) {
-    try {
-      const db = await openIDB();
-      await new Promise((resolve, reject) => {
-        const tx = db.transaction(IDB_STORE, 'readwrite');
-        tx.objectStore(IDB_STORE).put(val, key);
-        tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
-      });
-    } catch (e) {
-      try {
-        localStorage.setItem(key, JSON.stringify(val));
-      } catch (err) {
-        console.warn('Storage quota reached:', err);
-      }
-    }
-  }
-
-  function getOffsetISO(offsetDays = 0) {
-    const d = new Date();
-    d.setDate(d.getDate() + offsetDays);
-    const tzOffset = d.getTimezoneOffset();
-    return new Date(d.getTime() - tzOffset * 60000).toISOString().split('T')[0];
-  }
-
-  let toastTimer = null;
-  function showToast(msg) {
-    const el = document.getElementById('zuneToast');
-    if (!el) return;
-    el.textContent = msg;
-    el.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
-  }
-
-  var state = {
-    activeDate: getOffsetISO(0), // Always opens cleanly on Today
-    activePane: 0,
-    selectedCategory: 'All',
-    slideDir: '',
-    chart: {
-      metric: 'volume',       // 'volume' | 'maxWeight' | 'e1rm' | 'sets' | 'reps' | 'workouts'
-      interval: 'workout',    // 'workout' | 'week' | 'month' | 'year'
-      scopeType: 'all',       // 'all' | 'category' | 'exercise'
-      scopeValue: 'All',
-      range: 'all',           // 'all' | '1y' | '6mo' | '3mo' | '1mo'
-      subView: 'workouts',    // 'breakdown' | 'workouts' | 'exercises'
-      points: [],
-      selectedIndex: -1,
-      pickerMode: 'metric',
-      pickerStep: 'root'
-    },
-    db: {
-      exercises: DEFAULT_EXERCISES.slice(),
-      routines: DEFAULT_ROUTINES.slice(),
-      logs: {}
+  // Global runtime error safeguard
+  window.onerror = function(msg, src, line) {
+    var b = document.getElementById('errorBanner');
+    if (b) {
+      b.style.display = 'block';
+      b.textContent = 'Runtime error: ' + msg + ' (line ' + line + ')';
     }
   };
 
-  async function saveDB() {
-    await idbSet(DB_KEY, state.db);
-  }
+  (function() {
+    var THEMES = ['dark', 'light', 'frosted'];
+    var THEME_KEY = 'zunefit_theme_v2';
+    var LS_FALLBACK_KEY = 'zunefit_ls_backup_v2';
+    var IDB_NAME = 'ZuneFitDB_v2';
+    var IDB_STORE = 'store';
 
-  /* ==========================================================================
-     7. FITNOTES MULTI-DIMENSIONAL ANALYTICS & PROGRESSION CHARTS
-     ========================================================================== */
-  const CHART_METRICS = [
-    { id: 'volume', label: 'Volume', unit: 'lb' },
-    { id: 'maxWeight', label: 'Max Weight', unit: 'lb' },
-    { id: 'e1rm', label: 'Estimated 1RM', unit: 'lb' },
-    { id: 'sets', label: 'Sets', unit: 'sets' },
-    { id: 'reps', label: 'Reps', unit: 'reps' },
-    { id: 'workouts', label: 'Workouts', unit: 'workouts' }
-  ];
+    var DEFAULT_EXERCISES = [
+      { id: 'Barbell Bench Press', name: 'Barbell Bench Press', category: 'Chest' },
+      { id: 'Incline Dumbbell Press', name: 'Incline Dumbbell Press', category: 'Chest' },
+      { id: 'Cable Chest Fly', name: 'Cable Chest Fly', category: 'Chest' },
+      { id: 'Lat Pulldown', name: 'Lat Pulldown', category: 'Back' },
+      { id: 'Barbell Bent-Over Row', name: 'Barbell Bent-Over Row', category: 'Back' },
+      { id: 'Seated Cable Row', name: 'Seated Cable Row', category: 'Back' },
+      { id: 'Barbell Back Squat', name: 'Barbell Back Squat', category: 'Legs' },
+      { id: 'Leg Press', name: 'Leg Press', category: 'Legs' },
+      { id: 'Romanian Deadlift', name: 'Romanian Deadlift', category: 'Legs' },
+      { id: 'Seated Leg Curl', name: 'Seated Leg Curl', category: 'Legs' },
+      { id: 'Seated Dumbbell Shoulder Press', name: 'Seated Dumbbell Shoulder Press', category: 'Shoulders' },
+      { id: 'Dumbbell Lateral Raise', name: 'Dumbbell Lateral Raise', category: 'Shoulders' },
+      { id: 'Cable Tricep Pushdown', name: 'Cable Tricep Pushdown', category: 'Triceps' },
+      { id: 'EZ-Bar Skullcrusher', name: 'EZ-Bar Skullcrusher', category: 'Triceps' },
+      { id: 'Incline Dumbbell Curl', name: 'Incline Dumbbell Curl', category: 'Biceps' },
+      { id: 'Hammer Curl', name: 'Hammer Curl', category: 'Biceps' },
+      { id: 'Hanging Leg Raise', name: 'Hanging Leg Raise', category: 'Abs' },
+      { id: 'Cable Rope Crunch', name: 'Cable Rope Crunch', category: 'Abs' }
+    ];
 
-  const CHART_INTERVALS = [
-    { id: 'workout', label: 'Per Workout' },
-    { id: 'week', label: 'Per Week' },
-    { id: 'month', label: 'Per Month' },
-    { id: 'year', label: 'Per Year' }
-  ];
+    var DEFAULT_ROUTINES = [
+      {
+        name: 'Push Day (Chest / Front Delts)',
+        color: 'tile-pink',
+        exerciseIds: ['Barbell Bench Press', 'Incline Dumbbell Press', 'Cable Chest Fly', 'Dumbbell Lateral Raise', 'Cable Tricep Pushdown']
+      },
+      {
+        name: 'Pull Day (Back / Biceps)',
+        color: 'tile-orange',
+        exerciseIds: ['Lat Pulldown', 'Barbell Bent-Over Row', 'Seated Cable Row', 'Incline Dumbbell Curl', 'Hammer Curl']
+      },
+      {
+        name: 'Leg Day (Quads / Hamstrings)',
+        color: 'tile-cyan',
+        exerciseIds: ['Barbell Back Squat', 'Leg Press', 'Romanian Deadlift', 'Seated Leg Curl']
+      },
+      {
+        name: 'Shoulders, Triceps & Core',
+        color: 'tile-dark',
+        exerciseIds: ['Seated Dumbbell Shoulder Press', 'Dumbbell Lateral Raise', 'Cable Tricep Pushdown', 'EZ-Bar Skullcrusher', 'Hanging Leg Raise', 'Cable Rope Crunch']
+      }
+    ];
 
-  function renderProgressPane() {
-    updateChartFilterLabels();
-    renderProgressChart();
-  }
-
-  function updateChartFilterLabels() {
-    const mObj = CHART_METRICS.find(m => m.id === state.chart.metric) || CHART_METRICS[0];
-    const iObj = CHART_INTERVALS.find(i => i.id === state.chart.interval) || CHART_INTERVALS[0];
-    const mEl = document.getElementById('chartMetricLabel');
-    const iEl = document.getElementById('chartIntervalLabel');
-    const sEl = document.getElementById('chartScopeLabel');
-    if (mEl) mEl.textContent = mObj.label;
-    if (iEl) iEl.textContent = iObj.label;
-    if (sEl) {
-      if (state.chart.scopeType === 'all') sEl.textContent = 'All';
-      else sEl.textContent = state.chart.scopeValue;
-    }
-    document.querySelectorAll('#chartRangeStrip .range-pill').forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('data-range') === state.chart.range);
-    });
-  }
-
-  function setChartRange(rangeKey) {
-    state.chart.range = rangeKey;
-    state.chart.selectedIndex = -1;
-    updateChartFilterLabels();
-    renderProgressChart();
-  }
-
-  function setChartSubView(viewName) {
-    state.chart.subView = viewName;
-    ['breakdown', 'workouts', 'exercises'].forEach(v => {
-      const btn = document.getElementById(`subChartBtn_${v}`);
-      if (btn) btn.classList.toggle('active', v === viewName);
-    });
-    document.getElementById('chartViewWorkouts').style.display = viewName === 'workouts' ? 'block' : 'none';
-    document.getElementById('chartViewBreakdown').style.display = viewName === 'breakdown' ? 'block' : 'none';
-    document.getElementById('chartViewExercises').style.display = viewName === 'exercises' ? 'block' : 'none';
-    renderProgressChart();
-  }
-
-  function openChartPicker(mode) {
-    state.chart.pickerMode = mode;
-    state.chart.pickerStep = 'root';
-    const searchEl = document.getElementById('chartPickerSearch');
-    searchEl.value = '';
-    searchEl.style.display = 'none';
-    renderChartPickerList();
-    document.getElementById('chartPickerOverlay').classList.add('open');
-  }
-
-  function closeChartPicker() {
-    document.getElementById('chartPickerOverlay').classList.remove('open');
-  }
-
-  function renderChartPickerList() {
-    const mode = state.chart.pickerMode;
-    const step = state.chart.pickerStep;
-    const titleEl = document.getElementById('chartPickerTitle');
-    const searchEl = document.getElementById('chartPickerSearch');
-    const listEl = document.getElementById('chartPickerList');
-    const query = (searchEl.value || '').toLowerCase();
-
-    if (mode === 'metric') {
-      titleEl.textContent = 'SELECT METRIC';
-      listEl.innerHTML = CHART_METRICS.map(m => `
-        <div class="lib-item" onclick="selectChartMetric('${m.id}')">
-          <div class="lib-item-title">${m.label}</div>
-          <span style="color:var(--zune-pink); font-weight:700;">${state.chart.metric === m.id ? '✓' : ''}</span>
-        </div>
-      `).join('');
-      return;
+    function getOffsetISO(offsetDays) {
+      var d = new Date();
+      d.setDate(d.getDate() + (offsetDays || 0));
+      var tz = d.getTimezoneOffset();
+      return new Date(d.getTime() - tz * 60000).toISOString().split('T')[0];
     }
 
-    if (mode === 'interval') {
-      titleEl.textContent = 'SELECT INTERVAL';
-      listEl.innerHTML = CHART_INTERVALS.map(it => `
-        <div class="lib-item" onclick="selectChartInterval('${it.id}')">
-          <div class="lib-item-title">${it.label}</div>
-          <span style="color:var(--zune-pink); font-weight:700;">${state.chart.interval === it.id ? '✓' : ''}</span>
-        </div>
-      `).join('');
-      return;
+    var state = {
+      theme: 'dark',
+      activeDate: getOffsetISO(0),
+      activePane: 0,
+      selectedCategory: 'All',
+      slideDir: '',
+      chart: {
+        metric: 'volume',
+        interval: 'workout',
+        scopeType: 'all',
+        scopeValue: 'All',
+        range: 'all',
+        subView: 'workouts',
+        points: [],
+        selectedIndex: -1
+      },
+      db: {
+        exercises: DEFAULT_EXERCISES.slice(),
+        routines: DEFAULT_ROUTINES.slice(),
+        logs: {}
+      }
+    };
+
+    function showToast(msg) {
+      var el = document.getElementById('toastBanner');
+      if (!el) return;
+      el.textContent = msg;
+      el.style.display = 'block';
+      clearTimeout(el._timer);
+      el._timer = setTimeout(function() {
+        el.style.display = 'none';
+      }, 2400);
     }
 
-    // Scope Picker: All / Category / Exercise (Matching Screenshot 3)
-    if (mode === 'scope' && step === 'root') {
-      titleEl.textContent = 'SELECT FILTER';
-      searchEl.style.display = 'none';
-      listEl.innerHTML = `
-        <div class="lib-item" onclick="selectChartScope('all', 'All')">
-          <div class="lib-item-title">All</div>
-          <span style="color:var(--zune-pink); font-weight:700;">${state.chart.scopeType === 'all' ? '✓' : ''}</span>
-        </div>
-        <div class="lib-item" onclick="state.chart.pickerStep='category'; renderChartPickerList();">
-          <div>
-            <div class="lib-item-title">Category</div>
-            <div class="lib-item-cat">${state.chart.scopeType === 'category' ? escapeHtml(state.chart.scopeValue) : 'Muscle Group'}</div>
-          </div>
-          <span style="color:var(--text-secondary); font-size:18px;">›</span>
-        </div>
-        <div class="lib-item" onclick="state.chart.pickerStep='exercise'; renderChartPickerList();">
-          <div>
-            <div class="lib-item-title">Exercise</div>
-            <div class="lib-item-cat">${state.chart.scopeType === 'exercise' ? escapeHtml(state.chart.scopeValue) : 'Individual Lift'}</div>
-          </div>
-          <span style="color:var(--text-secondary); font-size:18px;">›</span>
-        </div>
-      `;
-      return;
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     }
 
-    if (mode === 'scope' && step === 'category') {
-      titleEl.textContent = 'SELECT CATEGORY';
-      searchEl.style.display = 'block';
-      const cats = new Set();
-      state.db.exercises.forEach(e => { if (e.category) cats.add(e.category); });
-      Object.values(state.db.logs).forEach(entries => {
-        entries.forEach(en => { if (en.category) cats.add(en.category); });
+    /* ========================================================================
+       THEME MANAGEMENT
+       ======================================================================== */
+    function applyTheme(t) {
+      state.theme = THEMES.indexOf(t) >= 0 ? t : 'dark';
+      document.documentElement.setAttribute('data-theme', state.theme);
+      var lbl = document.getElementById('themeLabel');
+      if (lbl) lbl.textContent = 'THEME: ' + state.theme.toUpperCase();
+      try { localStorage.setItem(THEME_KEY, state.theme); } catch (e) {}
+      if (state.activePane === 3) renderChartsPane();
+    }
+
+    window.cycleTheme = function() {
+      var idx = THEMES.indexOf(state.theme);
+      var next = THEMES[(idx + 1) % THEMES.length];
+      applyTheme(next);
+    };
+
+    /* ========================================================================
+       PERSISTENCE (INDEXEDDB WITH LOCALSTORAGE FALLBACK)
+       ======================================================================== */
+    function openIDB() {
+      return new Promise(function(resolve, reject) {
+        if (!window.indexedDB) return reject(new Error('No IndexedDB'));
+        var req = indexedDB.open(IDB_NAME, 1);
+        req.onupgradeneeded = function(e) {
+          var db = e.target.result;
+          if (!db.objectStoreNames.contains(IDB_STORE)) {
+            db.createObjectStore(IDB_STORE);
+          }
+        };
+        req.onsuccess = function(e) { resolve(e.target.result); };
+        req.onerror = function() { reject(req.error); };
       });
-      const sortedCats = Array.from(cats).sort().filter(c => c.toLowerCase().includes(query));
-      listEl.innerHTML = `
-        <div class="lib-item" onclick="state.chart.pickerStep='root'; renderChartPickerList();">
-          <div class="lib-item-cat">‹ BACK TO FILTER TYPE</div>
-        </div>
-      ` + sortedCats.map(c => `
-        <div class="lib-item" onclick="selectChartScope('category', '${c.replace(/'/g, "\\'")}')">
-          <div class="lib-item-title">${escapeHtml(c)}</div>
-          <span style="color:var(--zune-pink); font-weight:700;">${state.chart.scopeType === 'category' && state.chart.scopeValue === c ? '✓' : ''}</span>
-        </div>
-      `).join('');
-      return;
     }
 
-    if (mode === 'scope' && step === 'exercise') {
-      titleEl.textContent = 'SELECT EXERCISE';
-      searchEl.style.display = 'block';
-      const exList = state.db.exercises
-        .slice()
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .filter(e => e.name.toLowerCase().includes(query) || (e.category || '').toLowerCase().includes(query));
-      listEl.innerHTML = `
-        <div class="lib-item" onclick="state.chart.pickerStep='root'; renderChartPickerList();">
-          <div class="lib-item-cat">‹ BACK TO FILTER TYPE</div>
-        </div>
-      ` + exList.map(e => `
-        <div class="lib-item" onclick="selectChartScope('exercise', '${e.name.replace(/'/g, "\\'")}')">
-          <div>
-            <div class="lib-item-title">${escapeHtml(e.name)}</div>
-            <div class="lib-item-cat">${escapeHtml(e.category)}</div>
-          </div>
-          <span style="color:var(--zune-pink); font-weight:700;">${state.chart.scopeType === 'exercise' && state.chart.scopeValue === e.name ? '✓' : ''}</span>
-        </div>
-      `).join('');
+    function saveDB() {
+      try {
+        localStorage.setItem(LS_FALLBACK_KEY, JSON.stringify({
+          exercises: state.db.exercises,
+          routines: state.db.routines
+        }));
+      } catch (e) {}
+
+      openIDB().then(function(db) {
+        var tx = db.transaction(IDB_STORE, 'readwrite');
+        tx.objectStore(IDB_STORE).put(state.db, 'master');
+      }).catch(function() {
+        try { localStorage.setItem(LS_FALLBACK_KEY, JSON.stringify(state.db)); } catch (e) {}
+      });
     }
-  }
 
-  function selectChartMetric(mId) {
-    state.chart.metric = mId;
-    state.chart.selectedIndex = -1;
-    closeChartPicker();
-    updateChartFilterLabels();
-    renderProgressChart();
-  }
-
-  function selectChartInterval(iId) {
-    state.chart.interval = iId;
-    state.chart.selectedIndex = -1;
-    closeChartPicker();
-    updateChartFilterLabels();
-    renderProgressChart();
-  }
-
-  function selectChartScope(type, val) {
-    state.chart.scopeType = type;
-    state.chart.scopeValue = val;
-    state.chart.selectedIndex = -1;
-    closeChartPicker();
-    updateChartFilterLabels();
-    renderProgressChart();
-  }
-
-  function formatShortDate(iso) {
-    if (!iso || iso.length < 7) return iso || '';
-    if (iso.length === 4) return iso;
-    if (iso.length === 7) {
-      const [y, m] = iso.split('-').map(Number);
-      return new Date(y, m - 1, 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    function loadDBFromIndexedDB() {
+      openIDB().then(function(db) {
+        var tx = db.transaction(IDB_STORE, 'readonly');
+        var req = tx.objectStore(IDB_STORE).get('master');
+        req.onsuccess = function() {
+          if (req.result && req.result.logs) {
+            state.db.exercises = req.result.exercises && req.result.exercises.length ? req.result.exercises : DEFAULT_EXERCISES.slice();
+            state.db.routines = req.result.routines && req.result.routines.length ? req.result.routines : DEFAULT_ROUTINES.slice();
+            state.db.logs = req.result.logs || {};
+            refreshActivePane();
+          }
+        };
+      }).catch(function() {
+        try {
+          var raw = localStorage.getItem(LS_FALLBACK_KEY);
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            if (parsed.logs) state.db.logs = parsed.logs;
+            if (parsed.exercises) state.db.exercises = parsed.exercises;
+            refreshActivePane();
+          }
+        } catch (e) {}
+      });
     }
-    const [y, m, d] = iso.split('-').map(Number);
-    return new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  }
 
-  function getBucketKey(dateIso, interval) {
-    if (interval === 'year') return dateIso.slice(0, 4);
-    if (interval === 'month') return dateIso.slice(0, 7);
-    if (interval === 'week') {
-      const [y, m, d] = dateIso.split('-').map(Number);
-      const dt = new Date(y, m - 1, d);
-      const day = dt.getDay();
-      const diff = dt.getDate() - day + (day === 0 ? -6 : 1); // Monday start
-      const mon = new Date(y, m - 1, diff);
-      return `${mon.getFullYear()}-${String(mon.getMonth() + 1).padStart(2, '0')}-${String(mon.getDate()).padStart(2, '0')}`;
+    /* ========================================================================
+       DATE & PANE NAVIGATION
+       ======================================================================== */
+    function updateDateHeader() {
+      var today = getOffsetISO(0);
+      var yesterday = getOffsetISO(-1);
+      var tomorrow = getOffsetISO(1);
+      var iso = state.activeDate;
+
+      var parts = iso.split('-').map(Number);
+      var dt = new Date(parts[0], parts[1] - 1, parts[2]);
+      var fullStr = dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase();
+
+      var titleEl = document.getElementById('activeDateLabel');
+      var subEl = document.getElementById('activeDateSub');
+      if (!titleEl || !subEl) return;
+
+      if (iso === today) {
+        titleEl.textContent = 'Today';
+        subEl.textContent = fullStr;
+      } else if (iso === yesterday) {
+        titleEl.textContent = 'Yesterday';
+        subEl.textContent = fullStr;
+      } else if (iso === tomorrow) {
+        titleEl.textContent = 'Tomorrow';
+        subEl.textContent = fullStr;
+      } else {
+        titleEl.textContent = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        subEl.textContent = dt.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+      }
     }
-    return dateIso;
-  }
 
-  function getRangeCutoffISO(sortedDates) {
-    if (state.chart.range === 'all' || sortedDates.length === 0) return '0000-00-00';
-    const anchorIso = sortedDates[sortedDates.length - 1];
-    const [y, m, d] = anchorIso.split('-').map(Number);
-    const dt = new Date(y, m - 1, d);
-    if (state.chart.range === '1y') dt.setFullYear(dt.getFullYear() - 1);
-    else if (state.chart.range === '6mo') dt.setMonth(dt.getMonth() - 6);
-    else if (state.chart.range === '3mo') dt.setMonth(dt.getMonth() - 3);
-    else if (state.chart.range === '1mo') dt.setMonth(dt.getMonth() - 1);
-    return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
-  }
+    window.shiftDate = function(delta) {
+      var parts = state.activeDate.split('-').map(Number);
+      var dt = new Date(parts[0], parts[1] - 1, parts[2] + delta);
+      state.activeDate = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+      state.slideDir = delta > 0 ? 'anim-next' : 'anim-prev';
+      updateDateHeader();
+      if (state.activePane !== 0) {
+        window.switchPane(0);
+      } else {
+        renderWorkoutPane();
+      }
+    };
 
-  function computeChartDataset() {
-    const allDates = Object.keys(state.db.logs).sort();
-    const cutoff = getRangeCutoffISO(allDates);
-    const filteredDates = allDates.filter(d => d >= cutoff);
+    window.jumpToToday = function() {
+      var today = getOffsetISO(0);
+      if (state.activeDate !== today) {
+        state.slideDir = state.activeDate < today ? 'anim-next' : 'anim-prev';
+        state.activeDate = today;
+        updateDateHeader();
+      }
+      if (state.activePane !== 0) window.switchPane(0);
+      else renderWorkoutPane();
+    };
 
-    const exCatMap = new Map();
-    state.db.exercises.forEach(e => exCatMap.set(e.name, e.category || 'General'));
+    function refreshActivePane() {
+      if (state.activePane === 0) renderWorkoutPane();
+      else if (state.activePane === 1) renderExerciseLibrary();
+      else if (state.activePane === 2) renderRoutinesPane();
+      else if (state.activePane === 3) renderChartsPane();
+      else if (state.activePane === 4) updateDataSummary();
+    }
 
-    const buckets = new Map();
-    const categoryTotals = new Map();
-    const exerciseTotals = new Map();
+    window.switchPane = function(idx) {
+      state.activePane = idx;
+      var tabs = document.querySelectorAll('.pivot-tab');
+      for (var i = 0; i < tabs.length; i++) {
+        tabs[i].classList.toggle('active', i === idx);
+        if (i === idx && tabs[i].scrollIntoView) {
+          try { tabs[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); } catch (e) {}
+        }
+      }
+      var panes = document.querySelectorAll('.pane');
+      for (var j = 0; j < panes.length; j++) {
+        panes[j].classList.toggle('active', j === idx);
+      }
+      refreshActivePane();
+    };
 
-    for (let i = 0; i < filteredDates.length; i++) {
-      const date = filteredDates[i];
-      const entries = state.db.logs[date];
-      let matchedWorkout = false;
+    function initDaySwipe() {
+      var startX = 0;
+      var startY = 0;
+      var active = false;
+      var targets = [document.getElementById('pane-0'), document.getElementById('dayNavBar')];
+      targets.forEach(function(el) {
+        if (!el) return;
+        el.addEventListener('touchstart', function(e) {
+          if (e.touches.length !== 1) return;
+          var tag = (e.target.tagName || '').toLowerCase();
+          if (tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'button') return;
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          active = true;
+        }, { passive: true });
 
-      for (let j = 0; j < entries.length; j++) {
-        const entry = entries[j];
-        const exName = entry.name || entry.exerciseId;
-        const cat = entry.category || exCatMap.get(exName) || 'General';
+        el.addEventListener('touchend', function(e) {
+          if (!active) return;
+          active = false;
+          var t = e.changedTouches[0];
+          var dx = t.clientX - startX;
+          var dy = t.clientY - startY;
+          if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+            if (dx < 0) window.shiftDate(1);
+            else window.shiftDate(-1);
+          }
+        }, { passive: true });
+      });
+    }
 
-        // Track Breakdown & Exercise Leaderboard across time range
-        let entryVol = 0;
-        let entryMax = 0;
-        let entrySets = entry.sets.length;
-        entry.sets.forEach(s => {
-          const w = s.weight || 0;
-          const r = s.reps || 0;
-          entryVol += w * r;
-          if (w > entryMax) entryMax = w;
+    /* ========================================================================
+       WORKOUT LOGGING
+       ======================================================================== */
+    function getDayEntries(dateIso) {
+      return state.db.logs[dateIso] || [];
+    }
+
+    function ensureDayEntries(dateIso) {
+      if (!state.db.logs[dateIso]) state.db.logs[dateIso] = [];
+      return state.db.logs[dateIso];
+    }
+
+    function calcE1RM(weight, reps) {
+      if (!weight || !reps) return 0;
+      return Math.round(weight * (1 + reps / 30));
+    }
+
+    function getHistoricalBestWeight(exName, excludeDate) {
+      var maxW = 0;
+      var dates = Object.keys(state.db.logs);
+      for (var i = 0; i < dates.length; i++) {
+        var d = dates[i];
+        if (d === excludeDate) continue;
+        var entries = state.db.logs[d];
+        for (var j = 0; j < entries.length; j++) {
+          if (entries[j].exerciseId === exName || entries[j].name === exName) {
+            var sets = entries[j].sets;
+            for (var k = 0; k < sets.length; k++) {
+              if ((sets[k].weight || 0) > maxW) maxW = sets[k].weight;
+            }
+          }
+        }
+      }
+      return maxW;
+    }
+
+    window.addExerciseToWorkout = function(exName) {
+      var exObj = state.db.exercises.find(function(x) { return x.name === exName || x.id === exName; });
+      var entries = ensureDayEntries(state.activeDate);
+      if (!entries.some(function(e) { return e.exerciseId === exName; })) {
+        entries.push({
+          exerciseId: exName,
+          name: exObj ? exObj.name : exName,
+          category: exObj ? exObj.category : 'General',
+          sets: []
         });
+        saveDB();
+      }
+      window.switchPane(0);
+    };
 
-        if (entrySets > 0) {
-          const prevCat = categoryTotals.get(cat) || { volume: 0, sets: 0 };
-          categoryTotals.set(cat, { volume: prevCat.volume + entryVol, sets: prevCat.sets + entrySets });
+    window.logSet = function(entryIdx) {
+      var wEl = document.getElementById('w_' + entryIdx);
+      var rEl = document.getElementById('r_' + entryIdx);
+      var weight = parseFloat(wEl ? wEl.value : 0) || 0;
+      var reps = parseInt(rEl ? rEl.value : 0, 10) || 0;
+      if (reps <= 0) {
+        showToast('Enter reps to log set');
+        return;
+      }
+      var entries = ensureDayEntries(state.activeDate);
+      var target = entries[entryIdx];
+      if (target) {
+        target.sets.push({
+          weight: weight,
+          reps: reps,
+          kind: weight > 0 ? 'wr' : 'r'
+        });
+        saveDB();
+        renderWorkoutPane();
+      }
+    };
 
-          const prevEx = exerciseTotals.get(exName) || { category: cat, volume: 0, maxWeight: 0, sets: 0 };
-          exerciseTotals.set(exName, {
-            category: cat,
-            volume: prevEx.volume + entryVol,
-            maxWeight: Math.max(prevEx.maxWeight, entryMax),
-            sets: prevEx.sets + entrySets
+    window.deleteSet = function(entryIdx, setIdx) {
+      var entries = getDayEntries(state.activeDate);
+      if (entries[entryIdx]) {
+        entries[entryIdx].sets.splice(setIdx, 1);
+        saveDB();
+        renderWorkoutPane();
+      }
+    };
+
+    window.removeExerciseFromDay = function(entryIdx) {
+      var entries = getDayEntries(state.activeDate);
+      entries.splice(entryIdx, 1);
+      if (entries.length === 0) {
+        delete state.db.logs[state.activeDate];
+      }
+      saveDB();
+      renderWorkoutPane();
+    };
+
+    function renderWorkoutPane() {
+      var container = document.getElementById('workoutExercisesContainer');
+      if (!container) return;
+      var entries = getDayEntries(state.activeDate);
+      var animClass = state.slideDir || '';
+      state.slideDir = '';
+
+      if (entries.length === 0) {
+        container.innerHTML =
+          '<div class="empty-day-stage ' + animClass + '">' +
+            '<button class="empty-action-btn" onclick="switchPane(1)">' +
+              '<div class="metro-action-tile">' +
+                '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--zune-pink)" stroke-width="1.8">' +
+                  '<rect x="3" y="3" width="13" height="13" />' +
+                  '<path d="M8 19h13V6" />' +
+                  '<line x1="9.5" y1="6.5" x2="9.5" y2="12.5" />' +
+                  '<line x1="6.5" y1="9.5" x2="12.5" y2="9.5" />' +
+                '</svg>' +
+              '</div>' +
+              '<span class="empty-action-label">Start New Workout</span>' +
+            '</button>' +
+            '<button class="empty-action-btn" onclick="copyLastWorkout()">' +
+              '<div class="metro-action-tile secondary">' +
+                '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--zune-orange)" stroke-width="1.8">' +
+                  '<rect x="8" y="8" width="12" height="13" />' +
+                  '<path d="M4 16V4h11" />' +
+                '</svg>' +
+              '</div>' +
+              '<span class="empty-action-label">Copy Previous Workout</span>' +
+            '</button>' +
+            '<div class="swipe-hint">‹ swipe left or right to change day ›</div>' +
+          '</div>';
+        return;
+      }
+
+      var totalSets = 0;
+      var totalVolume = 0;
+      entries.forEach(function(entry) {
+        entry.sets.forEach(function(s) {
+          totalSets++;
+          totalVolume += (s.weight || 0) * (s.reps || 0);
+        });
+      });
+
+      var summaryHtml =
+        '<div class="tile-grid" style="margin-top:4px;">' +
+          '<div class="metro-tile tile-pink">' +
+            '<div class="tile-value">' + totalSets + '</div>' +
+            '<div class="tile-label">sets logged</div>' +
+          '</div>' +
+          '<div class="metro-tile tile-dark">' +
+            '<div class="tile-value">' + Math.round(totalVolume).toLocaleString() + '</div>' +
+            '<div class="tile-label">volume (lbs)</div>' +
+          '</div>' +
+        '</div>';
+
+      var cardsHtml = entries.map(function(entry, entryIdx) {
+        var exName = entry.name || entry.exerciseId;
+        var priorBest = getHistoricalBestWeight(exName, state.activeDate);
+        var lastSet = entry.sets[entry.sets.length - 1] || { weight: priorBest || '', reps: '' };
+
+        var setsHtml = entry.sets.map(function(s, sIdx) {
+          var isPR = (s.weight || 0) > 0 && s.weight > priorBest;
+          var col1 = s.kind === 'dt' ? (s.distance || '') : (s.weight || 0);
+          var unit1 = s.kind === 'dt' ? (s.distanceUnit || '') : 'lbs';
+          var col2 = s.kind === 'dt' || s.kind === 't' ? (s.time || '') : (s.reps || 0);
+          var unit2 = s.kind === 'dt' || s.kind === 't' ? '' : 'reps';
+
+          var row =
+            '<div class="set-row">' +
+              '<div class="set-num">#' + (sIdx + 1) + '</div>' +
+              '<div class="set-val">' + escapeHtml(col1) + '<span>' + escapeHtml(unit1) + '</span></div>' +
+              '<div class="set-val">' + escapeHtml(col2) + '<span>' + escapeHtml(unit2) + '</span></div>' +
+              '<div>' + (isPR ? '<span class="pr-badge">PR</span>' : '') + '</div>' +
+              '<button class="icon-btn" onclick="deleteSet(' + entryIdx + ',' + sIdx + ')">×</button>' +
+            '</div>';
+          if (s.notes) {
+            row += '<div class="set-note-line">' + escapeHtml(s.notes) + '</div>';
+          }
+          return row;
+        }).join('');
+
+        return (
+          '<div class="exercise-card">' +
+            '<div class="exercise-card-header">' +
+              '<div>' +
+                '<div class="exercise-name">' + escapeHtml(exName) + '</div>' +
+                '<div class="exercise-meta">' + escapeHtml(entry.category || 'General') + (priorBest ? ' • PREV MAX: ' + priorBest + ' LBS' : '') + '</div>' +
+              '</div>' +
+              '<button class="icon-btn" onclick="removeExerciseFromDay(' + entryIdx + ')">🗑</button>' +
+            '</div>' +
+            setsHtml +
+            '<div class="quick-add-row">' +
+              '<input id="w_' + entryIdx + '" type="number" step="2.5" class="metro-input" placeholder="lbs" value="' + (lastSet.weight || '') + '" />' +
+              '<input id="r_' + entryIdx + '" type="number" class="metro-input" placeholder="reps" value="' + (lastSet.reps || '') + '" />' +
+              '<button class="metro-btn" onclick="logSet(' + entryIdx + ')">LOG</button>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+
+      container.innerHTML = '<div class="' + animClass + '">' + summaryHtml + cardsHtml + '</div>';
+    }
+
+    /* ========================================================================
+       EXERCISE LIBRARY & ALPHABET JUMP
+       ======================================================================== */
+    window.renderExerciseLibrary = function() {
+      var catBar = document.getElementById('categoryFilterBar');
+      var listEl = document.getElementById('exerciseLibraryList');
+      if (!catBar || !listEl) return;
+
+      var catSet = new Set(['All']);
+      state.db.exercises.forEach(function(e) { if (e.category) catSet.add(e.category); });
+      var categories = Array.from(catSet);
+
+      catBar.innerHTML = categories.map(function(cat) {
+        var cls = state.selectedCategory === cat ? 'metro-btn' : 'metro-btn-outline';
+        return '<button class="' + cls + '" style="padding:5px 10px; white-space:nowrap;" onclick="selectLibCat(\'' + escapeHtml(cat).replace(/'/g, "\\'") + '\')">' + escapeHtml(cat) + '</button>';
+      }).join('');
+
+      var q = (document.getElementById('exerciseSearch').value || '').toLowerCase();
+      var filtered = state.db.exercises
+        .filter(function(ex) { return state.selectedCategory === 'All' || ex.category === state.selectedCategory; })
+        .filter(function(ex) { return ex.name.toLowerCase().indexOf(q) >= 0 || (ex.category || '').toLowerCase().indexOf(q) >= 0; })
+        .sort(function(a, b) { return a.name.localeCompare(b.name); });
+
+      var currentLetter = '';
+      listEl.innerHTML = filtered.map(function(ex) {
+        var first = ex.name.charAt(0).toLowerCase();
+        var key = /[a-z]/.test(first) ? first : '#';
+        var header = '';
+        if (key !== currentLetter) {
+          currentLetter = key;
+          header = '<div class="letter-tile" id="letter_' + key + '" onclick="openJumpOverlay()">' + key + '</div>';
+        }
+        var safeName = ex.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        return header +
+          '<div class="lib-item" onclick="addExerciseToWorkout(\'' + safeName + '\')">' +
+            '<div>' +
+              '<div class="lib-item-title">' + escapeHtml(ex.name) + '</div>' +
+              '<div class="lib-item-cat">' + escapeHtml(ex.category) + '</div>' +
+            '</div>' +
+            '<span style="color:var(--zune-pink); font-size:20px;">+</span>' +
+          '</div>';
+      }).join('') || '<div class="exercise-meta">No matching exercises.</div>';
+    };
+
+    window.selectLibCat = function(cat) {
+      state.selectedCategory = cat;
+      window.renderExerciseLibrary();
+    };
+
+    window.promptNewExercise = function() {
+      document.getElementById('newExNameInput').value = '';
+      document.getElementById('newExOverlay').classList.add('open');
+    };
+
+    window.closeNewExModal = function() {
+      document.getElementById('newExOverlay').classList.remove('open');
+    };
+
+    window.confirmNewExercise = function() {
+      var name = (document.getElementById('newExNameInput').value || '').trim();
+      var cat = document.getElementById('newExCatSelect').value || 'Chest';
+      if (!name) return;
+      if (!state.db.exercises.some(function(e) { return e.name.toLowerCase() === name.toLowerCase(); })) {
+        state.db.exercises.push({ id: name, name: name, category: cat });
+        saveDB();
+      }
+      window.closeNewExModal();
+      window.renderExerciseLibrary();
+      showToast('Added ' + name);
+    };
+
+    window.openJumpOverlay = function() {
+      var letters = ['#'].concat('abcdefghijklmnopqrstuvwxyz'.split(''));
+      var present = new Set(state.db.exercises.map(function(e) {
+        var c = e.name.charAt(0).toLowerCase();
+        return /[a-z]/.test(c) ? c : '#';
+      }));
+      document.getElementById('jumpGrid').innerHTML = letters.map(function(l) {
+        return '<div class="jump-cell ' + (present.has(l) ? '' : 'empty') + '" onclick="jumpToLetter(\'' + l + '\')">' + l + '</div>';
+      }).join('');
+      document.getElementById('jumpOverlay').classList.add('open');
+    };
+
+    window.closeJumpOverlay = function() {
+      document.getElementById('jumpOverlay').classList.remove('open');
+    };
+
+    window.jumpToLetter = function(letter) {
+      window.closeJumpOverlay();
+      var pane = document.getElementById('pane-1');
+      var target = document.getElementById('letter_' + letter);
+      if (pane && target) {
+        pane.scrollTo({ top: target.offsetTop - 12, behavior: 'smooth' });
+      }
+    };
+
+    window.openDatePickerModal = function() {
+      document.getElementById('modalDateInput').value = state.activeDate;
+      document.getElementById('dateOverlay').classList.add('open');
+    };
+
+    window.closeDatePickerModal = function() {
+      document.getElementById('dateOverlay').classList.remove('open');
+    };
+
+    window.applyModalDate = function() {
+      var val = document.getElementById('modalDateInput').value;
+      if (val) {
+        state.activeDate = val;
+        updateDateHeader();
+        window.switchPane(0);
+      }
+      window.closeDatePickerModal();
+    };
+
+    /* ========================================================================
+       ROUTINES & COPY PREVIOUS WORKOUT
+       ======================================================================== */
+    function renderRoutinesPane() {
+      var el = document.getElementById('routinesContainer');
+      if (!el) return;
+      el.innerHTML = state.db.routines.map(function(rt, idx) {
+        return '<div class="metro-tile ' + rt.color + '" style="margin-bottom:10px;" onclick="loadRoutine(' + idx + ')">' +
+          '<div style="font-size:20px; font-weight:400;">' + escapeHtml(rt.name) + '</div>' +
+          '<div style="font-size:12px; opacity:0.9; margin-top:6px;">' + escapeHtml(rt.exerciseIds.join(' • ')) + '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    window.loadRoutine = function(idx) {
+      var rt = state.db.routines[idx];
+      if (!rt) return;
+      var entries = ensureDayEntries(state.activeDate);
+      rt.exerciseIds.forEach(function(exName) {
+        if (!entries.some(function(e) { return e.exerciseId === exName; })) {
+          var exObj = state.db.exercises.find(function(x) { return x.name === exName; });
+          entries.push({
+            exerciseId: exName,
+            name: exName,
+            category: exObj ? exObj.category : 'General',
+            sets: []
           });
         }
+      });
+      saveDB();
+      window.switchPane(0);
+    };
 
-        // Apply Scope Filter (All / Category / Exercise)
-        if (state.chart.scopeType === 'category' && cat !== state.chart.scopeValue) continue;
-        if (state.chart.scopeType === 'exercise' && exName !== state.chart.scopeValue) continue;
-        if (entry.sets.length === 0) continue;
-
-        matchedWorkout = true;
-        const bKey = getBucketKey(date, state.chart.interval);
-        if (!buckets.has(bKey)) {
-          buckets.set(bKey, { key: bKey, volume: 0, maxWeight: 0, e1rm: 0, sets: 0, reps: 0, workoutDates: new Set() });
-        }
-        const b = buckets.get(bKey);
-        b.workoutDates.add(date);
-
-        for (let k = 0; k < entry.sets.length; k++) {
-          const s = entry.sets[k];
-          const w = s.weight || 0;
-          const r = s.reps || 0;
-          b.volume += w * r;
-          b.sets += 1;
-          b.reps += r;
-          if (w > b.maxWeight) b.maxWeight = w;
-          const e1 = calcE1RM(w, r);
-          if (e1 > b.e1rm) b.e1rm = e1;
-        }
+    window.copyLastWorkout = function() {
+      var dates = Object.keys(state.db.logs)
+        .filter(function(d) { return d !== state.activeDate && state.db.logs[d].length > 0; })
+        .sort();
+      if (dates.length === 0) {
+        showToast('No previous workout found to copy');
+        return;
       }
+      var prevDate = dates[dates.length - 1];
+      state.db.logs[state.activeDate] = state.db.logs[prevDate].map(function(entry) {
+        return {
+          exerciseId: entry.exerciseId,
+          name: entry.name || entry.exerciseId,
+          category: entry.category || 'General',
+          sets: entry.sets.map(function(s) {
+            return {
+              weight: s.weight || 0,
+              reps: s.reps || 0,
+              distance: s.distance || '',
+              distanceUnit: s.distanceUnit || '',
+              time: s.time || '',
+              notes: s.notes || '',
+              kind: s.kind || 'wr'
+            };
+          })
+        };
+      });
+      saveDB();
+      window.switchPane(0);
+      showToast('Copied workout from ' + prevDate);
+    };
 
-      if (matchedWorkout && state.chart.metric === 'workouts') {
-        const bKey = getBucketKey(date, state.chart.interval);
-        if (buckets.has(bKey)) buckets.get(bKey).workoutDates.add(date);
+    /* ========================================================================
+       MULTI-DIMENSIONAL FITNOTES CHARTS
+       ======================================================================== */
+    var METRICS = [
+      { id: 'volume', label: 'Volume', unit: 'lb' },
+      { id: 'maxWeight', label: 'Max Weight', unit: 'lb' },
+      { id: 'e1rm', label: 'Estimated 1RM', unit: 'lb' },
+      { id: 'sets', label: 'Sets', unit: 'sets' },
+      { id: 'reps', label: 'Reps', unit: 'reps' },
+      { id: 'workouts', label: 'Workouts', unit: 'workouts' }
+    ];
+
+    var INTERVALS = [
+      { id: 'workout', label: 'Per Workout' },
+      { id: 'week', label: 'Per Week' },
+      { id: 'month', label: 'Per Month' },
+      { id: 'year', label: 'Per Year' }
+    ];
+
+    function formatShortDate(iso) {
+      if (!iso) return '';
+      if (iso.length === 4) return iso;
+      if (iso.length === 7) {
+        var ym = iso.split('-').map(Number);
+        return new Date(ym[0], ym[1] - 1, 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
       }
+      var p = iso.split('-').map(Number);
+      return new Date(p[0], p[1] - 1, p[2]).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     }
 
-    const metric = state.chart.metric;
-    const points = Array.from(buckets.values())
-      .sort((a, b) => a.key.localeCompare(b.key))
-      .map(b => {
-        let val = 0;
+    function getBucketKey(dateIso, interval) {
+      if (interval === 'year') return dateIso.slice(0, 4);
+      if (interval === 'month') return dateIso.slice(0, 7);
+      if (interval === 'week') {
+        var p = dateIso.split('-').map(Number);
+        var dt = new Date(p[0], p[1] - 1, p[2]);
+        var day = dt.getDay();
+        var diff = dt.getDate() - day + (day === 0 ? -6 : 1);
+        var mon = new Date(p[0], p[1] - 1, diff);
+        return mon.getFullYear() + '-' + String(mon.getMonth() + 1).padStart(2, '0') + '-' + String(mon.getDate()).padStart(2, '0');
+      }
+      return dateIso;
+    }
+
+    function getCutoffDate(sortedDates, range) {
+      if (range === 'all' || sortedDates.length === 0) return '0000-00-00';
+      var last = sortedDates[sortedDates.length - 1];
+      var p = last.split('-').map(Number);
+      var dt = new Date(p[0], p[1] - 1, p[2]);
+      if (range === '1y') dt.setFullYear(dt.getFullYear() - 1);
+      else if (range === '6mo') dt.setMonth(dt.getMonth() - 6);
+      else if (range === '3mo') dt.setMonth(dt.getMonth() - 3);
+      else if (range === '1mo') dt.setMonth(dt.getMonth() - 1);
+      return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+    }
+
+    window.setChartRange = function(range) {
+      state.chart.range = range;
+      state.chart.selectedIndex = -1;
+      var btns = document.querySelectorAll('#chartRangeBar .range-btn');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.toggle('active', btns[i].getAttribute('data-range') === range);
+      }
+      renderChartsPane();
+    };
+
+    window.setChartSubView = function(view) {
+      state.chart.subView = view;
+      ['breakdown', 'workouts', 'exercises'].forEach(function(v) {
+        var btn = document.getElementById('subtab_' + v);
+        if (btn) btn.classList.toggle('active', v === view);
+      });
+      document.getElementById('chartViewWorkouts').style.display = view === 'workouts' ? 'block' : 'none';
+      document.getElementById('chartViewBreakdown').style.display = view === 'breakdown' ? 'block' : 'none';
+      document.getElementById('chartViewExercises').style.display = view === 'exercises' ? 'block' : 'none';
+      renderChartsPane();
+    };
+
+    window.openChartDropdown = function(mode) {
+      var titleEl = document.getElementById('chartModalTitle');
+      var bodyEl = document.getElementById('chartModalBody');
+      if (mode === 'metric') {
+        titleEl.textContent = 'SELECT METRIC';
+        bodyEl.innerHTML = METRICS.map(function(m) {
+          return '<div class="lib-item" onclick="selectChartMetric(\'' + m.id + '\')">' +
+            '<div class="lib-item-title">' + m.label + '</div>' +
+            '<span style="color:var(--zune-pink);">' + (state.chart.metric === m.id ? '✓' : '') + '</span>' +
+          '</div>';
+        }).join('');
+      } else if (mode === 'interval') {
+        titleEl.textContent = 'SELECT INTERVAL';
+        bodyEl.innerHTML = INTERVALS.map(function(it) {
+          return '<div class="lib-item" onclick="selectChartInterval(\'' + it.id + '\')">' +
+            '<div class="lib-item-title">' + it.label + '</div>' +
+            '<span style="color:var(--zune-pink);">' + (state.chart.interval === it.id ? '✓' : '') + '</span>' +
+          '</div>';
+        }).join('');
+      } else if (mode === 'scope') {
+        titleEl.textContent = 'SELECT FILTER';
+        bodyEl.innerHTML =
+          '<div class="lib-item" onclick="selectChartScopeAll()">' +
+            '<div class="lib-item-title">All</div>' +
+            '<span style="color:var(--zune-pink);">' + (state.chart.scopeType === 'all' ? '✓' : '') + '</span>' +
+          '</div>' +
+          '<div class="lib-item" onclick="openChartDropdown(\'category\')">' +
+            '<div class="lib-item-title">Category</div>' +
+            '<span style="color:var(--zune-orange);">›</span>' +
+          '</div>' +
+          '<div class="lib-item" onclick="openChartDropdown(\'exercise\')">' +
+            '<div class="lib-item-title">Exercise</div>' +
+            '<span style="color:var(--zune-orange);">›</span>' +
+          '</div>';
+      } else if (mode === 'category') {
+        titleEl.textContent = 'SELECT CATEGORY';
+        var cats = new Set();
+        state.db.exercises.forEach(function(e) { if (e.category) cats.add(e.category); });
+        bodyEl.innerHTML = Array.from(cats).sort().map(function(c) {
+          var safeC = c.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+          return '<div class="lib-item" onclick="selectChartScopeCategory(\'' + safeC + '\')">' +
+            '<div class="lib-item-title">' + escapeHtml(c) + '</div>' +
+            '<span style="color:var(--zune-pink);">' + (state.chart.scopeType === 'category' && state.chart.scopeValue === c ? '✓' : '') + '</span>' +
+          '</div>';
+        }).join('');
+      } else if (mode === 'exercise') {
+        titleEl.textContent = 'SELECT EXERCISE';
+        bodyEl.innerHTML = state.db.exercises.slice().sort(function(a, b) { return a.name.localeCompare(b.name); }).map(function(e) {
+          var safeE = e.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+          return '<div class="lib-item" onclick="selectChartScopeExercise(\'' + safeE + '\')">' +
+            '<div><div class="lib-item-title">' + escapeHtml(e.name) + '</div><div class="lib-item-cat">' + escapeHtml(e.category) + '</div></div>' +
+            '<span style="color:var(--zune-pink);">' + (state.chart.scopeType === 'exercise' && state.chart.scopeValue === e.name ? '✓' : '') + '</span>' +
+          '</div>';
+        }).join('');
+      }
+      document.getElementById('chartFilterOverlay').classList.add('open');
+    };
+
+    window.closeChartDropdown = function() {
+      document.getElementById('chartFilterOverlay').classList.remove('open');
+    };
+
+    window.selectChartMetric = function(id) {
+      state.chart.metric = id;
+      state.chart.selectedIndex = -1;
+      var m = METRICS.find(function(x) { return x.id === id; });
+      document.getElementById('chartMetricLabel').textContent = m ? m.label : 'Volume';
+      window.closeChartDropdown();
+      renderChartsPane();
+    };
+
+    window.selectChartInterval = function(id) {
+      state.chart.interval = id;
+      state.chart.selectedIndex = -1;
+      var it = INTERVALS.find(function(x) { return x.id === id; });
+      document.getElementById('chartIntervalLabel').textContent = it ? it.label : 'Per Workout';
+      window.closeChartDropdown();
+      renderChartsPane();
+    };
+
+    window.selectChartScopeAll = function() {
+      state.chart.scopeType = 'all';
+      state.chart.scopeValue = 'All';
+      state.chart.selectedIndex = -1;
+      document.getElementById('chartScopeLabel').textContent = 'All';
+      window.closeChartDropdown();
+      renderChartsPane();
+    };
+
+    window.selectChartScopeCategory = function(cat) {
+      state.chart.scopeType = 'category';
+      state.chart.scopeValue = cat;
+      state.chart.selectedIndex = -1;
+      document.getElementById('chartScopeLabel').textContent = cat;
+      window.closeChartDropdown();
+      renderChartsPane();
+    };
+
+    window.selectChartScopeExercise = function(ex) {
+      state.chart.scopeType = 'exercise';
+      state.chart.scopeValue = ex;
+      state.chart.selectedIndex = -1;
+      document.getElementById('chartScopeLabel').textContent = ex;
+      window.closeChartDropdown();
+      renderChartsPane();
+    };
+
+    window.stepChartPoint = function(delta) {
+      var pts = state.chart.points;
+      if (!pts || pts.length === 0) return;
+      if (state.chart.selectedIndex === -1) {
+        state.chart.selectedIndex = delta > 0 ? 0 : pts.length - 1;
+      } else {
+        state.chart.selectedIndex = Math.max(0, Math.min(pts.length - 1, state.chart.selectedIndex + delta));
+      }
+      renderChartsPane();
+    };
+
+    function updatePointReadout() {
+      var readout = document.getElementById('pointReadout');
+      if (!readout) return;
+      var pts = state.chart.points;
+      var idx = state.chart.selectedIndex;
+      var m = METRICS.find(function(x) { return x.id === state.chart.metric; }) || METRICS[0];
+      if (!pts || pts.length === 0 || idx < 0 || idx >= pts.length) {
+        readout.innerHTML = '<div>Select a point on the graph</div><div class="point-readout-sub">TAP GRAPH OR USE ARROWS</div>';
+        return;
+      }
+      var pt = pts[idx];
+      var prefix = state.chart.interval === 'week' ? 'Week of ' : '';
+      readout.innerHTML =
+        '<div>' + prefix + formatShortDate(pt.key) + ' — <strong>' + pt.value.toLocaleString() + ' ' + m.unit + '</strong></div>' +
+        '<div class="point-readout-sub">POINT ' + (idx + 1) + ' OF ' + pts.length + '</div>';
+    }
+
+    function renderChartsPane() {
+      var sortedDates = Object.keys(state.db.logs).sort();
+      var cutoff = getCutoffDate(sortedDates, state.chart.range);
+      var filteredDates = sortedDates.filter(function(d) { return d >= cutoff; });
+
+      var catMap = {};
+      state.db.exercises.forEach(function(e) { catMap[e.name] = e.category || 'General'; });
+
+      var buckets = {};
+      var catTotals = {};
+      var exTotals = {};
+
+      for (var i = 0; i < filteredDates.length; i++) {
+        var date = filteredDates[i];
+        var entries = state.db.logs[date];
+        for (var j = 0; j < entries.length; j++) {
+          var entry = entries[j];
+          var exName = entry.name || entry.exerciseId;
+          var cat = entry.category || catMap[exName] || 'General';
+          if (entry.sets.length === 0) continue;
+
+          var entryVol = 0;
+          var entryMax = 0;
+          entry.sets.forEach(function(s) {
+            entryVol += (s.weight || 0) * (s.reps || 0);
+            if ((s.weight || 0) > entryMax) entryMax = s.weight;
+          });
+
+          if (!catTotals[cat]) catTotals[cat] = { volume: 0, sets: 0 };
+          catTotals[cat].volume += entryVol;
+          catTotals[cat].sets += entry.sets.length;
+
+          if (!exTotals[exName]) exTotals[exName] = { category: cat, volume: 0, maxWeight: 0, sets: 0 };
+          exTotals[exName].volume += entryVol;
+          exTotals[exName].sets += entry.sets.length;
+          if (entryMax > exTotals[exName].maxWeight) exTotals[exName].maxWeight = entryMax;
+
+          if (state.chart.scopeType === 'category' && cat !== state.chart.scopeValue) continue;
+          if (state.chart.scopeType === 'exercise' && exName !== state.chart.scopeValue) continue;
+
+          var bKey = getBucketKey(date, state.chart.interval);
+          if (!buckets[bKey]) {
+            buckets[bKey] = { key: bKey, volume: 0, maxWeight: 0, e1rm: 0, sets: 0, reps: 0, dates: {} };
+          }
+          var b = buckets[bKey];
+          b.dates[date] = true;
+
+          for (var k = 0; k < entry.sets.length; k++) {
+            var s = entry.sets[k];
+            var w = s.weight || 0;
+            var r = s.reps || 0;
+            b.volume += w * r;
+            b.sets += 1;
+            b.reps += r;
+            if (w > b.maxWeight) b.maxWeight = w;
+            var e1 = calcE1RM(w, r);
+            if (e1 > b.e1rm) b.e1rm = e1;
+          }
+        }
+      }
+
+      var metric = state.chart.metric;
+      var points = Object.keys(buckets).sort().map(function(k) {
+        var b = buckets[k];
+        var val = 0;
         if (metric === 'volume') val = Math.round(b.volume);
         else if (metric === 'maxWeight') val = b.maxWeight;
         else if (metric === 'e1rm') val = b.e1rm;
         else if (metric === 'sets') val = b.sets;
         else if (metric === 'reps') val = b.reps;
-        else if (metric === 'workouts') val = b.workoutDates.size;
-        return { key: b.key, value: val };
+        else if (metric === 'workouts') val = Object.keys(b.dates).length;
+        return { key: k, value: val };
       });
+      state.chart.points = points;
 
-    return { points, categoryTotals, exerciseTotals };
-  }
+      // Render Breakdown sub-view
+      var bdEl = document.getElementById('breakdownContainer');
+      if (bdEl) {
+        var catKeys = Object.keys(catTotals).sort(function(a, b) { return catTotals[b].volume - catTotals[a].volume; });
+        var maxCatVol = catKeys.length ? (catTotals[catKeys[0]].volume || 1) : 1;
+        bdEl.innerHTML = catKeys.length ? catKeys.map(function(c) {
+          var pct = Math.max(3, Math.round((catTotals[c].volume / maxCatVol) * 100));
+          return '<div class="breakdown-bar-row">' +
+            '<div class="breakdown-bar-top"><span>' + escapeHtml(c) + '</span><span>' + Math.round(catTotals[c].volume).toLocaleString() + ' lb (' + catTotals[c].sets + ' sets)</span></div>' +
+            '<div class="breakdown-bar-track"><div class="breakdown-bar-fill" style="width:' + pct + '%;"></div></div>' +
+          '</div>';
+        }).join('') : '<div class="exercise-meta">No workout data in this range.</div>';
+      }
 
-  function updatePointReadout() {
-    const readoutEl = document.getElementById('chartPointReadout');
-    if (!readoutEl) return;
-    const pts = state.chart.points;
-    const idx = state.chart.selectedIndex;
-    const mObj = CHART_METRICS.find(m => m.id === state.chart.metric) || CHART_METRICS[0];
+      // Render Exercises sub-view
+      var exListEl = document.getElementById('chartExercisesList');
+      if (exListEl) {
+        var exKeys = Object.keys(exTotals).sort(function(a, b) { return exTotals[b].volume - exTotals[a].volume; }).slice(0, 40);
+        exListEl.innerHTML = exKeys.length ? exKeys.map(function(name) {
+          var st = exTotals[name];
+          var safeN = name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+          return '<div class="lib-item" onclick="selectChartScopeExercise(\'' + safeN + '\'); setChartSubView(\'workouts\');">' +
+            '<div><div class="lib-item-title">' + escapeHtml(name) + '</div><div class="lib-item-cat">' + escapeHtml(st.category) + ' • MAX: ' + st.maxWeight + ' LB</div></div>' +
+            '<div style="text-align:right;"><div>' + Math.round(st.volume).toLocaleString() + ' lb</div><div class="exercise-meta">' + st.sets + ' sets</div></div>' +
+          '</div>';
+        }).join('') : '<div class="exercise-meta">No exercises in this range.</div>';
+      }
 
-    if (!pts || pts.length === 0 || idx < 0 || idx >= pts.length) {
-      readoutEl.innerHTML = `
-        <div>Select a point on the graph</div>
-        <div class="point-readout-sub">TAP GRAPH OR USE ARROWS</div>
-      `;
-      return;
-    }
+      // Draw Canvas Chart
+      var canvas = document.getElementById('progressCanvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var W = canvas.width;
+      var H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
 
-    const pt = pts[idx];
-    const prefix = state.chart.interval === 'week' ? 'Week of ' : '';
-    readoutEl.innerHTML = `
-      <div>${prefix}${formatShortDate(pt.key)} — <strong>${pt.value.toLocaleString()} ${mObj.unit}</strong></div>
-      <div class="point-readout-sub">POINT ${idx + 1} OF ${pts.length}</div>
-    `;
-  }
+      var isLight = state.theme === 'light';
+      var textColor = isLight ? '#555555' : '#9c9c9c';
+      var gridColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)';
+      var mObj = METRICS.find(function(x) { return x.id === metric; }) || METRICS[0];
 
-  function stepChartPoint(delta) {
-    const pts = state.chart.points;
-    if (!pts || pts.length === 0) return;
-    if (state.chart.selectedIndex === -1) {
-      state.chart.selectedIndex = delta > 0 ? 0 : pts.length - 1;
-    } else {
-      state.chart.selectedIndex = Math.max(0, Math.min(pts.length - 1, state.chart.selectedIndex + delta));
-    }
-    renderProgressChart();
-  }
+      if (points.length === 0) {
+        ctx.fillStyle = textColor;
+        ctx.font = '18px Segoe UI, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('No workouts in selected filter/range', 28, H / 2);
+        updatePointReadout();
+        return;
+      }
 
-  function renderProgressChart() {
-    const { points, categoryTotals, exerciseTotals } = computeChartDataset();
-    state.chart.points = points;
-    const mObj = CHART_METRICS.find(m => m.id === state.chart.metric) || CHART_METRICS[0];
+      var padL = 78;
+      var padR = 18;
+      var padT = 18;
+      var padB = 34;
+      var plotW = W - padL - padR;
+      var plotH = H - padT - padB;
 
-    // Render Breakdown sub-view
-    const breakdownEl = document.getElementById('breakdownContainer');
-    if (breakdownEl) {
-      const catArr = Array.from(categoryTotals.entries()).sort((a, b) => b[1].volume - a[1].volume);
-      const maxCatVol = catArr.length ? (catArr[0][1].volume || 1) : 1;
-      breakdownEl.innerHTML = catArr.length ? catArr.map(([cat, stats]) => {
-        const pct = Math.max(3, Math.round((stats.volume / maxCatVol) * 100));
-        return `
-          <div class="breakdown-row">
-            <div class="breakdown-header">
-              <span>${escapeHtml(cat)}</span>
-              <span style="color:var(--text-secondary);">${Math.round(stats.volume).toLocaleString()} lb • ${stats.sets} sets</span>
-            </div>
-            <div class="breakdown-track"><div class="breakdown-fill" style="width:${pct}%;"></div></div>
-          </div>
-        `;
-      }).join('') : '<div class="exercise-meta">No workouts in selected range.</div>';
-    }
+      var maxVal = Math.max.apply(null, points.map(function(p) { return p.value; }).concat([1]));
+      var mag = Math.pow(10, Math.floor(Math.log10(maxVal)));
+      var step = Math.ceil((maxVal / 5) / (mag / 2 || 1)) * (mag / 2 || 1) || 1;
+      var yMax = step * 5;
 
-    // Render Exercises Leaderboard sub-view
-    const exBoardEl = document.getElementById('exerciseLeaderboardList');
-    if (exBoardEl) {
-      const exArr = Array.from(exerciseTotals.entries()).sort((a, b) => b[1].volume - a[1].volume).slice(0, 40);
-      exBoardEl.innerHTML = exArr.length ? exArr.map(([name, stats]) => `
-        <div class="lib-item" onclick="selectChartScope('exercise', '${name.replace(/'/g, "\\'")}'); setChartSubView('workouts');">
-          <div>
-            <div class="lib-item-title">${escapeHtml(name)}</div>
-            <div class="lib-item-cat">${escapeHtml(stats.category)} • MAX: ${stats.maxWeight} LB</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:15px;">${Math.round(stats.volume).toLocaleString()} lb</div>
-            <div class="exercise-meta">${stats.sets} sets</div>
-          </div>
-        </div>
-      `).join('') : '<div class="exercise-meta">No exercises in selected range.</div>';
-    }
-
-    // Summary Metro Tiles
-    const tilesEl = document.getElementById('progressTiles');
-    if (tilesEl) {
-      let peakVal = 0;
-      let totalVal = 0;
-      points.forEach(p => {
-        if (p.value > peakVal) peakVal = p.value;
-        totalVal += p.value;
-      });
-      const avgVal = points.length ? Math.round(totalVal / points.length) : 0;
-      tilesEl.innerHTML = `
-        <div class="metro-tile tile-pink">
-          <div class="tile-value">${peakVal.toLocaleString()} <span style="font-size:13px;">${mObj.unit}</span></div>
-          <div class="tile-label">peak ${mObj.label}</div>
-        </div>
-        <div class="metro-tile tile-orange">
-          <div class="tile-value">${avgVal.toLocaleString()} <span style="font-size:13px;">${mObj.unit}</span></div>
-          <div class="tile-label">average ${mObj.label}</div>
-        </div>
-      `;
-    }
-
-    // Draw FitNotes-style High-Density Metro Graph on Canvas
-    const canvas = document.getElementById('progressCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width;
-    const H = canvas.height;
-    ctx.clearRect(0, 0, W, H);
-
-    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    const axisTextColor = isLight ? '#555555' : '#9a9a9a';
-    const gridLineColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)';
-
-    if (points.length === 0) {
-      ctx.fillStyle = axisTextColor;
-      ctx.font = '18px Segoe UI, sans-serif';
-      ctx.fillText('No workout records match this filter', 28, H / 2);
-      updatePointReadout();
-      return;
-    }
-
-    const padLeft = 74;
-    const padRight = 18;
-    const padTop = 18;
-    const padBottom = 34;
-    const plotW = W - padLeft - padRight;
-    const plotH = H - padTop - padBottom;
-
-    const rawMax = Math.max(...points.map(p => p.value), 1);
-    const stepBase = Math.pow(10, Math.floor(Math.log10(rawMax)));
-    const niceStep = Math.ceil((rawMax / 5) / (stepBase / 2 || 1)) * (stepBase / 2 || 1) || 1;
-    const yMax = niceStep * 5;
-
-    // Horizontal gridlines & Y-axis labels (e.g., 120000 lb -> 0 lb)
-    ctx.font = '13px Segoe UI, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-    for (let g = 0; g <= 5; g++) {
-      const val = Math.round((yMax / 5) * g);
-      const y = padTop + plotH - (g / 5) * plotH;
-      ctx.strokeStyle = gridLineColor;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(padLeft, y);
-      ctx.lineTo(W - padRight, y);
-      ctx.stroke();
-
-      ctx.fillStyle = axisTextColor;
-      ctx.fillText(`${val} ${mObj.unit}`, padLeft - 8, y);
-    }
-
-    // Compute screen coordinates for every point
-    const coords = points.map((pt, i) => {
-      const x = padLeft + (points.length === 1 ? plotW / 2 : (i / (points.length - 1)) * plotW);
-      const y = padTop + plotH - (pt.value / yMax) * plotH;
-      return { x, y, pt };
-    });
-    canvas._chartCoords = coords;
-
-    // Subtle Zune gradient fill beneath line
-    const areaGrad = ctx.createLinearGradient(0, padTop, 0, padTop + plotH);
-    areaGrad.addColorStop(0, 'rgba(236, 0, 140, 0.25)');
-    areaGrad.addColorStop(1, 'rgba(242, 101, 34, 0.02)');
-    ctx.fillStyle = areaGrad;
-    ctx.beginPath();
-    ctx.moveTo(coords[0].x, padTop + plotH);
-    coords.forEach(c => ctx.lineTo(c.x, c.y));
-    ctx.lineTo(coords[coords.length - 1].x, padTop + plotH);
-    ctx.closePath();
-    ctx.fill();
-
-    // Connecting line
-    ctx.strokeStyle = '#ec008c';
-    ctx.lineWidth = points.length > 400 ? 1.5 : 2.5;
-    ctx.beginPath();
-    coords.forEach((c, i) => {
-      if (i === 0) ctx.moveTo(c.x, c.y);
-      else ctx.lineTo(c.x, c.y);
-    });
-    ctx.stroke();
-
-    // Plotted vertex markers
-    const dotRadius = points.length > 500 ? 2.2 : 3.5;
-    ctx.fillStyle = '#f26522';
-    coords.forEach(c => {
-      ctx.beginPath();
-      ctx.arc(c.x, c.y, dotRadius, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    // Selected point crosshair & highlight
-    const selIdx = state.chart.selectedIndex;
-    if (selIdx >= 0 && selIdx < coords.length) {
-      const sel = coords[selIdx];
-      ctx.strokeStyle = isLight ? '#111111' : '#ffffff';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(sel.x, padTop);
-      ctx.lineTo(sel.x, padTop + plotH);
-      ctx.stroke();
-
-      ctx.fillStyle = '#ec008c';
-      ctx.beginPath();
-      ctx.arc(sel.x, sel.y, 6.5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-    }
-
-    // X-Axis Start / Middle / End Dates (Matching Screenshot 1)
-    ctx.fillStyle = axisTextColor;
-    ctx.font = '13px Segoe UI, sans-serif';
-    ctx.textBaseline = 'top';
-    const yLabel = padTop + plotH + 10;
-
-    ctx.textAlign = 'left';
-    ctx.fillText(formatShortDate(points[0].key), padLeft, yLabel);
-
-    if (points.length >= 3) {
-      const midPt = points[Math.floor(points.length / 2)];
-      ctx.textAlign = 'center';
-      ctx.fillText(formatShortDate(midPt.key), padLeft + plotW / 2, yLabel);
-    }
-
-    if (points.length >= 2) {
+      ctx.font = '13px Segoe UI, sans-serif';
       ctx.textAlign = 'right';
-      ctx.fillText(formatShortDate(points[points.length - 1].key), W - padRight, yLabel);
-    }
+      ctx.textBaseline = 'middle';
+      for (var g = 0; g <= 5; g++) {
+        var yVal = Math.round((yMax / 5) * g);
+        var yPos = padT + plotH - (g / 5) * plotH;
+        ctx.strokeStyle = gridColor;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(padL, yPos);
+        ctx.lineTo(W - padR, yPos);
+        ctx.stroke();
 
-    updatePointReadout();
-  }
-
-  function initChartCanvasInteraction() {
-    const canvas = document.getElementById('progressCanvas');
-    if (!canvas) return;
-    const selectNearestPoint = (clientX) => {
-      const coords = canvas._chartCoords;
-      if (!coords || coords.length === 0) return;
-      const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width;
-      const tapX = (clientX - rect.left) * scaleX;
-      let bestIdx = 0;
-      let bestDist = Infinity;
-      for (let i = 0; i < coords.length; i++) {
-        const d = Math.abs(coords[i].x - tapX);
-        if (d < bestDist) {
-          bestDist = d;
-          bestIdx = i;
-        }
+        ctx.fillStyle = textColor;
+        ctx.fillText(yVal + ' ' + mObj.unit, padL - 8, yPos);
       }
-      state.chart.selectedIndex = bestIdx;
-      renderProgressChart();
-    };
 
-    canvas.addEventListener('click', (e) => selectNearestPoint(e.clientX));
-    canvas.addEventListener('touchstart', (e) => {
-      if (e.touches && e.touches[0]) selectNearestPoint(e.touches[0].clientX);
-    }, { passive: true });
-  }
-
-  function updateDateHeader() {
-    const today = getOffsetISO(0);
-    const yesterday = getOffsetISO(-1);
-    const tomorrow = getOffsetISO(1);
-    const iso = state.activeDate;
-
-    const [y, m, d] = iso.split('-').map(Number);
-    const dt = new Date(y, m - 1, d);
-    const fullStr = dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase();
-
-    const titleEl = document.getElementById('activeDateLabel');
-    const subEl = document.getElementById('activeDateSub');
-
-    if (titleEl) {
-      if (iso === today) titleEl.textContent = 'Today';
-      else if (iso === yesterday) titleEl.textContent = 'Yesterday';
-      else if (iso === tomorrow) titleEl.textContent = 'Tomorrow';
-      else titleEl.textContent = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    }
-    if (subEl) {
-      subEl.textContent = (iso === today || iso === yesterday || iso === tomorrow)
-        ? fullStr
-        : dt.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
-    }
-  }
-
-  function shiftDate(delta) {
-    const [y, m, d] = state.activeDate.split('-').map(Number);
-    const dt = new Date(y, m - 1, d + delta);
-    state.activeDate = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
-    state.slideDir = delta > 0 ? 'anim-next' : 'anim-prev';
-    updateDateHeader();
-    if (state.activePane !== 0) {
-      switchPane(0);
-    } else {
-      renderWorkoutPane();
-    }
-  }
-
-  function jumpToToday() {
-    const today = getOffsetISO(0);
-    if (state.activeDate !== today) {
-      state.slideDir = state.activeDate < today ? 'anim-next' : 'anim-prev';
-      state.activeDate = today;
-      updateDateHeader();
-    }
-    if (state.activePane !== 0) switchPane(0);
-    else renderWorkoutPane();
-  }
-
-  function initDaySwipeGestures() {
-    let startX = 0;
-    let startY = 0;
-    let tracking = false;
-
-    const attachSwipe = (el) => {
-      if (!el) return;
-      el.addEventListener('touchstart', (e) => {
-        if (e.touches.length !== 1) return;
-        const tag = (e.target.tagName || '').toLowerCase();
-        if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        tracking = true;
-      }, { passive: true });
-
-      el.addEventListener('touchend', (e) => {
-        if (!tracking) return;
-        tracking = false;
-        const touch = e.changedTouches[0];
-        const dx = touch.clientX - startX;
-        const dy = touch.clientY - startY;
-        if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.4) {
-          if (dx < 0) shiftDate(1);
-          else shiftDate(-1);
-        }
-      }, { passive: true });
-    };
-
-    attachSwipe(document.getElementById('pane-0'));
-    attachSwipe(document.getElementById('dayNavBar'));
-  }
-
-  function switchPane(idx) {
-    state.activePane = idx;
-    document.querySelectorAll('.pivot-tab').forEach((el, i) => {
-      el.classList.toggle('active', i === idx);
-      if (i === idx) {
-        try {
-          el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-        } catch (e) {}
-      }
-    });
-    document.querySelectorAll('.pane').forEach((el, i) => {
-      el.classList.toggle('active', i === idx);
-    });
-    if (idx === 0) renderWorkoutPane();
-    if (idx === 1) renderExerciseLibrary();
-    if (idx === 2) renderRoutinesPane();
-    if (idx === 3) renderProgressPane();
-    if (idx === 4) renderDataPane();
-  }
-
-  /* ==========================================================================
-     4. WORKOUT LOGGING & PR DETECTION
-     ========================================================================== */
-  function getDayEntries(dateIso) {
-    return state.db.logs[dateIso] || [];
-  }
-
-  function ensureDayEntries(dateIso) {
-    if (!state.db.logs[dateIso]) state.db.logs[dateIso] = [];
-    return state.db.logs[dateIso];
-  }
-
-  function calcE1RM(weight, reps) {
-    if (!weight || !reps) return 0;
-    return Math.round(weight * (1 + reps / 30));
-  }
-
-  function getHistoricalBestWeight(exId, excludeDate) {
-    let maxW = 0;
-    const dates = Object.keys(state.db.logs);
-    for (let i = 0; i < dates.length; i++) {
-      const date = dates[i];
-      if (date === excludeDate) continue;
-      const entries = state.db.logs[date];
-      for (let j = 0; j < entries.length; j++) {
-        const entry = entries[j];
-        if (entry.exerciseId === exId || entry.name === exId) {
-          for (let k = 0; k < entry.sets.length; k++) {
-            const w = entry.sets[k].weight || 0;
-            if (w > maxW) maxW = w;
-          }
-        }
-      }
-    }
-    return maxW;
-  }
-
-  function addExerciseToWorkout(exId) {
-    const exObj = state.db.exercises.find(x => x.id === exId || x.name === exId);
-    const entries = ensureDayEntries(state.activeDate);
-    if (!entries.some(e => e.exerciseId === exId)) {
-      entries.push({
-        exerciseId: exId,
-        name: exObj ? exObj.name : exId,
-        category: exObj ? exObj.category : 'General',
-        sets: []
+      var coords = points.map(function(pt, idx) {
+        var x = padL + (points.length === 1 ? plotW / 2 : (idx / (points.length - 1)) * plotW);
+        var y = padT + plotH - (pt.value / yMax) * plotH;
+        return { x: x, y: y, pt: pt };
       });
-      saveDB();
-    }
-    switchPane(0);
-  }
+      canvas._coords = coords;
 
-  function logSet(entryIdx) {
-    const wInput = document.getElementById(`w_idx_${entryIdx}`);
-    const rInput = document.getElementById(`r_idx_${entryIdx}`);
-    const weight = parseFloat(wInput ? wInput.value : 0) || 0;
-    const reps = parseInt(rInput ? rInput.value : 0, 10) || 0;
-    if (reps <= 0) {
-      showToast('Enter reps before logging set');
-      return;
-    }
+      var grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
+      grad.addColorStop(0, 'rgba(236, 0, 140, 0.28)');
+      grad.addColorStop(1, 'rgba(242, 101, 34, 0.02)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(coords[0].x, padT + plotH);
+      coords.forEach(function(c) { ctx.lineTo(c.x, c.y); });
+      ctx.lineTo(coords[coords.length - 1].x, padT + plotH);
+      ctx.closePath();
+      ctx.fill();
 
-    const entries = ensureDayEntries(state.activeDate);
-    const target = entries[entryIdx];
-    if (target) {
-      target.sets.push({
-        weight,
-        weightKg: Math.round(weight * 0.45359237 * 100) / 100,
-        reps,
-        kind: 'wr'
+      ctx.strokeStyle = '#ec008c';
+      ctx.lineWidth = points.length > 350 ? 1.5 : 2.5;
+      ctx.beginPath();
+      coords.forEach(function(c, idx) {
+        if (idx === 0) ctx.moveTo(c.x, c.y);
+        else ctx.lineTo(c.x, c.y);
       });
-      saveDB();
-      renderWorkoutPane();
-    }
-  }
+      ctx.stroke();
 
-  function deleteSet(entryIdx, setIdx) {
-    const entries = getDayEntries(state.activeDate);
-    const target = entries[entryIdx];
-    if (target) {
-      target.sets.splice(setIdx, 1);
-      saveDB();
-      renderWorkoutPane();
-    }
-  }
-
-  function removeExerciseFromDay(entryIdx) {
-    const entries = getDayEntries(state.activeDate);
-    entries.splice(entryIdx, 1);
-    if (entries.length === 0) {
-      delete state.db.logs[state.activeDate];
-    }
-    saveDB();
-    renderWorkoutPane();
-  }
-
-  function formatSetDisplay(s) {
-    if (s.kind === 'dt') {
-      const dist = s.distance ? `${s.distance} ${s.distanceUnit || 'mi'}` : '';
-      const tm = s.time ? `${s.time}` : '';
-      return { col1: dist || 'Cardio', col1Unit: '', col2: tm || 'Done', col2Unit: '' };
-    }
-    if (s.kind === 't') {
-      return { col1: s.time || '00:00', col1Unit: 'time', col2: s.weight ? `${s.weight}` : 'Bodyweight', col2Unit: s.weight ? 'lbs' : '' };
-    }
-    if (s.kind === 'r' && (!s.weight || s.weight === 0)) {
-      return { col1: 'BW', col1Unit: '', col2: `${s.reps || 0}`, col2Unit: 'reps' };
-    }
-    return { col1: `${s.weight || 0}`, col1Unit: 'lbs', col2: `${s.reps || 0}`, col2Unit: 'reps' };
-  }
-
-  function renderWorkoutPane() {
-    const entries = getDayEntries(state.activeDate);
-    const container = document.getElementById('workoutExercisesContainer');
-    if (!container) return;
-    const animClass = state.slideDir || '';
-    state.slideDir = '';
-
-    // Clean FitNotes empty day view on fresh launch / unlogged days
-    if (entries.length === 0) {
-      container.innerHTML = `
-        <div class="empty-day-stage ${animClass}">
-          <button class="empty-action-btn" onclick="switchPane(1)">
-            <div class="metro-action-tile">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--zune-pink)" stroke-width="1.8">
-                <rect x="3" y="3" width="13" height="13" />
-                <path d="M8 19h13V6" />
-                <line x1="9.5" y1="6.5" x2="9.5" y2="12.5" />
-                <line x1="6.5" y1="9.5" x2="12.5" y2="9.5" />
-              </svg>
-            </div>
-            <span class="empty-action-label">Start New Workout</span>
-          </button>
-
-          <button class="empty-action-btn" onclick="copyLastWorkout()">
-            <div class="metro-action-tile secondary">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--zune-orange)" stroke-width="1.8">
-                <rect x="8" y="8" width="12" height="13" />
-                <path d="M4 16V4h11" />
-              </svg>
-            </div>
-            <span class="empty-action-label">Copy Previous Workout</span>
-          </button>
-
-          <div class="swipe-hint">‹ swipe left or right to change day ›</div>
-        </div>
-      `;
-      return;
-    }
-
-    let totalSets = 0;
-    let totalVolume = 0;
-    entries.forEach(entry => {
-      entry.sets.forEach(s => {
-        totalSets++;
-        totalVolume += ((s.weight || 0) * (s.reps || 0));
-      });
-    });
-
-    const summaryHtml = `
-      <div class="tile-grid" style="margin-top:4px;">
-        <div class="metro-tile tile-pink">
-          <div class="tile-value">${totalSets}</div>
-          <div class="tile-label">sets logged</div>
-        </div>
-        <div class="metro-tile tile-dark">
-          <div class="tile-value">${Math.round(totalVolume).toLocaleString()}</div>
-          <div class="tile-label">volume (lbs)</div>
-        </div>
-      </div>
-    `;
-
-    const cardsHtml = entries.map((entry, entryIdx) => {
-      const ex = state.db.exercises.find(x => x.id === entry.exerciseId || x.name === entry.exerciseId) || {
-        name: entry.name || entry.exerciseId,
-        category: entry.category || 'General'
-      };
-      const priorBest = getHistoricalBestWeight(ex.id, state.activeDate);
-      const lastSet = entry.sets[entry.sets.length - 1] || { weight: priorBest || '', reps: '' };
-
-      const setsHtml = entry.sets.map((s, setIdx) => {
-        const isPR = (s.weight || 0) > 0 && s.weight > priorBest;
-        const disp = formatSetDisplay(s);
-        return `
-          <div class="set-row">
-            <div class="set-num">#${setIdx + 1}</div>
-            <div class="set-val">${disp.col1}<span>${disp.col1Unit}</span></div>
-            <div class="set-val">${disp.col2}<span>${disp.col2Unit}</span></div>
-            <div>${isPR ? '<span class="pr-badge">PR</span>' : ''}</div>
-            <button class="icon-btn" onclick="deleteSet(${entryIdx}, ${setIdx})">×</button>
-          </div>
-          ${s.notes ? `<div class="set-row" style="padding-top:0; border-top:none;"><div class="set-note">“${escapeHtml(s.notes)}”</div></div>` : ''}
-        `;
-      }).join('');
-
-      return `
-        <div class="exercise-card">
-          <div class="exercise-card-header">
-            <div>
-              <div class="exercise-name">${escapeHtml(ex.name)}</div>
-              <div class="exercise-meta">${escapeHtml(ex.category)} ${priorBest ? `• PREV MAX: ${priorBest} LBS` : ''}</div>
-            </div>
-            <button class="icon-btn" onclick="removeExerciseFromDay(${entryIdx})">🗑</button>
-          </div>
-          ${setsHtml}
-          <div class="quick-add-row">
-            <input id="w_idx_${entryIdx}" type="number" step="2.5" class="metro-input" placeholder="lbs" value="${lastSet.weight || ''}" />
-            <input id="r_idx_${entryIdx}" type="number" class="metro-input" placeholder="reps" value="${lastSet.reps || ''}" />
-            <button class="metro-btn" onclick="logSet(${entryIdx})">LOG</button>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    container.innerHTML = `<div class="${animClass}">${summaryHtml}${cardsHtml}</div>`;
-  }
-
-  function escapeHtml(str) {
-    return String(str || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
-  /* ==========================================================================
-     5. EXERCISE LIBRARY & ZUNE ALPHABET JUMP
-     ========================================================================== */
-  function renderExerciseLibrary() {
-    const catSet = new Set(['All', 'Chest', 'Back', 'Legs', 'Shoulders', 'Triceps', 'Biceps', 'Calves', 'Abs', 'Cardio']);
-    state.db.exercises.forEach(ex => { if (ex.category) catSet.add(ex.category); });
-    const categories = Array.from(catSet);
-
-    document.getElementById('categoryFilterBar').innerHTML = categories.map(cat => `
-      <button class="${state.selectedCategory === cat ? 'metro-btn' : 'metro-btn-outline'}"
-              style="padding:5px 10px; white-space:nowrap;"
-              onclick="state.selectedCategory='${cat.replace(/'/g, "\\'")}'; renderExerciseLibrary();">
-        ${escapeHtml(cat)}
-      </button>
-    `).join('');
-
-    const q = (document.getElementById('exerciseSearch').value || '').toLowerCase();
-    const filtered = state.db.exercises
-      .filter(ex => state.selectedCategory === 'All' || ex.category === state.selectedCategory)
-      .filter(ex => ex.name.toLowerCase().includes(q) || (ex.category || '').toLowerCase().includes(q))
-      .sort((a, b) => a.name.localeCompare(b.name));
-
-    let currentLetter = '';
-    const html = filtered.map(ex => {
-      const first = ex.name.charAt(0).toLowerCase();
-      const letterKey = /[a-z]/.test(first) ? first : '#';
-      let header = '';
-      if (letterKey !== currentLetter) {
-        currentLetter = letterKey;
-        header = `<div class="letter-tile" id="letter_${letterKey}" onclick="openJumpOverlay()">${letterKey}</div>`;
-      }
-      return `
-        ${header}
-        <div class="lib-item" onclick="addExerciseToWorkout('${ex.id.replace(/'/g, "\\'")}')">
-          <div>
-            <div class="lib-item-title">${escapeHtml(ex.name)}</div>
-            <div class="lib-item-cat">${escapeHtml(ex.category)}</div>
-          </div>
-          <span style="color:var(--zune-pink); font-size:20px;">+</span>
-        </div>
-      `;
-    }).join('');
-
-    document.getElementById('exerciseLibraryList').innerHTML = html || '<div class="exercise-meta">No matching exercises.</div>';
-  }
-
-  function openNewExerciseModal() {
-    document.getElementById('newExNameInput').value = '';
-    document.getElementById('newExerciseOverlay').classList.add('open');
-  }
-
-  function closeNewExerciseModal() {
-    document.getElementById('newExerciseOverlay').classList.remove('open');
-  }
-
-  function saveNewExercise() {
-    const name = (document.getElementById('newExNameInput').value || '').trim();
-    const category = document.getElementById('newExCatSelect').value || 'Chest';
-    if (!name) {
-      showToast('Enter an exercise name');
-      return;
-    }
-    if (!state.db.exercises.some(e => e.name.toLowerCase() === name.toLowerCase())) {
-      state.db.exercises.push({ id: name, name, category });
-      saveDB();
-    }
-    closeNewExerciseModal();
-    renderExerciseLibrary();
-    showToast(`Added "${name}"`);
-  }
-
-  function openJumpOverlay() {
-    const letters = ['#', ...'abcdefghijklmnopqrstuvwxyz'.split('')];
-    const present = new Set(state.db.exercises.map(e => {
-      const c = e.name.charAt(0).toLowerCase();
-      return /[a-z]/.test(c) ? c : '#';
-    }));
-    document.getElementById('jumpGrid').innerHTML = letters.map(l => `
-      <div class="jump-cell ${present.has(l) ? '' : 'empty'}" onclick="jumpToLetter('${l}')">${l}</div>
-    `).join('');
-    document.getElementById('jumpOverlay').classList.add('open');
-  }
-
-  function closeJumpOverlay() {
-    document.getElementById('jumpOverlay').classList.remove('open');
-  }
-
-  function jumpToLetter(letter) {
-    closeJumpOverlay();
-    const pane = document.getElementById('pane-1');
-    const target = document.getElementById(`letter_${letter}`);
-    if (pane && target) {
-      pane.scrollTo({ top: target.offsetTop - 12, behavior: 'smooth' });
-    }
-  }
-
-  /* Date Picker Modal */
-  function openDatePickerModal() {
-    document.getElementById('modalDateInput').value = state.activeDate;
-    document.getElementById('dateOverlay').classList.add('open');
-  }
-
-  function closeDatePickerModal() {
-    document.getElementById('dateOverlay').classList.remove('open');
-  }
-
-  function applyModalDate() {
-    const val = document.getElementById('modalDateInput').value;
-    if (val) {
-      state.activeDate = val;
-      updateDateHeader();
-      switchPane(0);
-    }
-    closeDatePickerModal();
-  }
-
-  /* ==========================================================================
-     6. ROUTINES & COPY PREVIOUS WORKOUT
-     ========================================================================== */
-  function renderRoutinesPane() {
-    document.getElementById('routinesContainer').innerHTML = state.db.routines.map((rt, idx) => {
-      return `
-        <div class="metro-tile ${rt.color}" style="margin-bottom:10px;" onclick="loadRoutine(${idx})">
-          <div style="font-size:20px; font-weight:400;">${escapeHtml(rt.name)}</div>
-          <div style="font-size:12px; opacity:0.9; margin-top:6px;">${rt.exerciseIds.join(' • ')}</div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  function loadRoutine(idx) {
-    const rt = state.db.routines[idx];
-    if (!rt) return;
-    const entries = ensureDayEntries(state.activeDate);
-    rt.exerciseIds.forEach(exName => {
-      if (!entries.some(e => e.exerciseId === exName)) {
-        const exObj = state.db.exercises.find(e => e.name === exName || e.id === exName);
-        entries.push({
-          exerciseId: exObj ? exObj.id : exName,
-          name: exName,
-          category: exObj ? exObj.category : 'General',
-          sets: []
-        });
-      }
-    });
-    saveDB();
-    switchPane(0);
-    showToast(`Loaded ${rt.name}`);
-  }
-
-  function copyLastWorkout() {
-    const dates = Object.keys(state.db.logs)
-      .filter(d => d !== state.activeDate && state.db.logs[d].length > 0)
-      .sort();
-    if (dates.length === 0) {
-      showToast('No previous workout found — tap Start New Workout');
-      return;
-    }
-    const prevDate = dates[dates.length - 1];
-    const cloned = state.db.logs[prevDate].map(entry => ({
-      exerciseId: entry.exerciseId,
-      name: entry.name || entry.exerciseId,
-      category: entry.category || 'General',
-      sets: entry.sets.map(s => ({ ...s }))
-    }));
-    state.db.logs[state.activeDate] = cloned;
-    saveDB();
-    switchPane(0);
-    showToast(`Copied workout from ${prevDate}`);
-  }
-
-  /* ==========================================================================
-     7. ANALYTICS & 1RM PROGRESSION CHARTS
-     ========================================================================== */
-  function renderProgressPane() {
-    const sel = document.getElementById('progressExerciseSelect');
-    const prevVal = sel.value;
-    sel.innerHTML = state.db.exercises
-      .slice()
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map(ex => `<option value="${escapeHtml(ex.id)}">${escapeHtml(ex.name)}</option>`)
-      .join('');
-    if (prevVal && state.db.exercises.some(e => e.id === prevVal)) {
-      sel.value = prevVal;
-    }
-    renderProgressChart();
-  }
-
-  function renderProgressChart() {
-    const sel = document.getElementById('progressExerciseSelect');
-    if (!sel) return;
-    const exId = sel.value;
-    const points = [];
-    let allTimeMax = 0;
-    let allTimeE1RM = 0;
-
-    const sortedDates = Object.keys(state.db.logs).sort();
-    for (let i = 0; i < sortedDates.length; i++) {
-      const date = sortedDates[i];
-      const entry = state.db.logs[date].find(e => e.exerciseId === exId || e.name === exId);
-      if (entry && entry.sets.length > 0) {
-        let dayMax = 0;
-        let dayE1RM = 0;
-        entry.sets.forEach(s => {
-          const w = s.weight || 0;
-          const r = s.reps || 0;
-          if (w > dayMax) dayMax = w;
-          const e1 = calcE1RM(w, r);
-          if (e1 > dayE1RM) dayE1RM = e1;
-        });
-        if (dayMax > allTimeMax) allTimeMax = dayMax;
-        if (dayE1RM > allTimeE1RM) allTimeE1RM = dayE1RM;
-        points.push({ date, max: dayMax, e1rm: dayE1RM, sets: entry.sets });
-      }
-    }
-
-    document.getElementById('progressTiles').innerHTML = `
-      <div class="metro-tile tile-orange">
-        <div class="tile-value">${allTimeMax} <span style="font-size:14px;">lbs</span></div>
-        <div class="tile-label">max weight pr</div>
-      </div>
-      <div class="metro-tile tile-pink">
-        <div class="tile-value">${allTimeE1RM} <span style="font-size:14px;">lbs</span></div>
-        <div class="tile-label">est. 1rm pr</div>
-      </div>
-    `;
-
-    const canvas = document.getElementById('progressCanvas');
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-
-    if (points.length === 0) {
-      ctx.fillStyle = isLight ? '#666666' : '#888888';
-      ctx.font = '16px Segoe UI, sans-serif';
-      ctx.fillText('Log or import sets for this exercise to plot trend', 24, 110);
-      document.getElementById('exerciseHistoryList').innerHTML = '';
-      return;
-    }
-
-    // Plot recent 120 sessions cleanly if multi-year history exists
-    const plotPts = points.slice(-120);
-    const pad = 28;
-    const w = canvas.width - pad * 2;
-    const h = canvas.height - pad * 2;
-    const vals = plotPts.map(p => p.e1rm || p.max);
-    const minV = Math.min(...vals) * 0.92;
-    const maxV = Math.max(...vals) * 1.05 || 100;
-
-    ctx.strokeStyle = '#ec008c';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    plotPts.forEach((pt, i) => {
-      const val = pt.e1rm || pt.max;
-      const x = pad + (plotPts.length === 1 ? w / 2 : (i / (plotPts.length - 1)) * w);
-      const y = pad + h - ((val - minV) / (maxV - minV || 1)) * h;
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-
-    plotPts.forEach((pt, i) => {
-      const val = pt.e1rm || pt.max;
-      const x = pad + (plotPts.length === 1 ? w / 2 : (i / (plotPts.length - 1)) * w);
-      const y = pad + h - ((val - minV) / (maxV - minV || 1)) * h;
+      var dotR = points.length > 450 ? 2 : 3.5;
       ctx.fillStyle = '#f26522';
-      ctx.fillRect(x - 3.5, y - 3.5, 7, 7);
-    });
+      coords.forEach(function(c) {
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, dotR, 0, Math.PI * 2);
+        ctx.fill();
+      });
 
-    document.getElementById('exerciseHistoryList').innerHTML = points.slice().reverse().slice(0, 30).map(pt => `
-      <div class="exercise-card">
-        <div class="exercise-meta">${pt.date} • EST 1RM: ${pt.e1rm} LBS</div>
-        <div style="margin-top:6px; font-size:14px;">
-          ${pt.sets.map(s => s.kind === 'dt' ? `${s.distance || ''}${s.distanceUnit || ''} ${s.time || ''}` : `${s.weight || 0}×${s.reps || 0}`).join('  |  ')}
-        </div>
-      </div>
-    `).join('');
-  }
+      var selIdx = state.chart.selectedIndex;
+      if (selIdx >= 0 && selIdx < coords.length) {
+        var sel = coords[selIdx];
+        ctx.strokeStyle = isLight ? '#111111' : '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(sel.x, padT);
+        ctx.lineTo(sel.x, padT + plotH);
+        ctx.stroke();
 
-  /* ==========================================================================
-     8. FITNOTES .CSV IMPORT & EXPORT ENGINE (RFC-4180 COMPLIANT)
-     ========================================================================== */
-  function renderDataPane() {
-    const dates = Object.keys(state.db.logs);
-    let totalSets = 0;
-    dates.forEach(d => {
-      state.db.logs[d].forEach(ex => { totalSets += ex.sets.length; });
-    });
+        ctx.fillStyle = '#ec008c';
+        ctx.beginPath();
+        ctx.arc(sel.x, sel.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+      }
 
-    document.getElementById('dbStatsTiles').innerHTML = `
-      <div class="metro-tile tile-pink">
-        <div class="tile-value">${dates.length.toLocaleString()}</div>
-        <div class="tile-label">workout days</div>
-      </div>
-      <div class="metro-tile tile-orange">
-        <div class="tile-value">${totalSets.toLocaleString()}</div>
-        <div class="tile-label">total sets logged</div>
-      </div>
-    `;
-  }
+      ctx.fillStyle = textColor;
+      ctx.font = '13px Segoe UI, sans-serif';
+      ctx.textBaseline = 'top';
+      var xLabelY = padT + plotH + 10;
 
-  function parseCSVRows(text) {
-    const rows = [];
-    let row = [];
-    let cur = '';
-    let inQuotes = false;
+      ctx.textAlign = 'left';
+      ctx.fillText(formatShortDate(points[0].key), padL, xLabelY);
 
-    for (let i = 0; i < text.length; i++) {
-      const ch = text[i];
-      if (inQuotes) {
-        if (ch === '"') {
-          if (text[i + 1] === '"') {
-            cur += '"';
-            i++;
+      if (points.length >= 3) {
+        var mid = points[Math.floor(points.length / 2)];
+        ctx.textAlign = 'center';
+        ctx.fillText(formatShortDate(mid.key), padL + plotW / 2, xLabelY);
+      }
+
+      if (points.length >= 2) {
+        ctx.textAlign = 'right';
+        ctx.fillText(formatShortDate(points[points.length - 1].key), W - padR, xLabelY);
+      }
+
+      updatePointReadout();
+    }
+
+    function initCanvasTouch() {
+      var canvas = document.getElementById('progressCanvas');
+      if (!canvas) return;
+      function pick(clientX) {
+        var coords = canvas._coords;
+        if (!coords || coords.length === 0) return;
+        var rect = canvas.getBoundingClientRect();
+        var tapX = (clientX - rect.left) * (canvas.width / rect.width);
+        var best = 0;
+        var dist = Infinity;
+        for (var i = 0; i < coords.length; i++) {
+          var d = Math.abs(coords[i].x - tapX);
+          if (d < dist) { dist = d; best = i; }
+        }
+        state.chart.selectedIndex = best;
+        renderChartsPane();
+      }
+      canvas.addEventListener('click', function(e) { pick(e.clientX); });
+      canvas.addEventListener('touchstart', function(e) {
+        if (e.touches && e.touches[0]) pick(e.touches[0].clientX);
+      }, { passive: true });
+    }
+
+    /* ========================================================================
+       FITNOTES .CSV IMPORT / EXPORT & DATA SUMMARY
+       ======================================================================== */
+    function updateDataSummary() {
+      var el = document.getElementById('dataSummaryTiles');
+      if (!el) return;
+      var dates = Object.keys(state.db.logs);
+      var totalSets = 0;
+      dates.forEach(function(d) {
+        state.db.logs[d].forEach(function(e) { totalSets += e.sets.length; });
+      });
+      el.innerHTML =
+        '<div class="metro-tile tile-pink">' +
+          '<div class="tile-value">' + dates.length.toLocaleString() + '</div>' +
+          '<div class="tile-label">workout days</div>' +
+        '</div>' +
+        '<div class="metro-tile tile-orange">' +
+          '<div class="tile-value">' + totalSets.toLocaleString() + '</div>' +
+          '<div class="tile-label">sets recorded</div>' +
+        '</div>';
+    }
+
+    function parseCSV(text) {
+      var rows = [];
+      var row = [];
+      var cur = '';
+      var inQuotes = false;
+      for (var i = 0; i < text.length; i++) {
+        var ch = text[i];
+        if (inQuotes) {
+          if (ch === '"') {
+            if (text[i + 1] === '"') { cur += '"'; i++; }
+            else inQuotes = false;
           } else {
-            inQuotes = false;
+            cur += ch;
           }
         } else {
-          cur += ch;
-        }
-      } else {
-        if (ch === '"') {
-          inQuotes = true;
-        } else if (ch === ',') {
-          row.push(cur);
-          cur = '';
-        } else if (ch === '\n') {
-          row.push(cur);
-          rows.push(row);
-          row = [];
-          cur = '';
-        } else if (ch === '\r') {
-          // skip CR
-        } else {
-          cur += ch;
+          if (ch === '"') inQuotes = true;
+          else if (ch === ',') { row.push(cur); cur = ''; }
+          else if (ch === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
+          else if (ch !== '\r') cur += ch;
         }
       }
+      if (cur.length > 0 || row.length > 0) {
+        row.push(cur);
+        rows.push(row);
+      }
+      return rows;
     }
-    if (cur.length > 0 || row.length > 0) {
-      row.push(cur);
-      rows.push(row);
+
+    window.importFitNotesCSV = function(ev) {
+      var file = ev.target.files && ev.target.files[0];
+      if (!file) return;
+      var statusEl = document.getElementById('csvImportStatus');
+      if (statusEl) statusEl.textContent = 'READING ' + file.name + '...';
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          var rows = parseCSV(e.target.result || '');
+          if (rows.length < 2) {
+            if (statusEl) statusEl.textContent = 'CSV file is empty.';
+            return;
+          }
+          var header = rows[0].map(function(h) { return h.trim().toLowerCase(); });
+          var idxDate = header.indexOf('date');
+          var idxEx = header.indexOf('exercise');
+          var idxCat = header.indexOf('category');
+          var idxKg = header.indexOf('weight (kg)');
+          var idxLbs = header.indexOf('weight (lbs)');
+          var idxReps = header.indexOf('reps');
+          var idxDist = header.indexOf('distance');
+          var idxDistUnit = header.indexOf('distance unit');
+          var idxTime = header.indexOf('time');
+          var idxNotes = header.indexOf('notes');
+          var idxKind = header.indexOf('kind');
+
+          if (idxDate === -1 || idxEx === -1) {
+            if (statusEl) statusEl.textContent = 'Invalid FitNotes CSV headers.';
+            return;
+          }
+
+          var exMap = {};
+          state.db.exercises.forEach(function(x) { exMap[x.name] = x; });
+          var logs = state.db.logs;
+          var count = 0;
+
+          for (var i = 1; i < rows.length; i++) {
+            var r = rows[i];
+            if (!r || r.length < 2) continue;
+            var date = (r[idxDate] || '').trim();
+            var exName = (r[idxEx] || '').trim();
+            if (!date || !exName) continue;
+
+            var cat = idxCat >= 0 ? (r[idxCat] || 'General').trim() : 'General';
+            var wKg = idxKg >= 0 ? parseFloat(r[idxKg]) || 0 : 0;
+            var wLbs = idxLbs >= 0 ? parseFloat(r[idxLbs]) || 0 : 0;
+            if (!wLbs && wKg > 0) wLbs = Math.round((wKg / 0.45359237) * 10) / 10;
+
+            var reps = idxReps >= 0 ? parseInt(r[idxReps], 10) || 0 : 0;
+            var dist = idxDist >= 0 ? (r[idxDist] || '').trim() : '';
+            var distUnit = idxDistUnit >= 0 ? (r[idxDistUnit] || '').trim() : '';
+            var time = idxTime >= 0 ? (r[idxTime] || '').trim() : '';
+            var notes = idxNotes >= 0 ? (r[idxNotes] || '').trim() : '';
+            var kind = idxKind >= 0 ? (r[idxKind] || 'wr').trim() : 'wr';
+
+            if (!exMap[exName]) {
+              exMap[exName] = { id: exName, name: exName, category: cat || 'General' };
+            }
+            if (!logs[date]) logs[date] = [];
+            var dayEntry = logs[date].find(function(x) { return x.name === exName; });
+            if (!dayEntry) {
+              dayEntry = { exerciseId: exName, name: exName, category: cat || 'General', sets: [] };
+              logs[date].push(dayEntry);
+            }
+            dayEntry.sets.push({
+              weight: wLbs,
+              reps: reps,
+              distance: dist,
+              distanceUnit: distUnit,
+              time: time,
+              notes: notes,
+              kind: kind || 'wr'
+            });
+            count++;
+          }
+
+          state.db.exercises = Object.keys(exMap).map(function(k) { return exMap[k]; });
+          saveDB();
+          updateDataSummary();
+          renderWorkoutPane();
+          if (statusEl) {
+            statusEl.textContent = 'IMPORTED ' + count.toLocaleString() + ' SETS ACROSS ' + Object.keys(logs).length.toLocaleString() + ' DAYS.';
+          }
+          showToast('Imported ' + count.toLocaleString() + ' FitNotes sets');
+        } catch (err) {
+          if (statusEl) statusEl.textContent = 'Import error: ' + err.message;
+        }
+      };
+      reader.readAsText(file);
+      ev.target.value = '';
+    };
+
+    function csvCell(v) {
+      if (v === null || v === undefined) return '';
+      var s = String(v);
+      if (s.indexOf(',') >= 0 || s.indexOf('"') >= 0 || s.indexOf('\n') >= 0) {
+        return '"' + s.replace(/"/g, '""') + '"';
+      }
+      return s;
     }
-    return rows;
-  }
 
-  async function handleCSVFileSelect(event) {
-    const file = event.target.files && event.target.files[0];
-    if (!file) return;
-
-    const progressWrap = document.getElementById('csvProgressWrap');
-    const progressBar = document.getElementById('csvProgressBar');
-    const statusText = document.getElementById('csvStatusText');
-    const mode = document.getElementById('importModeSelect').value;
-
-    progressWrap.style.display = 'block';
-    progressBar.style.width = '18%';
-    statusText.textContent = `READING ${file.name.toUpperCase()}...`;
-
-    try {
-      const text = await file.text();
-      progressBar.style.width = '45%';
-      statusText.textContent = 'PARSING FITNOTES RECORDS...';
-
-      await new Promise(r => setTimeout(r, 20));
-      const rows = parseCSVRows(text);
-      if (rows.length < 2) {
-        statusText.textContent = 'CSV FILE IS EMPTY.';
-        return;
-      }
-
-      const headers = rows[0].map(h => h.trim().toLowerCase());
-      const col = (name) => headers.indexOf(name.toLowerCase());
-
-      const idxDate = col('date');
-      const idxEx = col('exercise');
-      const idxCat = col('category');
-      const idxKg = col('weight (kg)');
-      const idxLbs = col('weight (lbs)');
-      const idxReps = col('reps');
-      const idxDist = col('distance');
-      const idxDistUnit = col('distance unit');
-      const idxTime = col('time');
-      const idxNotes = col('notes');
-      const idxKind = col('kind');
-
-      if (idxDate === -1 || idxEx === -1) {
-        statusText.textContent = 'INVALID FITNOTES CSV HEADERS (MISSING DATE OR EXERCISE).';
-        return;
-      }
-
-      const targetLogs = mode === 'replace' ? {} : { ...state.db.logs };
-      const exerciseMap = new Map();
-      if (mode !== 'replace') {
-        state.db.exercises.forEach(e => exerciseMap.set(e.name, e));
-      }
-
-      let importedSets = 0;
-
-      for (let i = 1; i < rows.length; i++) {
-        const r = rows[i];
-        if (!r || r.length < 2) continue;
-        const date = (r[idxDate] || '').trim();
-        const exName = (r[idxEx] || '').trim();
-        if (!date || !exName) continue;
-
-        const category = idxCat !== -1 ? (r[idxCat] || 'General').trim() : 'General';
-        const wKg = idxKg !== -1 ? parseFloat(r[idxKg]) || 0 : 0;
-        let wLbs = idxLbs !== -1 ? parseFloat(r[idxLbs]) || 0 : 0;
-        if (!wLbs && wKg) {
-          wLbs = Math.round((wKg / 0.45359237) * 10) / 10;
-        }
-        const reps = idxReps !== -1 ? parseInt(r[idxReps], 10) || 0 : 0;
-        const distance = idxDist !== -1 ? (r[idxDist] || '').trim() : '';
-        const distanceUnit = idxDistUnit !== -1 ? (r[idxDistUnit] || '').trim() : '';
-        const time = idxTime !== -1 ? (r[idxTime] || '').trim() : '';
-        const notes = idxNotes !== -1 ? (r[idxNotes] || '').trim() : '';
-        const kind = idxKind !== -1 ? (r[idxKind] || 'wr').trim() : 'wr';
-
-        if (!exerciseMap.has(exName)) {
-          exerciseMap.set(exName, { id: exName, name: exName, category: category || 'General' });
-        }
-
-        if (!targetLogs[date]) targetLogs[date] = [];
-        let dayEx = targetLogs[date].find(e => e.name === exName || e.exerciseId === exName);
-        if (!dayEx) {
-          dayEx = { exerciseId: exName, name: exName, category: category || 'General', sets: [] };
-          targetLogs[date].push(dayEx);
-        }
-
-        dayEx.sets.push({
-          weight: wLbs,
-          weightKg: wKg || Math.round(wLbs * 0.45359237 * 100) / 100,
-          reps,
-          distance,
-          distanceUnit,
-          time,
-          notes,
-          kind: kind || 'wr'
+    window.exportFitNotesCSV = function() {
+      var lines = ['Date,Exercise,Category,Weight (kg),Weight (lbs),Reps,Distance,Distance Unit,Time,Notes,Kind'];
+      var dates = Object.keys(state.db.logs).sort();
+      dates.forEach(function(date) {
+        state.db.logs[date].forEach(function(entry) {
+          var exName = entry.name || entry.exerciseId;
+          var cat = entry.category || 'General';
+          entry.sets.forEach(function(s) {
+            var lbs = s.weight || '';
+            var kg = s.weight ? (Math.round(s.weight * 0.45359237 * 100) / 100) : '';
+            lines.push([
+              csvCell(date),
+              csvCell(exName),
+              csvCell(cat),
+              csvCell(kg),
+              csvCell(lbs),
+              csvCell(s.reps || ''),
+              csvCell(s.distance || ''),
+              csvCell(s.distanceUnit || ''),
+              csvCell(s.time || ''),
+              csvCell(s.notes || ''),
+              csvCell(s.kind || 'wr')
+            ].join(','));
+          });
         });
-        importedSets++;
-      }
+      });
 
-      progressBar.style.width = '82%';
-      statusText.textContent = `SAVING ${importedSets.toLocaleString()} SETS TO DEVICE STORAGE...`;
+      var blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'FitNotes-' + getOffsetISO(0) + '.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Exported FitNotes .CSV');
+    };
 
-      state.db.logs = targetLogs;
-      state.db.exercises = Array.from(exerciseMap.values());
-      await saveDB();
-
-      progressBar.style.width = '100%';
-      const dateCount = Object.keys(state.db.logs).length;
-      statusText.textContent = `IMPORTED ${importedSets.toLocaleString()} SETS ACROSS ${dateCount.toLocaleString()} WORKOUT DAYS.`;
-      renderDataPane();
+    window.loadSampleWorkoutData = function() {
+      var d1 = getOffsetISO(-3);
+      var d2 = getOffsetISO(-1);
+      state.db.logs[d1] = [
+        {
+          exerciseId: 'Barbell Bench Press',
+          name: 'Barbell Bench Press',
+          category: 'Chest',
+          sets: [
+            { weight: 185, reps: 8, kind: 'wr' },
+            { weight: 205, reps: 6, kind: 'wr' },
+            { weight: 195, reps: 7, notes: 'Paused rep', kind: 'wr' }
+          ]
+        },
+        {
+          exerciseId: 'Dumbbell Lateral Raise',
+          name: 'Dumbbell Lateral Raise',
+          category: 'Shoulders',
+          sets: [
+            { weight: 25, reps: 15, kind: 'wr' },
+            { weight: 30, reps: 12, kind: 'wr' }
+          ]
+        }
+      ];
+      state.db.logs[d2] = [
+        {
+          exerciseId: 'Lat Pulldown',
+          name: 'Lat Pulldown',
+          category: 'Back',
+          sets: [
+            { weight: 150, reps: 10, kind: 'wr' },
+            { weight: 165, reps: 8, kind: 'wr' }
+          ]
+        },
+        {
+          exerciseId: 'Barbell Back Squat',
+          name: 'Barbell Back Squat',
+          category: 'Legs',
+          sets: [
+            { weight: 225, reps: 8, kind: 'wr' },
+            { weight: 245, reps: 5, kind: 'wr' }
+          ]
+        }
+      ];
+      saveDB();
+      updateDataSummary();
       renderWorkoutPane();
-      showToast(`Imported ${importedSets.toLocaleString()} FitNotes sets!`);
-    } catch (err) {
-      statusText.textContent = `IMPORT ERROR: ${err.message}`;
-    } finally {
-      event.target.value = '';
-    }
-  }
+      showToast('Loaded sample workout history');
+    };
 
-  function csvEscape(val) {
-    if (val === null || val === undefined) return '';
-    const str = String(val);
-    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-      return `"${str.replace(/"/g, '""')}"`;
-    }
-    return str;
-  function seedSampleWorkouts() {
-    const d1 = getOffsetISO(-2);
-    const d2 = getOffsetISO(-1);
-    state.db.logs[d1] = [
-      {
-        exerciseId: 'Barbell Bench Press',
-        name: 'Barbell Bench Press',
-        category: 'Chest',
-        sets: [
-          { weight: 185, weightKg: 83.91, reps: 8, kind: 'wr' },
-          { weight: 205, weightKg: 92.99, reps: 6, kind: 'wr' },
-          { weight: 185, weightKg: 83.91, reps: 9, notes: 'Paused bottom', kind: 'wr' }
-        ]
-      },
-      {
-        exerciseId: 'Dumbbell Lateral Raise',
-        name: 'Dumbbell Lateral Raise',
-        category: 'Shoulders',
-        sets: [
-          { weight: 25, weightKg: 11.34, reps: 15, kind: 'wr' },
-          { weight: 25, weightKg: 11.34, reps: 14, kind: 'wr' }
-        ]
-      }
-    ];
-    state.db.logs[d2] = [
-      {
-        exerciseId: 'Lat Pulldown',
-        name: 'Lat Pulldown',
-        category: 'Back',
-        sets: [
-          { weight: 150, weightKg: 68.04, reps: 10, kind: 'wr' },
-          { weight: 165, weightKg: 74.84, reps: 8, kind: 'wr' }
-        ]
-      },
-      {
-        exerciseId: 'Incline Dumbbell Curl',
-        name: 'Incline Dumbbell Curl',
-        category: 'Biceps',
-        sets: [
-          { weight: 30, weightKg: 13.61, reps: 12, kind: 'wr' },
-          { weight: 30, weightKg: 13.61, reps: 11, kind: 'wr' }
-        ]
-      }
-    ];
-    saveDB();
-    renderDataPane();
-    renderWorkoutPane();
-    showToast('Loaded 2 sample workout days');
-  }
+    window.clearAllData = function() {
+      state.db.logs = {};
+      state.db.exercises = DEFAULT_EXERCISES.slice();
+      saveDB();
+      updateDataSummary();
+      renderWorkoutPane();
+      showToast('All local workout data cleared');
+    };
 
-  /* ==========================================================================
-     9. IMMEDIATE SAFE BOOTSTRAP
-     ========================================================================== */
-  async function bootZuneFit() {
+    /* ========================================================================
+       IMMEDIATE SYNCHRONOUS BOOTSTRAP
+       ======================================================================== */
     try {
-      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'dark';
-      applyTheme(savedTheme);
+      var savedTheme = localStorage.getItem(THEME_KEY);
+      applyTheme(savedTheme || 'dark');
     } catch (e) {
       applyTheme('dark');
     }
 
     updateDateHeader();
     renderWorkoutPane();
-    initDaySwipeGestures();
-    initChartCanvasInteraction();
-
-    const stored = await idbGet(DB_KEY);
-    if (stored && stored.logs) {
-      state.db = {
-        exercises: Array.isArray(stored.exercises) && stored.exercises.length ? stored.exercises : DEFAULT_EXERCISES.slice(),
-        routines: Array.isArray(stored.routines) && stored.routines.length ? stored.routines : DEFAULT_ROUTINES.slice(),
-        logs: stored.logs || {}
-      };
-      renderWorkoutPane();
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bootZuneFit);
-  } else {
-    bootZuneFit();
-  }
+    initDaySwipe();
+    initCanvasTouch();
+    loadDBFromIndexedDB();
+  })();
 </script>
 </body>
 </html>
