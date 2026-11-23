@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
@@ -7,21 +7,90 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-mobile-web-app-title" content="ZuneFit" />
   <meta name="theme-color" content="#000000" />
-  <title>ZuneFit // Metro Workout Log</title>
+  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%23000000'/%3E%3Cpath d='M36 36H144L90 90L144 144H36L90 90L36 36Z' stroke='%23EC008C' stroke-width='14' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E" />
+  <title>ZuneFit // Metro Workout & FitNotes Hub</title>
   <style>
-    :root {
-      --bg: #000000;
-      --card: #111111;
-      --card-elevated: #191919;
-      --border: #262626;
+    /* ==========================================================================
+       ZUNEFIT METRO DESIGN TOKENS: DARK, LIGHT & FROSTED / GRADIENT THEMES
+       ========================================================================== */
+    :root,
+    html[data-theme="dark"] {
+      --bg-page: #000000;
+      --bg-shell: #000000;
+      --bg-header: #000000;
+      --bg-subbar: #080808;
+      --bg-card: #111111;
+      --bg-card-elevated: #1a1a1a;
+      --bg-input: #050505;
+      --bg-appbar: #0c0c0c;
+      --bg-overlay: rgba(0, 0, 0, 0.96);
+      --border-subtle: #222222;
+      --border-strong: #3a3a3a;
       --text-primary: #ffffff;
-      --text-secondary: #999999;
-      --text-muted: #555555;
+      --text-secondary: #9a9a9a;
+      --text-muted: #525252;
       --zune-pink: #ec008c;
       --zune-orange: #f26522;
       --zune-gradient: linear-gradient(135deg, #ec008c 0%, #f26522 100%);
       --wp-cyan: #008299;
+      --card-blur: none;
+      --shell-shadow: 0 32px 80px rgba(0, 0, 0, 0.92);
+      --tile-action-bg: rgba(236, 0, 140, 0.08);
+      --tile-action-sec-bg: rgba(242, 101, 34, 0.08);
       --font-metro: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    }
+
+    html[data-theme="light"] {
+      --bg-page: #e5e5e5;
+      --bg-shell: #f7f7f7;
+      --bg-header: #ffffff;
+      --bg-subbar: #efefef;
+      --bg-card: #ffffff;
+      --bg-card-elevated: #f0f0f0;
+      --bg-input: #ffffff;
+      --bg-appbar: #ffffff;
+      --bg-overlay: rgba(247, 247, 247, 0.97);
+      --border-subtle: #dcdcdc;
+      --border-strong: #bcbcbc;
+      --text-primary: #111111;
+      --text-secondary: #5c5c5c;
+      --text-muted: #a6a6a6;
+      --zune-pink: #d8007f;
+      --zune-orange: #e35614;
+      --zune-gradient: linear-gradient(135deg, #e00084 0%, #f26522 100%);
+      --wp-cyan: #007a91;
+      --card-blur: none;
+      --shell-shadow: 0 24px 60px rgba(0, 0, 0, 0.16);
+      --tile-action-bg: rgba(224, 0, 132, 0.06);
+      --tile-action-sec-bg: rgba(242, 101, 34, 0.06);
+    }
+
+    html[data-theme="frosted"] {
+      --bg-page: #0c0612;
+      --bg-shell: radial-gradient(circle at 12% 14%, rgba(236, 0, 140, 0.42) 0%, transparent 48%),
+                  radial-gradient(circle at 88% 22%, rgba(242, 101, 34, 0.36) 0%, transparent 52%),
+                  radial-gradient(circle at 50% 88%, rgba(114, 24, 148, 0.45) 0%, transparent 58%),
+                  linear-gradient(160deg, #16091d 0%, #0b0914 55%, #180d14 100%);
+      --bg-header: rgba(14, 10, 20, 0.56);
+      --bg-subbar: rgba(255, 255, 255, 0.05);
+      --bg-card: rgba(255, 255, 255, 0.09);
+      --bg-card-elevated: rgba(255, 255, 255, 0.14);
+      --bg-input: rgba(0, 0, 0, 0.36);
+      --bg-appbar: rgba(14, 10, 20, 0.72);
+      --bg-overlay: rgba(12, 8, 18, 0.92);
+      --border-subtle: rgba(255, 255, 255, 0.16);
+      --border-strong: rgba(255, 255, 255, 0.32);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.72);
+      --text-muted: rgba(255, 255, 255, 0.42);
+      --zune-pink: #ff2ea6;
+      --zune-orange: #ff7a33;
+      --zune-gradient: linear-gradient(135deg, #ec008c 0%, #f26522 100%);
+      --wp-cyan: #00a3bf;
+      --card-blur: blur(18px) saturate(165%);
+      --shell-shadow: 0 32px 90px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.15);
+      --tile-action-bg: rgba(255, 255, 255, 0.1);
+      --tile-action-sec-bg: rgba(255, 255, 255, 0.08);
     }
 
     * {
@@ -42,31 +111,54 @@
       height: 100vh;
       height: -webkit-fill-available;
       height: 100dvh;
-      background: var(--bg);
+      background-color: #000000;
+      background: var(--bg-page);
       color: var(--text-primary);
       font-family: var(--font-metro);
       overflow: hidden;
       position: fixed;
       inset: 0;
+      -webkit-font-smoothing: antialiased;
     }
 
+    /* Main Responsive Metro Shell (Always visible, never gated by opacity:0) */
     #appShell {
       display: flex;
       flex-direction: column;
       width: 100%;
+      max-width: 460px;
+      margin: 0 auto;
       height: 100%;
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
-      padding-left: env(safe-area-inset-left);
-      padding-right: env(safe-area-inset-right);
-      background: var(--bg);
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      padding-left: env(safe-area-inset-left, 0px);
+      padding-right: env(safe-area-inset-right, 0px);
+      background: var(--bg-shell);
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (min-width: 520px) {
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #appShell {
+        height: min(880px, 95dvh);
+        border: 1px solid var(--border-subtle);
+        box-shadow: var(--shell-shadow);
+      }
     }
 
     /* Top Metro Header */
     .metro-header {
-      padding: 10px 18px 0 18px;
+      padding: 12px 18px 0 18px;
       flex-shrink: 0;
-      background: #000;
+      background: var(--bg-header);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
       z-index: 20;
     }
 
@@ -74,7 +166,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .brand-title {
@@ -82,48 +174,44 @@
       font-weight: 700;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: #cccccc;
+      color: var(--text-secondary);
       display: flex;
       align-items: center;
       gap: 7px;
     }
 
-    .zune-glyph {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      background: var(--zune-gradient);
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .timer-pill-btn {
-      background: #141414;
-      border: 1px solid #2b2b2b;
-      color: #fff;
-      font-size: 11px;
+    .theme-pill-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.08em;
-      padding: 4px 10px;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      padding: 5px 10px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       cursor: pointer;
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
     }
 
-    .timer-pill-btn.running {
-      border-color: var(--zune-pink);
-      color: var(--zune-pink);
+    .theme-pill-btn:active {
+      opacity: 0.75;
+    }
+
+    .theme-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--zune-gradient);
+      display: inline-block;
     }
 
     /* Pivot Title Strip */
     .pivot-strip {
       display: flex;
-      gap: 22px;
+      gap: 20px;
       overflow-x: auto;
       scrollbar-width: none;
       padding-bottom: 6px;
@@ -133,7 +221,7 @@
     .pivot-tab {
       font-size: 36px;
       font-weight: 200;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
       line-height: 1.05;
       color: var(--text-muted);
       white-space: nowrap;
@@ -146,15 +234,17 @@
       font-weight: 300;
     }
 
-    /* FitNotes-style Day Navigation Strip */
+    /* FitNotes Day Navigation Strip (Swipe Left / Right Supported) */
     .day-nav-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 8px 18px;
-      border-top: 1px solid #1b1b1b;
-      border-bottom: 1px solid #1b1b1b;
-      background: #070707;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-subbar);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
       flex-shrink: 0;
     }
 
@@ -162,10 +252,10 @@
       background: none;
       border: none;
       color: var(--zune-pink);
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 300;
       line-height: 1;
-      padding: 2px 10px;
+      padding: 2px 12px;
       cursor: pointer;
     }
 
@@ -175,10 +265,10 @@
     }
 
     .day-title {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 400;
-      letter-spacing: 0.03em;
-      color: #fff;
+      letter-spacing: 0.02em;
+      color: var(--text-primary);
     }
 
     .day-subtitle {
@@ -187,29 +277,6 @@
       text-transform: uppercase;
       color: var(--text-secondary);
       margin-top: 1px;
-    }
-
-    /* Collapsible Rest Timer Drawer */
-    .rest-drawer {
-      background: #121212;
-      border-bottom: 1px solid #2c2c2c;
-      padding: 8px 18px;
-      display: none;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      flex-shrink: 0;
-    }
-
-    .rest-drawer.open {
-      display: flex;
-    }
-
-    .rest-clock {
-      font-size: 20px;
-      font-weight: 300;
-      color: var(--zune-pink);
-      font-variant-numeric: tabular-nums;
     }
 
     /* Panes Viewport */
@@ -240,17 +307,1677 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 44px;
+      gap: 38px;
       padding: 20px 0;
-      transition: transform 0.18s ease, opacity 0.18s ease;
     }
 
     .empty-action-btn {
       background: none;
       border: none;
-      color: #fff;
+      color: var(--text-primary);
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 14px;
-      
+      cursor: pointer;
+      padding: 12px 24px;
+    }
+
+    .empty-action-btn:active {
+      transform: scale(0.96);
+      opacity: 0.85;
+    }
+
+    .metro-action-tile {
+      width: 68px;
+      height: 68px;
+      border: 2px solid var(--zune-pink);
+      background: var(--tile-action-bg);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .metro-action-tile.secondary {
+      border-color: var(--zune-orange);
+      background: var(--tile-action-sec-bg);
+    }
+
+    .empty-action-label {
+      font-size: 20px;
+      font-weight: 300;
+      letter-spacing: 0.01em;
+      color: var(--text-primary);
+    }
+
+    .swipe-hint {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Slide animation when swiping days */
+    @keyframes slideFromRight {
+      from { opacity: 0.35; transform: translateX(28px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideFromLeft {
+      from { opacity: 0.35; transform: translateX(-28px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .anim-next { animation: slideFromRight 0.2s ease-out; }
+    .anim-prev { animation: slideFromLeft 0.2s ease-out; }
+
+    /* Metro Tiles & Cards */
+    .metro-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--zune-orange);
+      margin: 14px 0 8px 0;
+    }
+
+    .exercise-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-left: 3px solid var(--zune-pink);
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+    }
+
+    .exercise-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .exercise-name {
+      font-size: 19px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .exercise-meta {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .set-row {
+      display: grid;
+      grid-template-columns: 30px 1fr 1fr 44px 30px;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 0;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 15px;
+    }
+
+    .set-num {
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .set-val {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-primary);
+    }
+
+    .set-val span {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-left: 2px;
+      text-transform: uppercase;
+    }
+
+    .set-note {
+      grid-column: 2 / -1;
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-style: italic;
+      padding-bottom: 2px;
+    }
+
+    .pr-badge {
+      display: inline-block;
+      background: var(--zune-gradient);
+      color: #ffffff;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      padding: 2px 5px;
+      text-transform: uppercase;
+    }
+
+    .icon-btn {
+      background: none;
+      border: 1px solid var(--border-strong);
+      color: var(--text-secondary);
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .quick-add-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .metro-input {
+      background: var(--bg-input);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      padding: 8px 10px;
+      font-size: 15px;
+      width: 100%;
+      border-radius: 0;
+    }
+
+    .metro-input:focus {
+      outline: none;
+      border-color: var(--zune-pink);
+    }
+
+    .metro-btn {
+      background: var(--zune-gradient);
+      border: none;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 14px;
+      cursor: pointer;
+    }
+
+    .metro-btn-outline {
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 9px 12px;
+      cursor: pointer;
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+    }
+
+    .tile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .metro-tile {
+      padding: 14px;
+      min-height: 82px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .tile-pink { background: #ec008c; color: #ffffff; }
+    .tile-orange { background: #f26522; color: #ffffff; }
+    .tile-cyan { background: #008299; color: #ffffff; }
+    .tile-dark {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+    }
+
+    .tile-value {
+      font-size: 26px;
+      font-weight: 300;
+      line-height: 1;
+    }
+
+    .tile-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    /* Exercise Library List + Zune Letter Tiles */
+    .letter-tile {
+      width: 42px;
+      height: 42px;
+      background: var(--zune-gradient);
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 14px 0 8px 0;
+      text-transform: lowercase;
+      cursor: pointer;
+    }
+
+    .lib-item {
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .lib-item-title {
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--text-primary);
+    }
+
+    .lib-item-cat {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--zune-orange);
+    }
+
+    /* Windows Phone 7 Bottom Application Bar (Clean 4-Button Layout) */
+    .wp-appbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      max-width: 460px;
+      margin: 0 auto;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background: var(--bg-appbar);
+      border-top: 1px solid var(--border-subtle);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: calc(66px + env(safe-area-inset-bottom, 0px));
+      z-index: 30;
+    }
+
+    .appbar-action {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 4px 12px;
+    }
+
+    .circle-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px solid var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .appbar-label {
+      font-size: 9px;
+      text-transform: lowercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+    }
+
+    /* Jump, New Exercise & Date Modal Overlays */
+    .jump-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-overlay);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      z-index: 100;
+      display: none;
+      padding: calc(24px + env(safe-area-inset-top, 0px)) 20px 24px 20px;
+      overflow-y: auto;
+    }
+
+    .jump-overlay.open {
+      display: block;
+    }
+
+    .jump-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    .jump-cell {
+      aspect-ratio: 1;
+      background: var(--zune-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 300;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    .jump-cell.empty {
+      background: var(--bg-card);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    /* Progress Bar for Large CSV Imports */
+    .csv-progress-wrap {
+      width: 100%;
+      height: 6px;
+      background: var(--border-subtle);
+      margin-top: 10px;
+      overflow: hidden;
+      display: none;
+    }
+    .csv-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--zune-gradient);
+      transition: width 0.15s ease;
+    }
+
+    /* Toast Notification Banner */
+    .zune-toast {
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+      max-width: 428px;
+      margin: 0 auto;
+      background: var(--zune-gradient);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 11px 14px;
+      z-index: 120;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .zune-toast.show {
+      opacity: 1;
+    }
+
+    canvas {
+      width: 100%;
+      height: 190px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<div id="appShell">
+  <header class="metro-header">
+    <div class="brand-bar">
+      <div class="brand-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <path d="M4 4H20L12 12L20 20H4L12 12L4 4Z" stroke="url(#zuneFitGrad)" stroke-width="2.6" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="zuneFitGrad" x1="4" y1="4" x2="20" y2="20" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#EC008C"/>
+              <stop offset="1" stop-color="#F26522"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>ZUNEFIT // STUDIO</span>
+      </div>
+      <button class="theme-pill-btn" id="themeCycleBtn" onclick="cycleTheme()">
+        <span class="theme-dot"></span>
+        <span id="themeLabel">THEME: DARK</span>
+      </button>
+    </div>
+    <nav class="pivot-strip" id="pivotStrip">
+      <div class="pivot-tab active" data-pane="0" onclick="switchPane(0)">workout</div>
+      <div class="pivot-tab" data-pane="1" onclick="switchPane(1)">exercises</div>
+      <div class="pivot-tab" data-pane="2" onclick="switchPane(2)">routines</div>
+      <div class="pivot-tab" data-pane="3" onclick="switchPane(3)">charts</div>
+      <div class="pivot-tab" data-pane="4" onclick="switchPane(4)">data</div>
+    </nav>
+  </header>
+
+  <!-- FitNotes Day Navigation Strip (Swipe Left / Right Supported) -->
+  <div class="day-nav-bar" id="dayNavBar">
+    <button class="day-arrow" aria-label="Previous day" onclick="shiftDate(-1)">‹</button>
+    <div class="day-title-wrap" onclick="jumpToToday()" title="Tap to return to Today">
+      <div class="day-title" id="activeDateLabel">Today</div>
+      <div class="day-subtitle" id="activeDateSub"></div>
+    </div>
+    <button class="day-arrow" aria-label="Next day" onclick="shiftDate(1)">›</button>
+  </div>
+
+  <main class="panes-container">
+    <!-- PANE 0: WORKOUT LOG (SWIPE LEFT/RIGHT FOR DAYS) -->
+    <section class="pane active" id="pane-0">
+      <div id="workoutExercisesContainer" style="height:100%;"></div>
+    </section>
+
+    <!-- PANE 1: EXERCISE LIBRARY -->
+    <section class="pane" id="pane-1">
+      <div style="display:flex; gap:8px; margin-bottom:10px;">
+        <input id="exerciseSearch" class="metro-input" placeholder="filter exercises or muscle..." oninput="renderExerciseLibrary()" />
+        <button class="metro-btn" onclick="openNewExerciseModal()">+ NEW</button>
+      </div>
+      <div id="categoryFilterBar" style="display:flex; gap:6px; overflow-x:auto; padding-bottom:8px;"></div>
+      <div id="exerciseLibraryList"></div>
+    </section>
+
+    <!-- PANE 2: PPL + SHOULDERS/TRICEPS ROUTINES -->
+    <section class="pane" id="pane-2">
+      <div class="metro-section-label">ONE-TAP SPLIT TEMPLATES</div>
+      <div id="routinesContainer"></div>
+    </section>
+
+    <!-- PANE 3: ANALYTICS & 1RM PROGRESS -->
+    <section class="pane" id="pane-3">
+      <div class="metro-section-label">SELECT EXERCISE FOR PROGRESSION</div>
+      <select id="progressExerciseSelect" class="metro-input" style="margin-bottom:12px;" onchange="renderProgressChart()"></select>
+      <div class="tile-grid" id="progressTiles"></div>
+      <div class="metro-section-label">ESTIMATED 1RM & MAX WEIGHT TREND</div>
+      <canvas id="progressCanvas" width="600" height="220"></canvas>
+      <div class="metro-section-label">RECENT HISTORY</div>
+      <div id="exerciseHistoryList"></div>
+    </section>
+
+    <!-- PANE 4: FITNOTES .CSV IMPORT / EXPORT & HISTORY STATS -->
+    <section class="pane" id="pane-4">
+      <div class="metro-section-label">DATABASE SUMMARY</div>
+      <div class="tile-grid" id="dbStatsTiles"></div>
+
+      <div class="metro-section-label">IMPORT FITNOTES .CSV WORKOUT HISTORY</div>
+      <div class="exercise-card">
+        <div class="exercise-name" style="font-size:17px;">Restore FitNotes Backup (.csv)</div>
+        <div class="exercise-meta" style="margin:6px 0 12px 0; text-transform:none; letter-spacing:0.02em; line-height:1.4;">
+          Supports full FitNotes CSV exports (Date, Exercise, Category, Weight (kg), Weight (lbs), Reps, Distance, Distance Unit, Time, Notes, Kind) including 50,000+ rows.
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <label class="metro-btn" style="display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex:1;">
+            <span>IMPORT FITNOTES .CSV</span>
+            <input type="file" id="csvFileInput" accept=".csv,text/csv" style="display:none;" onchange="handleCSVFileSelect(event)" />
+          </label>
+          <select id="importModeSelect" class="metro-input" style="width:auto; font-size:12px;">
+            <option value="merge">MERGE WITH EXISTING</option>
+            <option value="replace">REPLACE ALL DATA</option>
+          </select>
+        </div>
+        <div class="csv-progress-wrap" id="csvProgressWrap">
+          <div class="csv-progress-bar" id="csvProgressBar"></div>
+        </div>
+        <div class="exercise-meta" id="csvStatusText" style="margin-top:8px;"></div>
+      </div>
+
+      <div class="metro-section-label">EXPORT FITNOTES .CSV</div>
+      <div class="exercise-card" style="border-left-color: var(--zune-orange);">
+        <div class="exercise-name" style="font-size:17px;">Download FitNotes-Compatible CSV</div>
+        <div class="exercise-meta" style="margin:6px 0 12px 0; text-transform:none; letter-spacing:0.02em; line-height:1.4;">
+          Exports every logged set with exact FitNotes columns, kg/lbs conversion, notes, and Kind codes so you can re-import into FitNotes or ZuneFit anytime.
+        </div>
+        <button class="metro-btn-outline" style="width:100%;" onclick="exportFitNotesCSV()">EXPORT WORKOUT HISTORY (.CSV)</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Windows Phone 7 Bottom Application Bar (Clean 4 Actions, No Body Button) -->
+  <footer class="wp-appbar">
+    <button class="appbar-action" onclick="openDatePickerModal()">
+      <div class="circle-icon">▦</div>
+      <span class="appbar-label">calendar</span>
+    </button>
+    <button class="appbar-action" onclick="switchPane(1)">
+      <div class="circle-icon">+</div>
+      <span class="appbar-label">start</span>
+    </button>
+    <button class="appbar-action" onclick="switchPane(3)">
+      <div class="circle-icon">↗</div>
+      <span class="appbar-label">charts</span>
+    </button>
+    <button class="appbar-action" onclick="switchPane(4)">
+      <div class="circle-icon">⇄</div>
+      <span class="appbar-label">csv data</span>
+    </button>
+  </footer>
+</div>
+
+<!-- Zune Alphabet Jump Overlay -->
+<div class="jump-overlay" id="jumpOverlay" onclick="closeJumpOverlay()">
+  <div class="jump-grid" id="jumpGrid" onclick="event.stopPropagation()"></div>
+</div>
+
+<!-- Date Picker Modal -->
+<div class="jump-overlay" id="dateOverlay" onclick="closeDatePickerModal()">
+  <div class="exercise-card" style="max-width:340px; margin:60px auto;" onclick="event.stopPropagation()">
+    <div class="metro-section-label" style="margin-top:0;">JUMP TO WORKOUT DATE</div>
+    <input type="date" id="modalDateInput" class="metro-input" style="margin-bottom:12px;" />
+    <div style="display:flex; gap:8px;">
+      <button class="metro-btn" style="flex:1;" onclick="applyModalDate()">GO TO DATE</button>
+      <button class="metro-btn-outline" onclick="jumpToToday(); closeDatePickerModal();">TODAY</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Exercise Modal -->
+<div class="jump-overlay" id="newExerciseOverlay" onclick="closeNewExerciseModal()">
+  <div class="exercise-card" style="max-width:360px; margin:60px auto;" onclick="event.stopPropagation()">
+    <div class="metro-section-label" style="margin-top:0;">CREATE NEW EXERCISE</div>
+    <div class="exercise-meta" style="margin-bottom:4px;">EXERCISE NAME</div>
+    <input type="text" id="newExNameInput" class="metro-input" placeholder="e.g., Cable Lateral Raise" style="margin-bottom:10px;" />
+    <div class="exercise-meta" style="margin-bottom:4px;">MUSCLE GROUP</div>
+    <select id="newExCatSelect" class="metro-input" style="margin-bottom:14px;">
+      <option value="Chest">Chest</option>
+      <option value="Back">Back</option>
+      <option value="Legs">Legs</option>
+      <option value="Shoulders">Shoulders</option>
+      <option value="Triceps">Triceps</option>
+      <option value="Biceps">Biceps</option>
+      <option value="Calves">Calves</option>
+      <option value="Abs">Abs</option>
+      <option value="Cardio">Cardio</option>
+      <option value="Forearms">Forearms</option>
+    </select>
+    <div style="display:flex; gap:8px;">
+      <button class="metro-btn" style="flex:1;" onclick="saveNewExercise()">ADD EXERCISE</button>
+      <button class="metro-btn-outline" onclick="closeNewExerciseModal()">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Message -->
+<div class="zune-toast" id="zuneToast"></div>
+
+<script>
+  /* ==========================================================================
+     1. THEME ENGINE (DARK / LIGHT / FROSTED)
+     ========================================================================== */
+  const THEME_ORDER = ['dark', 'light', 'frosted'];
+  const THEME_STORAGE_KEY = 'zunefit_theme_v1';
+
+  function applyTheme(themeName) {
+    const valid = THEME_ORDER.includes(themeName) ? themeName : 'dark';
+    document.documentElement.setAttribute('data-theme', valid);
+    const labelEl = document.getElementById('themeLabel');
+    if (labelEl) {
+      labelEl.textContent = `THEME: ${valid.toUpperCase()}`;
+    }
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, valid);
+    } catch (e) {}
+    if (state && state.activePane === 3) {
+      renderProgressChart();
+    }
+  }
+
+  function cycleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = THEME_ORDER[(THEME_ORDER.indexOf(current) + 1) % THEME_ORDER.length];
+    applyTheme(next);
+  }
+
+  /* ==========================================================================
+     2. INDEXEDDB HIGH-CAPACITY STORAGE (SUPPORTS 57,000+ FITNOTES CSV ROWS)
+     ========================================================================== */
+  const IDB_NAME = 'ZuneFitIndexedDB';
+  const IDB_STORE = 'keyval';
+  const DB_KEY = 'zunefit_master_v2';
+
+  const DEFAULT_EXERCISES = [
+    { id: 'Barbell Bench Press', name: 'Barbell Bench Press', category: 'Chest' },
+    { id: 'Incline Dumbbell Press', name: 'Incline Dumbbell Press', category: 'Chest' },
+    { id: 'Cable Chest Fly', name: 'Cable Chest Fly', category: 'Chest' },
+    { id: 'Lat Pulldown', name: 'Lat Pulldown', category: 'Back' },
+    { id: 'Barbell Bent-Over Row', name: 'Barbell Bent-Over Row', category: 'Back' },
+    { id: 'Seated Cable Row', name: 'Seated Cable Row', category: 'Back' },
+    { id: 'Barbell Back Squat', name: 'Barbell Back Squat', category: 'Legs' },
+    { id: 'Leg Press', name: 'Leg Press', category: 'Legs' },
+    { id: 'Romanian Deadlift', name: 'Romanian Deadlift', category: 'Legs' },
+    { id: 'Seated Leg Curl', name: 'Seated Leg Curl', category: 'Legs' },
+    { id: 'Seated Dumbbell Shoulder Press', name: 'Seated Dumbbell Shoulder Press', category: 'Shoulders' },
+    { id: 'Dumbbell Lateral Raise', name: 'Dumbbell Lateral Raise', category: 'Shoulders' },
+    { id: 'Cable Tricep Pushdown', name: 'Cable Tricep Pushdown', category: 'Triceps' },
+    { id: 'EZ-Bar Skullcrusher', name: 'EZ-Bar Skullcrusher', category: 'Triceps' },
+    { id: 'Incline Dumbbell Curl', name: 'Incline Dumbbell Curl', category: 'Biceps' },
+    { id: 'Hammer Curl', name: 'Hammer Curl', category: 'Biceps' },
+    { id: 'Hanging Leg Raise', name: 'Hanging Leg Raise', category: 'Abs' },
+    { id: 'Cable Rope Crunch', name: 'Cable Rope Crunch', category: 'Abs' }
+  ];
+
+  const DEFAULT_ROUTINES = [
+    {
+      name: 'Push Day (Chest / Front Delts)',
+      color: 'tile-pink',
+      exerciseIds: ['Barbell Bench Press', 'Incline Dumbbell Press', 'Cable Chest Fly', 'Dumbbell Lateral Raise', 'Cable Tricep Pushdown']
+    },
+    {
+      name: 'Pull Day (Back / Biceps)',
+      color: 'tile-orange',
+      exerciseIds: ['Lat Pulldown', 'Barbell Bent-Over Row', 'Seated Cable Row', 'Incline Dumbbell Curl', 'Hammer Curl']
+    },
+    {
+      name: 'Leg Day (Quads / Hamstrings)',
+      color: 'tile-cyan',
+      exerciseIds: ['Barbell Back Squat', 'Leg Press', 'Romanian Deadlift', 'Seated Leg Curl']
+    },
+    {
+      name: 'Shoulders, Triceps & Abs',
+      color: 'tile-dark',
+      exerciseIds: ['Seated Dumbbell Shoulder Press', 'Dumbbell Lateral Raise', 'Cable Tricep Pushdown', 'EZ-Bar Skullcrusher', 'Hanging Leg Raise', 'Cable Rope Crunch']
+    }
+  ];
+
+  function openIDB() {
+    return new Promise((resolve, reject) => {
+      if (!window.indexedDB) {
+        reject(new Error('IndexedDB unavailable'));
+        return;
+      }
+      const req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains(IDB_STORE)) {
+          db.createObjectStore(IDB_STORE);
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function idbGet(key) {
+    try {
+      const db = await openIDB();
+      return await new Promise((resolve, reject) => {
+        const tx = db.transaction(IDB_STORE, 'readonly');
+        const req = tx.objectStore(IDB_STORE).get(key);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    } catch (e) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        return null;
+      }
+    }
+  }
+
+  async function idbSet(key, val) {
+    try {
+      const db = await openIDB();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(IDB_STORE, 'readwrite');
+        tx.objectStore(IDB_STORE).put(val, key);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    } catch (e) {
+      try {
+        localStorage.setItem(key, JSON.stringify(val));
+      } catch (err) {
+        console.warn('Storage quota reached:', err);
+      }
+    }
+  }
+
+  function getOffsetISO(offsetDays = 0) {
+    const d = new Date();
+    d.setDate(d.getDate() + offsetDays);
+    const tzOffset = d.getTimezoneOffset();
+    return new Date(d.getTime() - tzOffset * 60000).toISOString().split('T')[0];
+  }
+
+  let toastTimer = null;
+  function showToast(msg) {
+    const el = document.getElementById('zuneToast');
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+  }
+
+  var state = {
+    activeDate: getOffsetISO(0), // Always opens cleanly on Today
+    activePane: 0,
+    selectedCategory: 'All',
+    slideDir: '',
+    db: {
+      exercises: DEFAULT_EXERCISES.slice(),
+      routines: DEFAULT_ROUTINES.slice(),
+      logs: {}
+    }
+  };
+
+  async function saveDB() {
+    await idbSet(DB_KEY, state.db);
+  }
+
+  /* ==========================================================================
+     3. DATE HEADER & HORIZONTAL SWIPE NAVIGATION
+     ========================================================================== */
+  function updateDateHeader() {
+    const today = getOffsetISO(0);
+    const yesterday = getOffsetISO(-1);
+    const tomorrow = getOffsetISO(1);
+    const iso = state.activeDate;
+
+    const [y, m, d] = iso.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    const fullStr = dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
+
+    const titleEl = document.getElementById('activeDateLabel');
+    const subEl = document.getElementById('activeDateSub');
+    if (!titleEl || !subEl) return;
+
+    if (iso === today) {
+      titleEl.textContent = 'Today';
+      subEl.textContent = fullStr;
+    } else if (iso === yesterday) {
+      titleEl.textContent = 'Yesterday';
+      subEl.textContent = fullStr;
+    } else if (iso === tomorrow) {
+      titleEl.textContent = 'Tomorrow';
+      subEl.textContent = fullStr;
+    } else {
+      titleEl.textContent = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      subEl.textContent = dt.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+    }
+  }
+
+  function shiftDate(delta) {
+    const [y, m, d] = state.activeDate.split('-').map(Number);
+    const dt = new Date(y, m - 1, d + delta);
+    state.activeDate = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+    state.slideDir = delta > 0 ? 'anim-next' : 'anim-prev';
+    updateDateHeader();
+    if (state.activePane !== 0) {
+      switchPane(0);
+    } else {
+      renderWorkoutPane();
+    }
+  }
+
+  function jumpToToday() {
+    const today = getOffsetISO(0);
+    if (state.activeDate !== today) {
+      state.slideDir = state.activeDate < today ? 'anim-next' : 'anim-prev';
+      state.activeDate = today;
+      updateDateHeader();
+    }
+    if (state.activePane !== 0) switchPane(0);
+    else renderWorkoutPane();
+  }
+
+  function initDaySwipeGestures() {
+    let startX = 0;
+    let startY = 0;
+    let tracking = false;
+
+    const attachSwipe = (el) => {
+      if (!el) return;
+      el.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        const tag = (e.target.tagName || '').toLowerCase();
+        if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        tracking = true;
+      }, { passive: true });
+
+      el.addEventListener('touchend', (e) => {
+        if (!tracking) return;
+        tracking = false;
+        const touch = e.changedTouches[0];
+        const dx = touch.clientX - startX;
+        const dy = touch.clientY - startY;
+        if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+          if (dx < 0) shiftDate(1);
+          else shiftDate(-1);
+        }
+      }, { passive: true });
+    };
+
+    attachSwipe(document.getElementById('pane-0'));
+    attachSwipe(document.getElementById('dayNavBar'));
+  }
+
+  function switchPane(idx) {
+    state.activePane = idx;
+    document.querySelectorAll('.pivot-tab').forEach((el, i) => {
+      el.classList.toggle('active', i === idx);
+      if (i === idx) {
+        try {
+          el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        } catch (e) {}
+      }
+    });
+    document.querySelectorAll('.pane').forEach((el, i) => {
+      el.classList.toggle('active', i === idx);
+    });
+    if (idx === 0) renderWorkoutPane();
+    if (idx === 1) renderExerciseLibrary();
+    if (idx === 2) renderRoutinesPane();
+    if (idx === 3) renderProgressPane();
+    if (idx === 4) renderDataPane();
+  }
+
+  /* ==========================================================================
+     4. WORKOUT LOGGING & PR DETECTION
+     ========================================================================== */
+  function getDayEntries(dateIso) {
+    return state.db.logs[dateIso] || [];
+  }
+
+  function ensureDayEntries(dateIso) {
+    if (!state.db.logs[dateIso]) state.db.logs[dateIso] = [];
+    return state.db.logs[dateIso];
+  }
+
+  function calcE1RM(weight, reps) {
+    if (!weight || !reps) return 0;
+    return Math.round(weight * (1 + reps / 30));
+  }
+
+  function getHistoricalBestWeight(exId, excludeDate) {
+    let maxW = 0;
+    const dates = Object.keys(state.db.logs);
+    for (let i = 0; i < dates.length; i++) {
+      const date = dates[i];
+      if (date === excludeDate) continue;
+      const entries = state.db.logs[date];
+      for (let j = 0; j < entries.length; j++) {
+        const entry = entries[j];
+        if (entry.exerciseId === exId || entry.name === exId) {
+          for (let k = 0; k < entry.sets.length; k++) {
+            const w = entry.sets[k].weight || 0;
+            if (w > maxW) maxW = w;
+          }
+        }
+      }
+    }
+    return maxW;
+  }
+
+  function addExerciseToWorkout(exId) {
+    const exObj = state.db.exercises.find(x => x.id === exId || x.name === exId);
+    const entries = ensureDayEntries(state.activeDate);
+    if (!entries.some(e => e.exerciseId === exId)) {
+      entries.push({
+        exerciseId: exId,
+        name: exObj ? exObj.name : exId,
+        category: exObj ? exObj.category : 'General',
+        sets: []
+      });
+      saveDB();
+    }
+    switchPane(0);
+  }
+
+  function logSet(entryIdx) {
+    const wInput = document.getElementById(`w_idx_${entryIdx}`);
+    const rInput = document.getElementById(`r_idx_${entryIdx}`);
+    const weight = parseFloat(wInput ? wInput.value : 0) || 0;
+    const reps = parseInt(rInput ? rInput.value : 0, 10) || 0;
+    if (reps <= 0) {
+      showToast('Enter reps before logging set');
+      return;
+    }
+
+    const entries = ensureDayEntries(state.activeDate);
+    const target = entries[entryIdx];
+    if (target) {
+      target.sets.push({
+        weight,
+        weightKg: Math.round(weight * 0.45359237 * 100) / 100,
+        reps,
+        kind: 'wr'
+      });
+      saveDB();
+      renderWorkoutPane();
+    }
+  }
+
+  function deleteSet(entryIdx, setIdx) {
+    const entries = getDayEntries(state.activeDate);
+    const target = entries[entryIdx];
+    if (target) {
+      target.sets.splice(setIdx, 1);
+      saveDB();
+      renderWorkoutPane();
+    }
+  }
+
+  function removeExerciseFromDay(entryIdx) {
+    const entries = getDayEntries(state.activeDate);
+    entries.splice(entryIdx, 1);
+    if (entries.length === 0) {
+      delete state.db.logs[state.activeDate];
+    }
+    saveDB();
+    renderWorkoutPane();
+  }
+
+  function formatSetDisplay(s) {
+    if (s.kind === 'dt') {
+      const dist = s.distance ? `${s.distance} ${s.distanceUnit || 'mi'}` : '';
+      const tm = s.time ? `${s.time}` : '';
+      return { col1: dist || 'Cardio', col1Unit: '', col2: tm || 'Done', col2Unit: '' };
+    }
+    if (s.kind === 't') {
+      return { col1: s.time || '00:00', col1Unit: 'time', col2: s.weight ? `${s.weight}` : 'Bodyweight', col2Unit: s.weight ? 'lbs' : '' };
+    }
+    if (s.kind === 'r' && (!s.weight || s.weight === 0)) {
+      return { col1: 'BW', col1Unit: '', col2: `${s.reps || 0}`, col2Unit: 'reps' };
+    }
+    return { col1: `${s.weight || 0}`, col1Unit: 'lbs', col2: `${s.reps || 0}`, col2Unit: 'reps' };
+  }
+
+  function renderWorkoutPane() {
+    const entries = getDayEntries(state.activeDate);
+    const container = document.getElementById('workoutExercisesContainer');
+    if (!container) return;
+    const animClass = state.slideDir || '';
+    state.slideDir = '';
+
+    // Clean FitNotes empty day view on fresh launch / unlogged days
+    if (entries.length === 0) {
+      container.innerHTML = `
+        <div class="empty-day-stage ${animClass}">
+          <button class="empty-action-btn" onclick="switchPane(1)">
+            <div class="metro-action-tile">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--zune-pink)" stroke-width="1.8">
+                <rect x="3" y="3" width="13" height="13" />
+                <path d="M8 19h13V6" />
+                <line x1="9.5" y1="6.5" x2="9.5" y2="12.5" />
+                <line x1="6.5" y1="9.5" x2="12.5" y2="9.5" />
+              </svg>
+            </div>
+            <span class="empty-action-label">Start New Workout</span>
+          </button>
+
+          <button class="empty-action-btn" onclick="copyLastWorkout()">
+            <div class="metro-action-tile secondary">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--zune-orange)" stroke-width="1.8">
+                <rect x="8" y="8" width="12" height="13" />
+                <path d="M4 16V4h11" />
+              </svg>
+            </div>
+            <span class="empty-action-label">Copy Previous Workout</span>
+          </button>
+
+          <div class="swipe-hint">‹ swipe left or right to change day ›</div>
+        </div>
+      `;
+      return;
+    }
+
+    let totalSets = 0;
+    let totalVolume = 0;
+    entries.forEach(entry => {
+      entry.sets.forEach(s => {
+        totalSets++;
+        totalVolume += ((s.weight || 0) * (s.reps || 0));
+      });
+    });
+
+    const summaryHtml = `
+      <div class="tile-grid" style="margin-top:4px;">
+        <div class="metro-tile tile-pink">
+          <div class="tile-value">${totalSets}</div>
+          <div class="tile-label">sets logged</div>
+        </div>
+        <div class="metro-tile tile-dark">
+          <div class="tile-value">${Math.round(totalVolume).toLocaleString()}</div>
+          <div class="tile-label">volume (lbs)</div>
+        </div>
+      </div>
+    `;
+
+    const cardsHtml = entries.map((entry, entryIdx) => {
+      const ex = state.db.exercises.find(x => x.id === entry.exerciseId || x.name === entry.exerciseId) || {
+        name: entry.name || entry.exerciseId,
+        category: entry.category || 'General'
+      };
+      const priorBest = getHistoricalBestWeight(ex.id, state.activeDate);
+      const lastSet = entry.sets[entry.sets.length - 1] || { weight: priorBest || '', reps: '' };
+
+      const setsHtml = entry.sets.map((s, setIdx) => {
+        const isPR = (s.weight || 0) > 0 && s.weight > priorBest;
+        const disp = formatSetDisplay(s);
+        return `
+          <div class="set-row">
+            <div class="set-num">#${setIdx + 1}</div>
+            <div class="set-val">${disp.col1}<span>${disp.col1Unit}</span></div>
+            <div class="set-val">${disp.col2}<span>${disp.col2Unit}</span></div>
+            <div>${isPR ? '<span class="pr-badge">PR</span>' : ''}</div>
+            <button class="icon-btn" onclick="deleteSet(${entryIdx}, ${setIdx})">×</button>
+          </div>
+          ${s.notes ? `<div class="set-row" style="padding-top:0; border-top:none;"><div class="set-note">“${escapeHtml(s.notes)}”</div></div>` : ''}
+        `;
+      }).join('');
+
+      return `
+        <div class="exercise-card">
+          <div class="exercise-card-header">
+            <div>
+              <div class="exercise-name">${escapeHtml(ex.name)}</div>
+              <div class="exercise-meta">${escapeHtml(ex.category)} ${priorBest ? `• PREV MAX: ${priorBest} LBS` : ''}</div>
+            </div>
+            <button class="icon-btn" onclick="removeExerciseFromDay(${entryIdx})">🗑</button>
+          </div>
+          ${setsHtml}
+          <div class="quick-add-row">
+            <input id="w_idx_${entryIdx}" type="number" step="2.5" class="metro-input" placeholder="lbs" value="${lastSet.weight || ''}" />
+            <input id="r_idx_${entryIdx}" type="number" class="metro-input" placeholder="reps" value="${lastSet.reps || ''}" />
+            <button class="metro-btn" onclick="logSet(${entryIdx})">LOG</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML = `<div class="${animClass}">${summaryHtml}${cardsHtml}</div>`;
+  }
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* ==========================================================================
+     5. EXERCISE LIBRARY & ZUNE ALPHABET JUMP
+     ========================================================================== */
+  function renderExerciseLibrary() {
+    const catSet = new Set(['All', 'Chest', 'Back', 'Legs', 'Shoulders', 'Triceps', 'Biceps', 'Calves', 'Abs', 'Cardio']);
+    state.db.exercises.forEach(ex => { if (ex.category) catSet.add(ex.category); });
+    const categories = Array.from(catSet);
+
+    document.getElementById('categoryFilterBar').innerHTML = categories.map(cat => `
+      <button class="${state.selectedCategory === cat ? 'metro-btn' : 'metro-btn-outline'}"
+              style="padding:5px 10px; white-space:nowrap;"
+              onclick="state.selectedCategory='${cat.replace(/'/g, "\\'")}'; renderExerciseLibrary();">
+        ${escapeHtml(cat)}
+      </button>
+    `).join('');
+
+    const q = (document.getElementById('exerciseSearch').value || '').toLowerCase();
+    const filtered = state.db.exercises
+      .filter(ex => state.selectedCategory === 'All' || ex.category === state.selectedCategory)
+      .filter(ex => ex.name.toLowerCase().includes(q) || (ex.category || '').toLowerCase().includes(q))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    let currentLetter = '';
+    const html = filtered.map(ex => {
+      const first = ex.name.charAt(0).toLowerCase();
+      const letterKey = /[a-z]/.test(first) ? first : '#';
+      let header = '';
+      if (letterKey !== currentLetter) {
+        currentLetter = letterKey;
+        header = `<div class="letter-tile" id="letter_${letterKey}" onclick="openJumpOverlay()">${letterKey}</div>`;
+      }
+      return `
+        ${header}
+        <div class="lib-item" onclick="addExerciseToWorkout('${ex.id.replace(/'/g, "\\'")}')">
+          <div>
+            <div class="lib-item-title">${escapeHtml(ex.name)}</div>
+            <div class="lib-item-cat">${escapeHtml(ex.category)}</div>
+          </div>
+          <span style="color:var(--zune-pink); font-size:20px;">+</span>
+        </div>
+      `;
+    }).join('');
+
+    document.getElementById('exerciseLibraryList').innerHTML = html || '<div class="exercise-meta">No matching exercises.</div>';
+  }
+
+  function openNewExerciseModal() {
+    document.getElementById('newExNameInput').value = '';
+    document.getElementById('newExerciseOverlay').classList.add('open');
+  }
+
+  function closeNewExerciseModal() {
+    document.getElementById('newExerciseOverlay').classList.remove('open');
+  }
+
+  function saveNewExercise() {
+    const name = (document.getElementById('newExNameInput').value || '').trim();
+    const category = document.getElementById('newExCatSelect').value || 'Chest';
+    if (!name) {
+      showToast('Enter an exercise name');
+      return;
+    }
+    if (!state.db.exercises.some(e => e.name.toLowerCase() === name.toLowerCase())) {
+      state.db.exercises.push({ id: name, name, category });
+      saveDB();
+    }
+    closeNewExerciseModal();
+    renderExerciseLibrary();
+    showToast(`Added "${name}"`);
+  }
+
+  function openJumpOverlay() {
+    const letters = ['#', ...'abcdefghijklmnopqrstuvwxyz'.split('')];
+    const present = new Set(state.db.exercises.map(e => {
+      const c = e.name.charAt(0).toLowerCase();
+      return /[a-z]/.test(c) ? c : '#';
+    }));
+    document.getElementById('jumpGrid').innerHTML = letters.map(l => `
+      <div class="jump-cell ${present.has(l) ? '' : 'empty'}" onclick="jumpToLetter('${l}')">${l}</div>
+    `).join('');
+    document.getElementById('jumpOverlay').classList.add('open');
+  }
+
+  function closeJumpOverlay() {
+    document.getElementById('jumpOverlay').classList.remove('open');
+  }
+
+  function jumpToLetter(letter) {
+    closeJumpOverlay();
+    const pane = document.getElementById('pane-1');
+    const target = document.getElementById(`letter_${letter}`);
+    if (pane && target) {
+      pane.scrollTo({ top: target.offsetTop - 12, behavior: 'smooth' });
+    }
+  }
+
+  /* Date Picker Modal */
+  function openDatePickerModal() {
+    document.getElementById('modalDateInput').value = state.activeDate;
+    document.getElementById('dateOverlay').classList.add('open');
+  }
+
+  function closeDatePickerModal() {
+    document.getElementById('dateOverlay').classList.remove('open');
+  }
+
+  function applyModalDate() {
+    const val = document.getElementById('modalDateInput').value;
+    if (val) {
+      state.activeDate = val;
+      updateDateHeader();
+      switchPane(0);
+    }
+    closeDatePickerModal();
+  }
+
+  /* ==========================================================================
+     6. ROUTINES & COPY PREVIOUS WORKOUT
+     ========================================================================== */
+  function renderRoutinesPane() {
+    document.getElementById('routinesContainer').innerHTML = state.db.routines.map((rt, idx) => {
+      return `
+        <div class="metro-tile ${rt.color}" style="margin-bottom:10px;" onclick="loadRoutine(${idx})">
+          <div style="font-size:20px; font-weight:400;">${escapeHtml(rt.name)}</div>
+          <div style="font-size:12px; opacity:0.9; margin-top:6px;">${rt.exerciseIds.join(' • ')}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function loadRoutine(idx) {
+    const rt = state.db.routines[idx];
+    if (!rt) return;
+    const entries = ensureDayEntries(state.activeDate);
+    rt.exerciseIds.forEach(exName => {
+      if (!entries.some(e => e.exerciseId === exName)) {
+        const exObj = state.db.exercises.find(e => e.name === exName || e.id === exName);
+        entries.push({
+          exerciseId: exObj ? exObj.id : exName,
+          name: exName,
+          category: exObj ? exObj.category : 'General',
+          sets: []
+        });
+      }
+    });
+    saveDB();
+    switchPane(0);
+    showToast(`Loaded ${rt.name}`);
+  }
+
+  function copyLastWorkout() {
+    const dates = Object.keys(state.db.logs)
+      .filter(d => d !== state.activeDate && state.db.logs[d].length > 0)
+      .sort();
+    if (dates.length === 0) {
+      showToast('No previous workout found — tap Start New Workout');
+      return;
+    }
+    const prevDate = dates[dates.length - 1];
+    const cloned = state.db.logs[prevDate].map(entry => ({
+      exerciseId: entry.exerciseId,
+      name: entry.name || entry.exerciseId,
+      category: entry.category || 'General',
+      sets: entry.sets.map(s => ({ ...s }))
+    }));
+    state.db.logs[state.activeDate] = cloned;
+    saveDB();
+    switchPane(0);
+    showToast(`Copied workout from ${prevDate}`);
+  }
+
+  /* ==========================================================================
+     7. ANALYTICS & 1RM PROGRESSION CHARTS
+     ========================================================================== */
+  function renderProgressPane() {
+    const sel = document.getElementById('progressExerciseSelect');
+    const prevVal = sel.value;
+    sel.innerHTML = state.db.exercises
+      .slice()
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map(ex => `<option value="${escapeHtml(ex.id)}">${escapeHtml(ex.name)}</option>`)
+      .join('');
+    if (prevVal && state.db.exercises.some(e => e.id === prevVal)) {
+      sel.value = prevVal;
+    }
+    renderProgressChart();
+  }
+
+  function renderProgressChart() {
+    const sel = document.getElementById('progressExerciseSelect');
+    if (!sel) return;
+    const exId = sel.value;
+    const points = [];
+    let allTimeMax = 0;
+    let allTimeE1RM = 0;
+
+    const sortedDates = Object.keys(state.db.logs).sort();
+    for (let i = 0; i < sortedDates.length; i++) {
+      const date = sortedDates[i];
+      const entry = state.db.logs[date].find(e => e.exerciseId === exId || e.name === exId);
+      if (entry && entry.sets.length > 0) {
+        let dayMax = 0;
+        let dayE1RM = 0;
+        entry.sets.forEach(s => {
+          const w = s.weight || 0;
+          const r = s.reps || 0;
+          if (w > dayMax) dayMax = w;
+          const e1 = calcE1RM(w, r);
+          if (e1 > dayE1RM) dayE1RM = e1;
+        });
+        if (dayMax > allTimeMax) allTimeMax = dayMax;
+        if (dayE1RM > allTimeE1RM) allTimeE1RM = dayE1RM;
+        points.push({ date, max: dayMax, e1rm: dayE1RM, sets: entry.sets });
+      }
+    }
+
+    document.getElementById('progressTiles').innerHTML = `
+      <div class="metro-tile tile-orange">
+        <div class="tile-value">${allTimeMax} <span style="font-size:14px;">lbs</span></div>
+        <div class="tile-label">max weight pr</div>
+      </div>
+      <div class="metro-tile tile-pink">
+        <div class="tile-value">${allTimeE1RM} <span style="font-size:14px;">lbs</span></div>
+        <div class="tile-label">est. 1rm pr</div>
+      </div>
+    `;
+
+    const canvas = document.getElementById('progressCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+
+    if (points.length === 0) {
+      ctx.fillStyle = isLight ? '#666666' : '#888888';
+      ctx.font = '16px Segoe UI, sans-serif';
+      ctx.fillText('Log or import sets for this exercise to plot trend', 24, 110);
+      document.getElementById('exerciseHistoryList').innerHTML = '';
+      return;
+    }
+
+    // Plot recent 120 sessions cleanly if multi-year history exists
+    const plotPts = points.slice(-120);
+    const pad = 28;
+    const w = canvas.width - pad * 2;
+    const h = canvas.height - pad * 2;
+    const vals = plotPts.map(p => p.e1rm || p.max);
+    const minV = Math.min(...vals) * 0.92;
+    const maxV = Math.max(...vals) * 1.05 || 100;
+
+    ctx.strokeStyle = '#ec008c';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    plotPts.forEach((pt, i) => {
+      const val = pt.e1rm || pt.max;
+      const x = pad + (plotPts.length === 1 ? w / 2 : (i / (plotPts.length - 1)) * w);
+      const y = pad + h - ((val - minV) / (maxV - minV || 1)) * h;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    plotPts.forEach((pt, i) => {
+      const val = pt.e1rm || pt.max;
+      const x = pad + (plotPts.length === 1 ? w / 2 : (i / (plotPts.length - 1)) * w);
+      const y = pad + h - ((val - minV) / (maxV - minV || 1)) * h;
+      ctx.fillStyle = '#f26522';
+      ctx.fillRect(x - 3.5, y - 3.5, 7, 7);
+    });
+
+    document.getElementById('exerciseHistoryList').innerHTML = points.slice().reverse().slice(0, 30).map(pt => `
+      <div class="exercise-card">
+        <div class="exercise-meta">${pt.date} • EST 1RM: ${pt.e1rm} LBS</div>
+        <div style="margin-top:6px; font-size:14px;">
+          ${pt.sets.map(s => s.kind === 'dt' ? `${s.distance || ''}${s.distanceUnit || ''} ${s.time || ''}` : `${s.weight || 0}×${s.reps || 0}`).join('  |  ')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  /* ==========================================================================
+     8. FITNOTES .CSV IMPORT & EXPORT ENGINE (RFC-4180 COMPLIANT)
+     ========================================================================== */
+  function renderDataPane() {
+    const dates = Object.keys(state.db.logs);
+    let totalSets = 0;
+    dates.forEach(d => {
+      state.db.logs[d].forEach(ex => { totalSets += ex.sets.length; });
+    });
+
+    document.getElementById('dbStatsTiles').innerHTML = `
+      <div class="metro-tile tile-pink">
+        <div class="tile-value">${dates.length.toLocaleString()}</div>
+        <div class="tile-label">workout days</div>
+      </div>
+      <div class="metro-tile tile-orange">
+        <div class="tile-value">${totalSets.toLocaleString()}</div>
+        <div class="tile-label">total sets logged</div>
+      </div>
+    `;
+  }
+
+  function parseCSVRows(text) {
+    const rows = [];
+    let row = [];
+    let cur = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (inQuotes) {
+        if (ch === '"') {
+          if (text[i + 1] === '"') {
+            cur += '"';
+            i++;
+          } else {
+            inQuotes = false;
+          }
+        } else {
+          cur += ch;
+        }
+      } else {
+        if (ch === '"') {
+          inQuotes = true;
+        } else if (ch === ',') {
+          row.push(cur);
+          cur = '';
+        } else if (ch === '\n') {
+          row.push(cur);
+          rows.push(row);
+          row = [];
+          cur = '';
+        } else if (ch === '\r') {
+          // skip CR
+        } else {
+          cur += ch;
+        }
+      }
+    }
+    if (cur.length > 0 || row.length > 0) {
+      row.push(cur);
+      rows.push(row);
+    }
+    return rows;
+  }
+
+  async function handleCSVFileSelect(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+
+    const progressWrap = document.getElementById('csvProgressWrap');
+    const progressBar = document.getElementById('csvProgressBar');
+    const statusText = document.getElementById('csvStatusText');
+    const mode = document.getElementById('importModeSelect').value;
+
+    progressWrap.style.display = 'block';
+    progressBar.style.width = '18%';
+    statusText.textContent = `READING ${file.name.toUpperCase()}...`;
+
+    try {
+      const text = await file.text();
+      progressBar.style.width = '45%';
+      statusText.textContent = 'PARSING FITNOTES RECORDS...';
+
+      await new Promise(r => setTimeout(r, 20));
+      const rows = parseCSVRows(text);
+      if (rows.length < 2) {
+        statusText.textContent = 'CSV FILE IS EMPTY.';
+        return;
+      }
+
+      const headers = rows[0].map(h => h.trim().toLowerCase());
+      const col = (name) => headers.indexOf(name.toLowerCase());
+
+      const idxDate = col('date');
+      const idxEx = col('exercise');
+      const idxCat = col('category');
+      const idxKg = col('weight (kg)');
+      const idxLbs = col('weight (lbs)');
+      const idxReps = col('reps');
+      const idxDist = col('distance');
+      const idxDistUnit = col('distance unit');
+      const idxTime = col('time');
+      const idxNotes = col('notes');
+      const idxKind = col('kind');
+
+      if (idxDate === -1 || idxEx === -1) {
+        statusText.textContent = 'INVALID FITNOTES CSV HEADERS (MISSING DATE OR EXERCISE).';
+        return;
+      }
+
+      const targetLogs = mode === 'replace' ? {} : { ...state.db.logs };
+      const exerciseMap = new Map();
+      if (mode !== 'replace') {
+        state.db.exercises.forEach(e => exerciseMap.set(e.name, e));
+      }
+
+      let importedSets = 0;
+
+      for (let i = 1; i < rows.length; i++) {
+        const r = rows[i];
+        if (!r || r.length < 2) continue;
+        const date = (r[idxDate] || '').trim();
+        const exName = (r[idxEx] || '').trim();
+        if (!date || !exName) continue;
+
+        const category = idxCat !== -1 ? (r[idxCat] || 'General').trim() : 'General';
+        const wKg = idxKg !== -1 ? parseFloat(r[idxKg]) || 0 : 0;
+        let wLbs = idxLbs !== -1 ? parseFloat(r[idxLbs]) || 0 : 0;
+        if (!wLbs && wKg) {
+          wLbs = Math.round((wKg / 0.45359237) * 10) / 10;
+        }
+        const reps = idxReps !== -1 ? parseInt(r[idxReps], 10) || 0 : 0;
+        const distance = idxDist !== -1 ? (r[idxDist] || '').trim() : '';
+        const distanceUnit = idxDistUnit !== -1 ? (r[idxDistUnit] || '').trim() : '';
+        const time = idxTime !== -1 ? (r[idxTime] || '').trim() : '';
+        const notes = idxNotes !== -1 ? (r[idxNotes] || '').trim() : '';
+        const kind = idxKind !== -1 ? (r[idxKind] || 'wr').trim() : 'wr';
+
+        if (!exerciseMap.has(exName)) {
+          exerciseMap.set(exName, { id: exName, name: exName, category: category || 'General' });
+        }
+
+        if (!targetLogs[date]) targetLogs[date] = [];
+        let dayEx = targetLogs[date].find(e => e.name === exName || e.exerciseId === exName);
+        if (!dayEx) {
+          dayEx = { exerciseId: exName, name: exName, category: category || 'General', sets: [] };
+          targetLogs[date].push(dayEx);
+        }
+
+        dayEx.sets.push({
+          weight: wLbs,
+          weightKg: wKg || Math.round(wLbs * 0.45359237 * 100) / 100,
+          reps,
+          distance,
+          distanceUnit,
+          time,
+          notes,
+          kind: kind || 'wr'
+        });
+        importedSets++;
+      }
+
+      progressBar.style.width = '82%';
+      statusText.textContent = `SAVING ${importedSets.toLocaleString()} SETS TO DEVICE STORAGE...`;
+
+      state.db.logs = targetLogs;
+      state.db.exercises = Array.from(exerciseMap.values());
+      await saveDB();
+
+      progressBar.style.width = '100%';
+      const dateCount = Object.keys(state.db.logs).length;
+      statusText.textContent = `IMPORTED ${importedSets.toLocaleString()} SETS ACROSS ${dateCount.toLocaleString()} WORKOUT DAYS.`;
+      renderDataPane();
+      renderWorkoutPane();
+      showToast(`Imported ${importedSets.toLocaleString()} FitNotes sets!`);
+    } catch (err) {
+      statusText.textContent = `IMPORT ERROR: ${err.message}`;
+    } finally {
+      event.target.value = '';
+    }
+  }
+
+  function csvEscape(val) {
+    if (val === null || val === undefined) return '';
+    const str = String(val);
+    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+      return `"${str.replace(/"/g, '""')}"`;
+    }
+    return str;
+  }
+
+  function exportFitNotesCSV() {
+    const header = 'Date,Exercise,Category,Weight (kg),Weight (lbs),Reps,Distance,Distance Unit,Time,Notes,Kind';
+    const lines = [header];
+
+    const dates = Object.keys(state.db.logs).sort();
+    dates.forEach(date => {
+      const entries = state.db.logs[date];
+      entries.forEach(entry => {
+        const exName = entry.name || entry.exerciseId;
+        const cat = entry.category || 'General';
+        entry.sets.forEach(s => {
+          const wLbs = s.weight ? s.weight : '';
+          const wKg = s.weightKg ? s.weightKg : (s.weight ? Math.round(s.weight * 0.45359237 * 100) / 100 : '');
+          const reps = s.reps ? s.reps : '';
+          const dist = s.distance || '';
+          const distUnit = s.distanceUnit || '';
+          const tm = s.time || '';
+          const notes = s.notes || '';
+          const kind = s.kind || 'wr';
+          lines.push([
+            csvEscape(date),
+            csvEscape(exName),
+            csvEscape(cat),
+            csvEscape(wKg),
+            csvEscape(wLbs),
+            csvEscape(reps),
+            csvEscape(dist),
+            csvEscape(distUnit),
+            csvEscape(tm),
+            csvEscape(notes),
+            csvEscape(kind)
+          ].join(','));
+        });
+      });
+    });
+
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `FitNotes-${getOffsetISO(0)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast(`Exported ${lines.length - 1} sets to FitNotes CSV`);
+  }
+
+  /* ==========================================================================
+     9. IMMEDIATE SAFE BOOTSTRAP
+     ========================================================================== */
+  async function bootZuneFit() {
+    try {
+      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'dark';
+      applyTheme(savedTheme);
+    } catch (e) {
+      applyTheme('dark');
+    }
+
+    updateDateHeader();
+    renderWorkoutPane();
+    initDaySwipeGestures();
+
+    const stored = await idbGet(DB_KEY);
+    if (stored && stored.logs) {
+      state.db = {
+        exercises: Array.isArray(stored.exercises) && stored.exercises.length ? stored.exercises : DEFAULT_EXERCISES.slice(),
+        routines: Array.isArray(stored.routines) && stored.routines.length ? stored.routines : DEFAULT_ROUTINES.slice(),
+        logs: stored.logs || {}
+      };
+      renderWorkoutPane();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootZuneFit);
+  } else {
+    bootZuneFit();
+  }
+</script>
+</body>
+</html>
