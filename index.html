@@ -105,6 +105,43 @@
       --tile-tint-orange: rgba(255, 255, 255, 0.09);
     }
 
+    html[data-theme="glass"] {
+      --bg-shell:
+        radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.14) 0%, transparent 44%),
+        radial-gradient(circle at 84% 28%, rgba(0, 130, 153, 0.24) 0%, transparent 50%),
+        radial-gradient(circle at 22% 78%, rgba(236, 0, 140, 0.16) 0%, transparent 52%),
+        radial-gradient(circle at 82% 88%, rgba(255, 255, 255, 0.09) 0%, transparent 46%),
+        linear-gradient(155deg, #13161f 0%, #0b0d13 48%, #161923 100%);
+      --bg-header: rgba(24, 28, 38, 0.48);
+      --bg-subbar: rgba(255, 255, 255, 0.06);
+      --bg-card: rgba(255, 255, 255, 0.075);
+      --bg-card-alt: rgba(255, 255, 255, 0.11);
+      --bg-set-row: rgba(26, 30, 40, 0.72);
+      --bg-input: rgba(0, 0, 0, 0.28);
+      --bg-appbar: rgba(20, 24, 34, 0.64);
+      --bg-modal: rgba(14, 17, 24, 0.88);
+      --border-subtle: rgba(255, 255, 255, 0.18);
+      --border-strong: rgba(255, 255, 255, 0.28);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.76);
+      --text-muted: rgba(255, 255, 255, 0.42);
+      --zune-pink: #ec008c;
+      --zune-orange: #f26522;
+      --zune-gradient: linear-gradient(135deg, #ec008c 0%, #f26522 100%);
+      --wp-cyan: #00a3bf;
+      --wp-green: #00b300;
+      --glass-blur: blur(22px) saturate(160%);
+      --tile-tint-pink: rgba(255, 255, 255, 0.12);
+      --tile-tint-orange: rgba(255, 255, 255, 0.09);
+    }
+
+    html[data-theme="glass"] .exercise-card,
+    html[data-theme="glass"] .theme-choice-tile,
+    html[data-theme="glass"] .chart-canvas-wrap,
+    html[data-theme="glass"] .chart-dropdown-btn {
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 8px 24px rgba(0, 0, 0, 0.28);
+    }
+
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
@@ -701,7 +738,7 @@
        ========================================================================== */
     .theme-selector-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 8px;
       margin-bottom: 12px;
     }
@@ -1422,12 +1459,12 @@
 
   <!-- Swipeable Day Navigation Bar (Visible ONLY on Workout Pane) -->
   <div class="day-nav-bar" id="dayNavBar">
-    <button type="button" class="day-arrow" data-action="prev-day" onclick="shiftDate(-1)" aria-label="Previous day">‹</button>
-    <div class="day-title-wrap" data-action="jump-today" onclick="jumpToToday()">
+    <button type="button" class="day-arrow" onclick="shiftDate(-1)" aria-label="Previous day">‹</button>
+    <div class="day-title-wrap" onclick="jumpToToday()">
       <div class="day-title" id="selectedDateLabel">Today</div>
       <div class="day-subtitle" id="selectedDateSub">LOADING</div>
     </div>
-    <button type="button" class="day-arrow" data-action="next-day" onclick="shiftDate(1)" aria-label="Next day">›</button>
+    <button type="button" class="day-arrow" onclick="shiftDate(1)" aria-label="Next day">›</button>
   </div>
 
   <!-- Main Metro Panes -->
@@ -1530,6 +1567,13 @@
           <div>
             <div class="theme-choice-name">Light</div>
             <div class="theme-choice-desc">WP7 Daylight</div>
+          </div>
+        </button>
+        <button type="button" class="theme-choice-tile" id="themeTile_glass" onclick="selectTheme('glass')">
+          <div class="theme-choice-preview" style="background:linear-gradient(135deg,rgba(255,255,255,0.34) 0%,rgba(255,255,255,0.08) 100%); backdrop-filter:blur(8px);"></div>
+          <div>
+            <div class="theme-choice-name">Frosted Glass</div>
+            <div class="theme-choice-desc">Smoked Blur</div>
           </div>
         </button>
         <button type="button" class="theme-choice-tile" id="themeTile_frosted" onclick="selectTheme('frosted')">
@@ -1844,7 +1888,7 @@
   };
 
   (function() {
-    var THEMES = ['dark', 'light', 'frosted'];
+    var THEMES = ['dark', 'light', 'glass', 'frosted'];
     var THEME_KEY = 'gymbxtr_theme_v1';
     var GRAD_COLORS_KEY = 'gymbxtr_gradient_colors_v1';
     var DEFAULT_GRAD_START = '#ec008c';
@@ -2255,11 +2299,24 @@
       dayBar.classList.toggle('hidden-bar', state.activePane !== 0);
     }
 
+    var lastShiftAt = 0;
+
     window.shiftDate = function(delta) {
-      var cur = parseLocalDate(state.selectedDate);
-      var next = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + delta, 12, 0, 0);
+      var nowMs = Date.now();
+      if (nowMs - lastShiftAt < 140) return;
+      lastShiftAt = nowMs;
+
+      var step = delta > 0 ? 1 : -1;
+      var parts = String(state.selectedDate || '').split('-').map(Number);
+      var y = parts[0];
+      var m = parts[1];
+      var d = parts[2];
+      var next = (parts.length === 3 && y && m && d)
+        ? new Date(y, m - 1, d + step, 12, 0, 0)
+        : parseLocalDate(getOffsetISO(step));
+
       state.selectedDate = formatLocalISO(next);
-      state.slideDir = delta > 0 ? 'anim-next' : 'anim-prev';
+      state.slideDir = step > 0 ? 'anim-next' : 'anim-prev';
       updateDateHeader();
       if (state.activePane !== 0) {
         window.switchPane(0);
@@ -4627,9 +4684,6 @@
       if (!target) return;
       var act = target.getAttribute('data-action');
       if (act === 'reset-grad') window.resetDefaultGradient();
-      else if (act === 'prev-day') window.shiftDate(-1);
-      else if (act === 'next-day') window.shiftDate(1);
-      else if (act === 'jump-today') window.jumpToToday();
       else if (act === 'open-calendar') window.openDatePickerModal();
       else if (act === 'new-exercise') window.promptNewExercise();
       else if (act === 'copy-prev') window.copyLastWorkout();
