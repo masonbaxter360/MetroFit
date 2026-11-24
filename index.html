@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="apple-mobile-web-app-title" content="ZuneFit" />
+  <meta name="apple-mobile-web-app-title" content="GYM // BXTR" />
   <meta name="theme-color" content="#000000" />
-  <title>ZuneFit // Metro Workout Log</title>
+  <title>GYM // BXTR</title>
   <style>
     /* ==========================================================================
        ZUNEFIT METRO DESIGN TOKENS (DARK / LIGHT / FROSTED)
@@ -215,12 +215,17 @@
       border: 1px solid var(--border-strong);
       color: var(--text-primary);
       padding: 4px 7px;
-      display: inline-flex;
+      display: none;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       backdrop-filter: var(--glass-blur);
       -webkit-backdrop-filter: var(--glass-blur);
+    }
+
+    html[data-theme="frosted"] .grad-picker-btn,
+    body.theme-frosted .grad-picker-btn {
+      display: inline-flex;
     }
 
     .grad-swatch-preview {
@@ -267,8 +272,8 @@
 
     .grad-inputs-row {
       display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 10px;
+      grid-template-columns: 1fr 1fr auto auto;
+      gap: 8px;
       align-items: center;
     }
 
@@ -298,7 +303,7 @@
     /* Pivot Title Strip */
     .pivot-strip {
       display: flex;
-      gap: 24px;
+      gap: 26px;
       overflow-x: auto;
       scrollbar-width: none;
       padding-bottom: 6px;
@@ -306,10 +311,10 @@
     .pivot-strip::-webkit-scrollbar { display: none; }
 
     .pivot-tab {
-      font-size: 48px;
+      font-size: 56px;
       font-weight: 200;
       letter-spacing: -0.025em;
-      line-height: 1.02;
+      line-height: 1.0;
       color: var(--text-muted);
       white-space: nowrap;
       cursor: pointer;
@@ -1194,9 +1199,9 @@
 
   <header class="metro-header">
     <div class="brand-bar">
-      <div class="brand-title"><span class="zune-glyph"></span> ZUNEFIT // STUDIO</div>
+      <div class="brand-title"><span class="zune-glyph"></span> GYM // BXTR</div>
       <div class="header-theme-controls">
-        <button class="grad-picker-btn" id="gradPickerToggleBtn" onclick="toggleGradPicker()" title="Customize gradient colors" aria-label="Customize gradient colors">
+        <button class="grad-picker-btn" id="gradientPickerBtn" onclick="toggleGradPicker()" title="Customize gradient colors" aria-label="Customize gradient colors">
           <span class="grad-swatch-preview"></span>
         </button>
         <button class="theme-pill-btn" id="themeToggleBtn" onclick="cycleTheme()">
@@ -1226,6 +1231,7 @@
         <span>END</span>
         <input type="color" id="gradEndInput" value="#f26522" oninput="onCustomGradientInput()" />
       </label>
+      <button class="metro-btn-outline" style="padding:6px 9px;" onclick="resetDefaultGradient()">DEFAULT COLORS</button>
       <button class="metro-btn-outline" style="padding:6px 10px;" onclick="toggleGradPicker()">DONE</button>
     </div>
   </div>
@@ -1548,6 +1554,8 @@
     var THEMES = ['dark', 'light', 'frosted'];
     var THEME_KEY = 'zunefit_theme_v3';
     var GRAD_COLORS_KEY = 'zunefit_gradient_colors';
+    var DEFAULT_GRAD_START = '#ec008c';
+    var DEFAULT_GRAD_END = '#f26522';
     var LS_FALLBACK_KEY = 'zunefit_ls_backup_v3';
     var IDB_NAME = 'ZuneFitDB_v3';
     var IDB_STORE = 'store';
@@ -1681,13 +1689,17 @@
     }
 
     function applyGradientColors(startHex, endHex, persist) {
-      state.gradStart = startHex || '#ec008c';
-      state.gradEnd = endHex || '#f26522';
+      state.gradStart = startHex || DEFAULT_GRAD_START;
+      state.gradEnd = endHex || DEFAULT_GRAD_END;
       var root = document.documentElement;
-      root.style.setProperty('--grad-start', state.gradStart);
-      root.style.setProperty('--grad-end', state.gradEnd);
-      root.style.setProperty('--grad-start-rgb', hexToRgbTuple(state.gradStart));
-      root.style.setProperty('--grad-end-rgb', hexToRgbTuple(state.gradEnd));
+      var isFrosted = state.theme === 'frosted';
+      var activeStart = isFrosted ? state.gradStart : DEFAULT_GRAD_START;
+      var activeEnd = isFrosted ? state.gradEnd : DEFAULT_GRAD_END;
+
+      root.style.setProperty('--grad-start', activeStart);
+      root.style.setProperty('--grad-end', activeEnd);
+      root.style.setProperty('--grad-start-rgb', hexToRgbTuple(activeStart));
+      root.style.setProperty('--grad-end-rgb', hexToRgbTuple(activeEnd));
 
       var sInp = document.getElementById('gradStartInput');
       var eInp = document.getElementById('gradEndInput');
@@ -1713,12 +1725,46 @@
     }
 
     window.toggleGradPicker = function() {
+      if (state.theme !== 'frosted') return;
       var bar = document.getElementById('gradPickerBar');
       if (!bar) return;
-      var opening = !bar.classList.contains('open');
-      if (opening && state.theme !== 'frosted') {
-        applyTheme('frosted');
+      bar.classList.toggle('open');
+    };
+
+    window.selectGradientPreset = function(startHex, endHex) {
+      applyGradientColors(startHex, endHex, true);
+    };
+
+    window.resetDefaultGradient = function() {
+      applyGradientColors(DEFAULT_GRAD_START, DEFAULT_GRAD_END, true);
+      showToast('Gradient reset to default colors');
+    };
+
+    window.onCustomGradientInput = function() {
+      var sVal = document.getElementById('gradStartInput').value;
+      var eVal = document.getElementById('gradEndInput').value;
+      applyGradientColors(sVal, eVal, true);
+    };
+
+    function applyTheme(t) {
+      state.theme = THEMES.indexOf(t) >= 0 ? t : 'dark';
+      document.documentElement.setAttribute('data-theme', state.theme);
+      document.body.classList.toggle('theme-frosted', state.theme === 'frosted');
+
+      var pickerBtn = document.getElementById('gradientPickerBtn');
+      var pickerBar = document.getElementById('gradPickerBar');
+      if (pickerBtn) {
+        pickerBtn.style.display = state.theme === 'frosted' ? 'inline-flex' : 'none';
       }
+      if (pickerBar && state.theme !== 'frosted') {
+        pickerBar.classList.remove('open');
+      }
+
+      var lbl = document.getElementById('themeLabel');
+      if (lbl) lbl.textContent = 'THEME: ' + (state.theme === 'frosted' ? 'FROSTED' : state.theme.toUpperCase());
+      try { localStorage.setItem(THEME_KEY, state.theme); } catch (e) {}
+      applyGradientColors(state.gradStart, state.gradEnd, false);
+    }
       bar.classList.toggle('open', opening);
     };
 
