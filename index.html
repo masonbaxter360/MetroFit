@@ -14,6 +14,10 @@
        ========================================================================== */
     :root,
     html[data-theme="dark"] {
+      --grad-start: #ec008c;
+      --grad-end: #f26522;
+      --grad-start-rgb: 236, 0, 140;
+      --grad-end-rgb: 242, 101, 34;
       --bg-shell: #000000;
       --bg-header: #000000;
       --bg-subbar: #080808;
@@ -27,14 +31,14 @@
       --text-primary: #ffffff;
       --text-secondary: #9c9c9c;
       --text-muted: #555555;
-      --zune-pink: #ec008c;
-      --zune-orange: #f26522;
-      --zune-gradient: linear-gradient(135deg, #ec008c 0%, #f26522 100%);
+      --zune-pink: var(--grad-start);
+      --zune-orange: var(--grad-end);
+      --zune-gradient: linear-gradient(135deg, var(--grad-start) 0%, var(--grad-end) 100%);
       --wp-cyan: #008299;
       --wp-green: #00a300;
       --glass-blur: none;
-      --tile-tint-pink: rgba(236, 0, 140, 0.09);
-      --tile-tint-orange: rgba(242, 101, 34, 0.09);
+      --tile-tint-pink: rgba(var(--grad-start-rgb), 0.10);
+      --tile-tint-orange: rgba(var(--grad-end-rgb), 0.10);
       --font-metro: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
     }
 
@@ -52,22 +56,22 @@
       --text-primary: #111111;
       --text-secondary: #5a5a5a;
       --text-muted: #9e9e9e;
-      --zune-pink: #d8007f;
-      --zune-orange: #e05310;
-      --zune-gradient: linear-gradient(135deg, #d8007f 0%, #f26522 100%);
+      --zune-pink: var(--grad-start);
+      --zune-orange: var(--grad-end);
+      --zune-gradient: linear-gradient(135deg, var(--grad-start) 0%, var(--grad-end) 100%);
       --wp-cyan: #00778c;
       --wp-green: #008a00;
       --glass-blur: none;
-      --tile-tint-pink: rgba(216, 0, 127, 0.07);
-      --tile-tint-orange: rgba(224, 83, 16, 0.07);
+      --tile-tint-pink: rgba(var(--grad-start-rgb), 0.08);
+      --tile-tint-orange: rgba(var(--grad-end-rgb), 0.08);
     }
 
     html[data-theme="frosted"] {
       --bg-shell:
-        radial-gradient(circle at 12% 14%, rgba(236, 0, 140, 0.45) 0%, transparent 48%),
-        radial-gradient(circle at 88% 24%, rgba(242, 101, 34, 0.42) 0%, transparent 52%),
-        radial-gradient(circle at 46% 86%, rgba(102, 24, 158, 0.48) 0%, transparent 58%),
-        linear-gradient(160deg, #16091e 0%, #090c18 52%, #1d0c14 100%);
+        radial-gradient(circle at 12% 14%, rgba(var(--grad-start-rgb), 0.48) 0%, transparent 48%),
+        radial-gradient(circle at 88% 24%, rgba(var(--grad-end-rgb), 0.44) 0%, transparent 52%),
+        radial-gradient(circle at 46% 86%, rgba(var(--grad-start-rgb), 0.28) 0%, transparent 58%),
+        linear-gradient(160deg, #12091a 0%, #090c18 52%, #190c14 100%);
       --bg-header: rgba(14, 10, 22, 0.56);
       --bg-subbar: rgba(255, 255, 255, 0.05);
       --bg-card: rgba(255, 255, 255, 0.10);
@@ -80,9 +84,9 @@
       --text-primary: #ffffff;
       --text-secondary: rgba(255, 255, 255, 0.75);
       --text-muted: rgba(255, 255, 255, 0.42);
-      --zune-pink: #ff2ea6;
-      --zune-orange: #ff7a33;
-      --zune-gradient: linear-gradient(135deg, #ec008c 0%, #f26522 100%);
+      --zune-pink: var(--grad-start);
+      --zune-orange: var(--grad-end);
+      --zune-gradient: linear-gradient(135deg, var(--grad-start) 0%, var(--grad-end) 100%);
       --wp-cyan: #00a3bf;
       --wp-green: #00b300;
       --glass-blur: blur(18px) saturate(165%);
@@ -200,6 +204,97 @@
       display: inline-block;
     }
 
+    .header-theme-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .grad-picker-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      padding: 4px 7px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+    }
+
+    .grad-swatch-preview {
+      width: 16px;
+      height: 14px;
+      background: var(--zune-gradient);
+      display: inline-block;
+    }
+
+    /* Collapsible Gradient Color Picker Bar */
+    .grad-picker-bar {
+      display: none;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 10px 18px;
+      flex-shrink: 0;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      z-index: 25;
+    }
+
+    .grad-picker-bar.open {
+      display: block;
+    }
+
+    .grad-presets-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-bottom: 10px;
+    }
+    .grad-presets-row::-webkit-scrollbar { display: none; }
+
+    .grad-preset-chip {
+      width: 30px;
+      height: 24px;
+      border: 1px solid var(--border-strong);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .grad-inputs-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .color-input-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-strong);
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .color-input-box input[type="color"] {
+      width: 28px;
+      height: 24px;
+      border: none;
+      background: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
     /* Pivot Title Strip */
     .pivot-strip {
       display: flex;
@@ -284,7 +379,7 @@
       inset: 0;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 12px 18px 96px 18px;
+      padding: 12px 18px calc(134px + env(safe-area-inset-bottom)) 18px;
       display: none;
     }
 
@@ -294,7 +389,7 @@
 
     /* Clean FitNotes Empty Day State in Zune Metro Style */
     .empty-day-stage {
-      min-height: calc(100% - 16px);
+      min-height: 62vh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -911,7 +1006,7 @@
       min-height: 0;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 14px 18px 96px 18px;
+      padding: 14px 18px calc(134px + env(safe-area-inset-bottom)) 18px;
     }
 
     .stepper-group {
@@ -1100,10 +1195,15 @@
   <header class="metro-header">
     <div class="brand-bar">
       <div class="brand-title"><span class="zune-glyph"></span> ZUNEFIT // STUDIO</div>
-      <button class="theme-pill-btn" id="themeToggleBtn" onclick="cycleTheme()">
-        <span class="theme-dot"></span>
-        <span id="themeLabel">THEME: DARK</span>
-      </button>
+      <div class="header-theme-controls">
+        <button class="grad-picker-btn" id="gradPickerToggleBtn" onclick="toggleGradPicker()" title="Customize gradient colors" aria-label="Customize gradient colors">
+          <span class="grad-swatch-preview"></span>
+        </button>
+        <button class="theme-pill-btn" id="themeToggleBtn" onclick="cycleTheme()">
+          <span class="theme-dot"></span>
+          <span id="themeLabel">THEME: DARK</span>
+        </button>
+      </div>
     </div>
     <nav class="pivot-strip" id="pivotStrip">
       <div class="pivot-tab active" data-pane="0" onclick="switchPane(0)">workout</div>
@@ -1113,6 +1213,22 @@
       <div class="pivot-tab" data-pane="4" onclick="switchPane(4)">data</div>
     </nav>
   </header>
+
+  <!-- Custom Gradient Color Picker Bar -->
+  <div class="grad-picker-bar" id="gradPickerBar">
+    <div class="grad-presets-row" id="gradPresetsRow"></div>
+    <div class="grad-inputs-row">
+      <label class="color-input-box">
+        <span>START</span>
+        <input type="color" id="gradStartInput" value="#ec008c" oninput="onCustomGradientInput()" />
+      </label>
+      <label class="color-input-box">
+        <span>END</span>
+        <input type="color" id="gradEndInput" value="#f26522" oninput="onCustomGradientInput()" />
+      </label>
+      <button class="metro-btn-outline" style="padding:6px 10px;" onclick="toggleGradPicker()">DONE</button>
+    </div>
+  </div>
 
   <!-- FitNotes Day Navigation Strip (Swipe Left / Right Supported) -->
   <div class="day-nav-bar" id="dayNavBar">
@@ -1127,7 +1243,7 @@
   <main class="panes-container">
     <!-- PANE 0: WORKOUT LOG (INLINE SET ENTRY + CLICKABLE SETS/HEADERS FOR DETAIL VIEW) -->
     <section class="pane active" id="pane-0">
-      <div id="workoutExercisesContainer" style="height:100%;"></div>
+      <div id="workoutExercisesContainer"></div>
     </section>
 
     <!-- PANE 1: EXERCISE LIBRARY -->
@@ -1431,9 +1547,19 @@
   (function() {
     var THEMES = ['dark', 'light', 'frosted'];
     var THEME_KEY = 'zunefit_theme_v3';
+    var GRAD_COLORS_KEY = 'zunefit_gradient_colors';
     var LS_FALLBACK_KEY = 'zunefit_ls_backup_v3';
     var IDB_NAME = 'ZuneFitDB_v3';
     var IDB_STORE = 'store';
+
+    var GRADIENT_PRESETS = [
+      { name: 'Zune Classic', start: '#ec008c', end: '#f26522' },
+      { name: 'WP7 Cobalt', start: '#00aba9', end: '#1ba1e2' },
+      { name: 'Emerald Pulse', start: '#00a300', end: '#00aba9' },
+      { name: 'Violet Crimson', start: '#8e2de2', end: '#e51400' },
+      { name: 'Sunset Gold', start: '#f09609', end: '#ec008c' },
+      { name: 'Midnight Indigo', start: '#4a00e0', end: '#00c6ff' }
+    ];
 
     var DEFAULT_EXERCISES = [
       { id: 'Barbell Bench Press', name: 'Barbell Bench Press', category: 'Chest' },
@@ -1488,6 +1614,8 @@
 
     var state = {
       theme: 'dark',
+      gradStart: '#ec008c',
+      gradEnd: '#f26522',
       activeDate: getOffsetISO(0),
       activePane: 0,
       selectedCategory: 'All',
@@ -1540,13 +1668,75 @@
     }
 
     /* ========================================================================
-       THEME MANAGEMENT
+       THEME & CUSTOM GRADIENT COLOR MANAGEMENT
        ======================================================================== */
+    function hexToRgbTuple(hex) {
+      var clean = String(hex || '').replace('#', '').trim();
+      if (clean.length === 3) {
+        clean = clean[0] + clean[0] + clean[1] + clean[1] + clean[2] + clean[2];
+      }
+      var num = parseInt(clean, 16);
+      if (isNaN(num)) return '236, 0, 140';
+      return ((num >> 16) & 255) + ', ' + ((num >> 8) & 255) + ', ' + (num & 255);
+    }
+
+    function applyGradientColors(startHex, endHex, persist) {
+      state.gradStart = startHex || '#ec008c';
+      state.gradEnd = endHex || '#f26522';
+      var root = document.documentElement;
+      root.style.setProperty('--grad-start', state.gradStart);
+      root.style.setProperty('--grad-end', state.gradEnd);
+      root.style.setProperty('--grad-start-rgb', hexToRgbTuple(state.gradStart));
+      root.style.setProperty('--grad-end-rgb', hexToRgbTuple(state.gradEnd));
+
+      var sInp = document.getElementById('gradStartInput');
+      var eInp = document.getElementById('gradEndInput');
+      if (sInp) sInp.value = state.gradStart;
+      if (eInp) eInp.value = state.gradEnd;
+
+      if (persist) {
+        try {
+          localStorage.setItem(GRAD_COLORS_KEY, JSON.stringify({ start: state.gradStart, end: state.gradEnd }));
+        } catch (e) {}
+      }
+      if (state.detail.open && state.detail.tab === 'charts') renderDetailChart();
+      if (state.activePane === 3) renderChartsPane();
+    }
+
+    function renderGradientPresets() {
+      var row = document.getElementById('gradPresetsRow');
+      if (!row) return;
+      row.innerHTML = '<span style="font-size:10px; font-weight:700; letter-spacing:0.1em; color:var(--text-secondary); text-transform:uppercase; flex-shrink:0;">GRADIENT:</span>' +
+        GRADIENT_PRESETS.map(function(p) {
+          return '<button class="grad-preset-chip" title="' + escapeHtml(p.name) + '" style="background:linear-gradient(135deg,' + p.start + ' 0%,' + p.end + ' 100%);" onclick="selectGradientPreset(\'' + p.start + '\',\'' + p.end + '\')"></button>';
+        }).join('');
+    }
+
+    window.toggleGradPicker = function() {
+      var bar = document.getElementById('gradPickerBar');
+      if (!bar) return;
+      var opening = !bar.classList.contains('open');
+      if (opening && state.theme !== 'frosted') {
+        applyTheme('frosted');
+      }
+      bar.classList.toggle('open', opening);
+    };
+
+    window.selectGradientPreset = function(startHex, endHex) {
+      applyGradientColors(startHex, endHex, true);
+    };
+
+    window.onCustomGradientInput = function() {
+      var sVal = document.getElementById('gradStartInput').value;
+      var eVal = document.getElementById('gradEndInput').value;
+      applyGradientColors(sVal, eVal, true);
+    };
+
     function applyTheme(t) {
       state.theme = THEMES.indexOf(t) >= 0 ? t : 'dark';
       document.documentElement.setAttribute('data-theme', state.theme);
       var lbl = document.getElementById('themeLabel');
-      if (lbl) lbl.textContent = 'THEME: ' + state.theme.toUpperCase();
+      if (lbl) lbl.textContent = 'THEME: ' + (state.theme === 'frosted' ? 'FROSTED' : state.theme.toUpperCase());
       try { localStorage.setItem(THEME_KEY, state.theme); } catch (e) {}
       if (state.detail.open && state.detail.tab === 'charts') renderDetailChart();
       if (state.activePane === 3) renderChartsPane();
@@ -2583,8 +2773,8 @@
       canvas._coords = coords;
 
       var grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
-      grad.addColorStop(0, 'rgba(236, 0, 140, 0.28)');
-      grad.addColorStop(1, 'rgba(242, 101, 34, 0.02)');
+      grad.addColorStop(0, 'rgba(' + hexToRgbTuple(state.gradStart) + ', 0.28)');
+      grad.addColorStop(1, 'rgba(' + hexToRgbTuple(state.gradEnd) + ', 0.02)');
       ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.moveTo(coords[0].x, padT + plotH);
@@ -2593,7 +2783,7 @@
       ctx.closePath();
       ctx.fill();
 
-      ctx.strokeStyle = '#ec008c';
+      ctx.strokeStyle = state.gradStart;
       ctx.lineWidth = points.length > 350 ? 1.5 : 2.5;
       ctx.beginPath();
       coords.forEach(function(c, idx) {
@@ -2603,7 +2793,7 @@
       ctx.stroke();
 
       var dotR = points.length > 450 ? 2 : 3.5;
-      ctx.fillStyle = '#f26522';
+      ctx.fillStyle = state.gradEnd;
       coords.forEach(function(c) {
         ctx.beginPath();
         ctx.arc(c.x, c.y, dotR, 0, Math.PI * 2);
@@ -2619,7 +2809,7 @@
         ctx.lineTo(sel.x, padT + plotH);
         ctx.stroke();
 
-        ctx.fillStyle = '#ec008c';
+        ctx.fillStyle = state.gradStart;
         ctx.beginPath();
         ctx.arc(sel.x, sel.y, 6, 0, Math.PI * 2);
         ctx.fill();
@@ -2631,22 +2821,22 @@
       var xLabelY = padT + plotH + 10;
 
       ctx.textAlign = 'left';
-      ctx.fillText(formatShortDate(points[0].key), padL, xLabelY);
+      ctx.fillText(formatShortAxisLabel(points[0].key), padL, xLabelY);
 
       if (points.length >= 3) {
         var mid = points[Math.floor(points.length / 2)];
         ctx.textAlign = 'center';
-        ctx.fillText(formatShortDate(mid.key), padL + plotW / 2, xLabelY);
+        ctx.fillText(formatShortAxisLabel(mid.key), padL + plotW / 2, xLabelY);
       }
 
       if (points.length >= 2) {
         ctx.textAlign = 'right';
-        ctx.fillText(formatShortDate(points[points.length - 1].key), W - padR, xLabelY);
+        ctx.fillText(formatShortAxisLabel(points[points.length - 1].key), W - padR, xLabelY);
       }
     }
 
     /* ========================================================================
-       GLOBAL MULTI-DIMENSIONAL FITNOTES CHARTS
+       GLOBAL MULTI-DIMENSIONAL FITNOTES CHARTS (ROLLING 7-DAY WEEK BUCKETS)
        ======================================================================== */
     var METRICS = [
       { id: 'volume', label: 'Volume', unit: 'lb' },
@@ -2666,6 +2856,16 @@
 
     function formatShortDate(iso) {
       if (!iso) return '';
+      if (iso.indexOf('..') >= 0) {
+        var bounds = iso.split('..');
+        var p1 = bounds[0].split('-').map(Number);
+        var p2 = bounds[1].split('-').map(Number);
+        var d1 = new Date(p1[0], p1[1] - 1, p1[2]);
+        var d2 = new Date(p2[0], p2[1] - 1, p2[2]);
+        var s1 = d1.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        var s2 = d2.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        return s1 + ' – ' + s2;
+      }
       if (iso.length === 4) return iso;
       if (iso.length === 7) {
         var ym = iso.split('-').map(Number);
@@ -2675,16 +2875,31 @@
       return new Date(p[0], p[1] - 1, p[2]).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     }
 
+    function formatShortAxisLabel(iso) {
+      if (!iso) return '';
+      if (iso.indexOf('..') >= 0) {
+        var startIso = iso.split('..')[0];
+        var p = startIso.split('-').map(Number);
+        return new Date(p[0], p[1] - 1, p[2]).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      }
+      return formatShortDate(iso);
+    }
+
     function getBucketKey(dateIso, interval) {
       if (interval === 'year') return dateIso.slice(0, 4);
       if (interval === 'month') return dateIso.slice(0, 7);
       if (interval === 'week') {
+        // Rolling 7-day week where first day is tomorrow's weekday (e.g., Today=Mon -> week is Tue..Mon)
+        var today = new Date();
+        var tomorrowDayOfWeek = (today.getDay() + 1) % 7;
         var p = dateIso.split('-').map(Number);
         var dt = new Date(p[0], p[1] - 1, p[2]);
-        var day = dt.getDay();
-        var diff = dt.getDate() - day + (day === 0 ? -6 : 1);
-        var mon = new Date(p[0], p[1] - 1, diff);
-        return mon.getFullYear() + '-' + String(mon.getMonth() + 1).padStart(2, '0') + '-' + String(mon.getDate()).padStart(2, '0');
+        var daysSinceWeekStart = (dt.getDay() - tomorrowDayOfWeek + 7) % 7;
+        var weekStart = new Date(p[0], p[1] - 1, p[2] - daysSinceWeekStart);
+        var weekEnd = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6);
+        var startStr = weekStart.getFullYear() + '-' + String(weekStart.getMonth() + 1).padStart(2, '0') + '-' + String(weekStart.getDate()).padStart(2, '0');
+        var endStr = weekEnd.getFullYear() + '-' + String(weekEnd.getMonth() + 1).padStart(2, '0') + '-' + String(weekEnd.getDate()).padStart(2, '0');
+        return startStr + '..' + endStr;
       }
       return dateIso;
     }
@@ -2852,10 +3067,9 @@
         return;
       }
       var pt = pts[idx];
-      var prefix = state.chart.interval === 'week' ? 'Week of ' : '';
       readout.innerHTML =
-        '<div>' + prefix + formatShortDate(pt.key) + ' — <strong>' + pt.value.toLocaleString() + ' ' + m.unit + '</strong></div>' +
-        '<div class="point-readout-sub">POINT ' + (idx + 1) + ' OF ' + pts.length + '</div>';
+        '<div>' + formatShortDate(pt.key) + ' — <strong>' + pt.value.toLocaleString() + ' ' + m.unit + '</strong></div>' +
+        '<div class="point-readout-sub">POINT ' + (idx + 1) + ' OF ' + points.length + '</div>';
     }
 
     function renderChartsPane() {
@@ -3255,6 +3469,18 @@
     /* ========================================================================
        IMMEDIATE SYNCHRONOUS BOOTSTRAP
        ======================================================================== */
+    renderGradientPresets();
+    try {
+      var savedGrad = JSON.parse(localStorage.getItem(GRAD_COLORS_KEY) || 'null');
+      if (savedGrad && savedGrad.start && savedGrad.end) {
+        applyGradientColors(savedGrad.start, savedGrad.end, false);
+      } else {
+        applyGradientColors('#ec008c', '#f26522', false);
+      }
+    } catch (e) {
+      applyGradientColors('#ec008c', '#f26522', false);
+    }
+
     try {
       var savedTheme = localStorage.getItem(THEME_KEY);
       applyTheme(savedTheme || 'dark');
