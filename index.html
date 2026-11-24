@@ -336,13 +336,100 @@
     }
 
     .empty-day-stage {
-      min-height: 58vh;
+      min-height: 54vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 38px;
-      padding: 20px 0;
+      gap: 28px;
+      padding: 14px 0 20px 0;
+    }
+
+    /* Next Up Muscle Group Rotation Module (Shown only when day has 0 sets) */
+    .next-up-card {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-left: 3px solid var(--zune-orange);
+      padding: 12px 14px;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+    }
+
+    .next-up-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .next-up-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--zune-orange);
+    }
+
+    .next-up-sub {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .next-up-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .next-up-tile {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border-subtle);
+      padding: 10px 8px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 68px;
+      color: var(--text-primary);
+      transition: border-color 0.14s ease, transform 0.12s ease;
+    }
+
+    .next-up-tile:first-child {
+      border-top: 2px solid var(--zune-pink);
+    }
+
+    .next-up-tile:active {
+      transform: scale(0.97);
+      border-color: var(--zune-pink);
+    }
+
+    .next-up-rank {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--zune-pink);
+      margin-bottom: 4px;
+    }
+
+    .next-up-cat {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.15;
+      word-break: break-word;
+    }
+
+    .next-up-age {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-top: 5px;
     }
 
     .empty-action-btn {
@@ -1432,33 +1519,33 @@
 
     #toastBanner {
       position: fixed;
-      left: 50%;
-      bottom: calc(82px + env(safe-area-inset-bottom));
-      transform: translateX(-50%);
-      background: var(--zune-gradient);
-      color: #ffffff;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 8px 16px;
-      z-index: 150;
-      display: none;
-      pointer-events: none;
-      white-space: nowrap;
-    }
-
-    /* Viewport-visible 1px opacity 0.01 iOS Taptic Switch Proxy (WebKit Requirement) */
+    /* Real-dimension iOS 17.4+/18+ Taptic Switch Proxy (Non-clipped, opacity 0.015) */
     #iosTapticProxyWrap {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 1px;
-      height: 1px;
-      opacity: 0.01;
-      overflow: hidden;
+      top: env(safe-area-inset-top, 0px);
+      right: 0;
+      width: 44px;
+      height: 28px;
+      opacity: 0.015;
       pointer-events: none;
       z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #iosHapticLabel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 28px;
+    }
+
+    #iosHapticSwitch {
+      width: 40px;
+      height: 24px;
+      margin: 0;
     }
   </style>
 </head>
@@ -1910,10 +1997,11 @@
 
 <div id="toastBanner"></div>
 
-<!-- Viewport-Visible 1px Opacity 0.01 iOS Taptic Switch Proxy (Synchronous Gesture Trigger) -->
+<!-- Real-Dimension iOS Taptic Switch Proxy (Synchronous Gesture + Web Audio Fallback) -->
 <div id="iosTapticProxyWrap" aria-hidden="true">
-  <input type="checkbox" id="iosHapticSwitch" switch />
-  <label id="iosHapticLabel" for="iosHapticSwitch"></label>
+  <label id="iosHapticLabel" for="iosHapticSwitch">
+    <input type="checkbox" id="iosHapticSwitch" switch />
+  </label>
 </div>
 
 <script>
@@ -2096,7 +2184,7 @@
     };
 
     /* ========================================================================
-       TOAST & SYNCHRONOUS VIEWPORT-VISIBLE iOS TAPTIC HAPTIC FEEDBACK
+       TOAST, iOS TAPTIC SWITCH PROXY & WEB AUDIO MICRO-THUD FALLBACK
        ======================================================================== */
     function showToast(msg) {
       var el = document.getElementById('toastBanner');
@@ -2110,6 +2198,26 @@
     }
 
     var lastHapticAt = 0;
+    var sharedAudioCtx = null;
+
+    function unlockSharedAudio() {
+      try {
+        var AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return null;
+        if (!sharedAudioCtx) {
+          sharedAudioCtx = new AudioCtx();
+        }
+        if (sharedAudioCtx.state === 'suspended') {
+          sharedAudioCtx.resume();
+        }
+        return sharedAudioCtx;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    document.addEventListener('pointerdown', unlockSharedAudio, { passive: true });
+    document.addEventListener('touchstart', unlockSharedAudio, { passive: true });
 
     function fireSingleTaptic() {
       var lbl = document.getElementById('iosHapticLabel');
@@ -2127,14 +2235,40 @@
       }
     }
 
+    function fireMicroThud(kind) {
+      var ctx = unlockSharedAudio();
+      if (!ctx) return;
+      try {
+        var now = ctx.currentTime;
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = 'sine';
+        var startFreq = kind === 'warning' ? 95 : (kind === 'success' ? 125 : 110);
+        var endFreq = kind === 'warning' ? 38 : 42;
+        var peakGain = kind === 'success' ? 0.14 : (kind === 'medium' ? 0.12 : 0.09);
+
+        osc.frequency.setValueAtTime(startFreq, now);
+        osc.frequency.exponentialRampToValueAtTime(endFreq, now + 0.032);
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(peakGain, now + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.036);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.04);
+      } catch (e) {}
+    }
+
     window.triggerHaptic = function(type) {
       var now = Date.now();
       if (now - lastHapticAt < 35) return;
       lastHapticAt = now;
 
       var kind = type || 'light';
-      // Synchronous execution inside direct click / touchend user gesture
       fireSingleTaptic();
+      fireMicroThud(kind);
 
       if (navigator.vibrate) {
         try {
@@ -2797,6 +2931,117 @@
       renderWorkoutPane();
     };
 
+    /* ========================================================================
+       "NEXT UP" MUSCLE GROUP ROTATION (3 LONGEST-UNTRAINED CATEGORIES)
+       ======================================================================== */
+    var NEXT_UP_EXCLUDED = {
+      calves: true,
+      abs: true,
+      cardio: true,
+      cardiovascular: true,
+      forearms: true
+    };
+
+    function isExcludedNextUpCategory(cat) {
+      var clean = String(cat || '').trim().toLowerCase();
+      return !clean || clean === 'general' || !!NEXT_UP_EXCLUDED[clean];
+    }
+
+    function getNextUpCategories() {
+      var exCatLookup = {};
+      var catLastDate = {};
+
+      state.db.exercises.forEach(function(ex) {
+        var cat = String(ex.category || '').trim();
+        if (ex.name) exCatLookup[ex.name.toLowerCase()] = cat;
+        if (ex.id) exCatLookup[ex.id.toLowerCase()] = cat;
+        if (!isExcludedNextUpCategory(cat) && !(cat in catLastDate)) {
+          catLastDate[cat] = null;
+        }
+      });
+
+      var dates = Object.keys(state.db.logs).sort();
+      for (var i = 0; i < dates.length; i++) {
+        var d = dates[i];
+        var entries = state.db.logs[d] || [];
+        for (var j = 0; j < entries.length; j++) {
+          var entry = entries[j];
+          if (!Array.isArray(entry.sets) || entry.sets.length === 0) continue;
+          var exKey = String(entry.name || entry.exerciseId || '').toLowerCase();
+          var cat = String(entry.category || exCatLookup[exKey] || '').trim();
+          if (isExcludedNextUpCategory(cat)) continue;
+          if (!catLastDate[cat] || d > catLastDate[cat]) {
+            catLastDate[cat] = d;
+          }
+        }
+      }
+
+      var refDate = parseLocalDate(state.selectedDate);
+      var list = Object.keys(catLastDate).map(function(cat) {
+        var lastD = catLastDate[cat];
+        var daysAgo = null;
+        if (lastD) {
+          var lastDt = parseLocalDate(lastD);
+          daysAgo = Math.round((refDate.getTime() - lastDt.getTime()) / 86400000);
+        }
+        return {
+          category: cat,
+          lastDate: lastD,
+          daysAgo: daysAgo
+        };
+      });
+
+      list.sort(function(a, b) {
+        if (!a.lastDate && !b.lastDate) return a.category.localeCompare(b.category);
+        if (!a.lastDate && b.lastDate) return -1;
+        if (a.lastDate && !b.lastDate) return 1;
+        if (a.lastDate !== b.lastDate) return a.lastDate.localeCompare(b.lastDate);
+        return a.category.localeCompare(b.category);
+      });
+
+      return list.slice(0, 3);
+    }
+
+    function formatDaysSinceLabel(item) {
+      if (!item.lastDate) return 'NEVER TRAINED';
+      if (item.daysAgo === 0) return 'TODAY';
+      if (item.daysAgo === 1) return '1 DAY AGO';
+      if (item.daysAgo > 1) return item.daysAgo + ' DAYS AGO';
+      return formatShortDate(item.lastDate).toUpperCase();
+    }
+
+    window.openExercisesForCategory = function(cat) {
+      window.triggerHaptic('light');
+      state.selectedCategory = cat || 'All';
+      window.switchPane(1);
+    };
+
+    function renderNextUpModuleHtml() {
+      var topThree = getNextUpCategories();
+      if (!topThree.length) return '';
+
+      var tilesHtml = topThree.map(function(item, idx) {
+        var safeCat = item.category.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        return (
+          '<button type="button" class="next-up-tile" onclick="openExercisesForCategory(\'' + safeCat + '\')">' +
+            '<div class="next-up-rank">#' + (idx + 1) + ' DUE</div>' +
+            '<div class="next-up-cat">' + escapeHtml(item.category) + '</div>' +
+            '<div class="next-up-age">' + escapeHtml(formatDaysSinceLabel(item)) + '</div>' +
+          '</button>'
+        );
+      }).join('');
+
+      return (
+        '<div class="next-up-card">' +
+          '<div class="next-up-header">' +
+            '<span class="next-up-title">NEXT UP</span>' +
+            '<span class="next-up-sub">OLDEST FIRST</span>' +
+          '</div>' +
+          '<div class="next-up-grid">' + tilesHtml + '</div>' +
+        '</div>'
+      );
+    }
+
     function renderWorkoutPane() {
       var container = document.getElementById('workoutExercisesContainer');
       if (!container) return;
@@ -2805,30 +3050,38 @@
       state.slideDir = '';
       activeSwipeRowEl = null;
 
+      var totalSetsForDay = entries.reduce(function(sum, entry) {
+        return sum + (Array.isArray(entry.sets) ? entry.sets.length : 0);
+      }, 0);
+      var nextUpHtml = totalSetsForDay === 0 ? renderNextUpModuleHtml() : '';
+
       if (entries.length === 0) {
         container.innerHTML =
-          '<div class="empty-day-stage ' + animClass + '">' +
-            '<button type="button" class="empty-action-btn" onclick="switchPane(1)">' +
-              '<div class="metro-action-tile">' +
-                '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--zune-pink)" stroke-width="1.8">' +
-                  '<rect x="3" y="3" width="13" height="13" />' +
-                  '<path d="M8 19h13V6" />' +
-                  '<line x1="9.5" y1="6.5" x2="9.5" y2="12.5" />' +
-                  '<line x1="6.5" y1="9.5" x2="12.5" y2="9.5" />' +
-                '</svg>' +
-              '</div>' +
-              '<span class="empty-action-label">Start New Workout</span>' +
-            '</button>' +
-            '<button type="button" class="empty-action-btn" onclick="copyLastWorkout()">' +
-              '<div class="metro-action-tile secondary">' +
-                '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--zune-orange)" stroke-width="1.8">' +
-                  '<rect x="8" y="8" width="12" height="13" />' +
-                  '<path d="M4 16V4h11" />' +
-                '</svg>' +
-              '</div>' +
-              '<span class="empty-action-label">Copy Previous Workout</span>' +
-            '</button>' +
-            '<div class="swipe-hint">‹ swipe left or right to change day ›</div>' +
+          '<div class="' + animClass + '">' +
+            nextUpHtml +
+            '<div class="empty-day-stage">' +
+              '<button type="button" class="empty-action-btn" onclick="switchPane(1)">' +
+                '<div class="metro-action-tile">' +
+                  '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--zune-pink)" stroke-width="1.8">' +
+                    '<rect x="3" y="3" width="13" height="13" />' +
+                    '<path d="M8 19h13V6" />' +
+                    '<line x1="9.5" y1="6.5" x2="9.5" y2="12.5" />' +
+                    '<line x1="6.5" y1="9.5" x2="12.5" y2="9.5" />' +
+                  '</svg>' +
+                '</div>' +
+                '<span class="empty-action-label">Start New Workout</span>' +
+              '</button>' +
+              '<button type="button" class="empty-action-btn" onclick="copyLastWorkout()">' +
+                '<div class="metro-action-tile secondary">' +
+                  '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--zune-orange)" stroke-width="1.8">' +
+                    '<rect x="8" y="8" width="12" height="13" />' +
+                    '<path d="M4 16V4h11" />' +
+                  '</svg>' +
+                '</div>' +
+                '<span class="empty-action-label">Copy Previous Workout</span>' +
+              '</button>' +
+              '<div class="swipe-hint">‹ swipe left or right to change day ›</div>' +
+            '</div>' +
           '</div>';
         return;
       }
@@ -2934,7 +3187,7 @@
         );
       }).join('');
 
-      container.innerHTML = '<div class="' + animClass + '">' + cardsHtml + '</div>';
+      container.innerHTML = '<div class="' + animClass + '">' + nextUpHtml + cardsHtml + '</div>';
       bindSetSwipeHandlers(container);
     }
 
