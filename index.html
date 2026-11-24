@@ -75,16 +75,16 @@
         radial-gradient(circle at 46% 86%, rgba(var(--grad-start-rgb), 0.34) 0%, transparent 60%),
         linear-gradient(160deg, #12091a 0%, #090c18 52%, #190c14 100%);
       --bg-header: rgba(14, 12, 22, 0.62);
-      --bg-subbar: rgba(var(--grad-start-rgb), 0.14);
+      --bg-subbar: linear-gradient(90deg, rgba(var(--grad-start-rgb), 0.38) 0%, rgba(var(--grad-end-rgb), 0.34) 100%);
       --bg-card:
-        linear-gradient(135deg, rgba(var(--grad-start-rgb), 0.16) 0%, rgba(var(--grad-end-rgb), 0.14) 100%),
-        rgba(14, 18, 28, 0.68);
+        linear-gradient(135deg, rgba(var(--grad-start-rgb), 0.24) 0%, rgba(var(--grad-end-rgb), 0.20) 100%),
+        rgba(14, 18, 28, 0.58);
       --bg-card-alt:
-        linear-gradient(135deg, rgba(var(--grad-start-rgb), 0.22) 0%, rgba(var(--grad-end-rgb), 0.18) 100%),
-        rgba(20, 24, 36, 0.78);
+        linear-gradient(135deg, rgba(var(--grad-start-rgb), 0.32) 0%, rgba(var(--grad-end-rgb), 0.28) 100%),
+        rgba(20, 24, 36, 0.68);
       --bg-set-row:
-        linear-gradient(135deg, rgba(var(--grad-start-rgb), 0.26) 0%, rgba(var(--grad-end-rgb), 0.22) 100%),
-        rgba(14, 18, 28, 0.74);
+        linear-gradient(135deg, rgba(var(--grad-start-rgb), 0.72) 0%, rgba(var(--grad-end-rgb), 0.66) 100%),
+        #141622;
       --bg-input: rgba(0, 0, 0, 0.34);
       --bg-appbar:
         linear-gradient(90deg, rgba(var(--grad-start-rgb), 0.22) 0%, rgba(var(--grad-end-rgb), 0.20) 100%),
@@ -412,12 +412,37 @@
       grid-template-columns: 30px 1fr 1fr 44px;
       align-items: center;
       gap: 6px;
-      padding: 10px 6px;
+      padding: 10px 8px;
       border-top: 1px solid var(--border-subtle);
       background: var(--bg-set-row);
       font-size: 15px;
       cursor: pointer;
-      transition: background 0.14s ease;
+      transition: background 0.14s ease, filter 0.14s ease;
+    }
+
+    html[data-theme="frosted"] .set-swipe-content .set-row {
+      background: transparent;
+      border-top-color: rgba(255, 255, 255, 0.22);
+    }
+
+    html[data-theme="frosted"] .set-num,
+    html[data-theme="frosted"] .set-val span {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .set-row.detail-set-row {
+      grid-template-columns: 30px 1fr 1fr 44px 30px;
+      padding: 9px 6px;
+    }
+
+    .set-row:active,
+    .set-row.editing-set {
+      background: var(--tile-tint-pink);
+    }
+
+    html[data-theme="frosted"] .set-row:active,
+    html[data-theme="frosted"] .set-row.editing-set {
+      background: rgba(255, 255, 255, 0.2);
     }
 
     .set-row.detail-set-row {
