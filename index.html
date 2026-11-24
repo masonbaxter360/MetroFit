@@ -298,7 +298,7 @@
     /* Pivot Title Strip */
     .pivot-strip {
       display: flex;
-      gap: 22px;
+      gap: 24px;
       overflow-x: auto;
       scrollbar-width: none;
       padding-bottom: 6px;
@@ -306,10 +306,10 @@
     .pivot-strip::-webkit-scrollbar { display: none; }
 
     .pivot-tab {
-      font-size: 36px;
+      font-size: 48px;
       font-weight: 200;
-      letter-spacing: -0.02em;
-      line-height: 1.05;
+      letter-spacing: -0.025em;
+      line-height: 1.02;
       color: var(--text-muted);
       white-space: nowrap;
       cursor: pointer;
@@ -2119,7 +2119,7 @@
         );
       }).join('');
 
-      container.innerHTML = '<div class="' + animClass + '">' + summaryHtml + cardsHtml + '</div>';
+      container.innerHTML = '<div class="' + animClass + '">' + cardsHtml + '</div>';
     }
 
     /* ========================================================================
@@ -3069,7 +3069,7 @@
       var pt = pts[idx];
       readout.innerHTML =
         '<div>' + formatShortDate(pt.key) + ' — <strong>' + pt.value.toLocaleString() + ' ' + m.unit + '</strong></div>' +
-        '<div class="point-readout-sub">POINT ' + (idx + 1) + ' OF ' + points.length + '</div>';
+        '<div class="point-readout-sub">POINT ' + (idx + 1) + ' OF ' + pts.length + '</div>';
     }
 
     function renderChartsPane() {
