@@ -486,7 +486,7 @@
       background: rgba(255, 255, 255, 0.2);
     }
 
-    /* Swipe-to-Delete Set Row Container */
+    /* Swipe-to-Delete Set Row Container (No Red Bleed-Through Until Dragged) */
     .set-swipe-wrap {
       position: relative;
       overflow: hidden;
@@ -1447,6 +1447,19 @@
       pointer-events: none;
       white-space: nowrap;
     }
+
+    /* Viewport-visible 1px opacity 0.01 iOS Taptic Switch Proxy (WebKit Requirement) */
+    #iosTapticProxyWrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 1px;
+      height: 1px;
+      opacity: 0.01;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 200;
+    }
   </style>
 </head>
 <body>
@@ -1897,8 +1910,8 @@
 
 <div id="toastBanner"></div>
 
-<!-- Hidden iOS Safari 17.4+/18+ Taptic Engine Switch Proxy for Subtle Haptic Feedback -->
-<div aria-hidden="true" style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden; opacity:0; pointer-events:none;">
+<!-- Viewport-Visible 1px Opacity 0.01 iOS Taptic Switch Proxy (Synchronous Gesture Trigger) -->
+<div id="iosTapticProxyWrap" aria-hidden="true">
   <input type="checkbox" id="iosHapticSwitch" switch />
   <label id="iosHapticLabel" for="iosHapticSwitch"></label>
 </div>
@@ -2083,7 +2096,7 @@
     };
 
     /* ========================================================================
-       TOAST & CROSS-PLATFORM SUBTLE HAPTIC FEEDBACK
+       TOAST & SYNCHRONOUS VIEWPORT-VISIBLE iOS TAPTIC HAPTIC FEEDBACK
        ======================================================================== */
     function showToast(msg) {
       var el = document.getElementById('toastBanner');
@@ -2100,29 +2113,36 @@
 
     function fireSingleTaptic() {
       var lbl = document.getElementById('iosHapticLabel');
+      var sw = document.getElementById('iosHapticSwitch');
       if (lbl) {
-        try { lbl.click(); } catch (e) {}
+        try {
+          lbl.click();
+          return;
+        } catch (e) {}
+      }
+      if (sw) {
+        try {
+          sw.checked = !sw.checked;
+        } catch (e) {}
       }
     }
 
     window.triggerHaptic = function(type) {
       var now = Date.now();
-      if (now - lastHapticAt < 45) return;
+      if (now - lastHapticAt < 35) return;
       lastHapticAt = now;
 
       var kind = type || 'light';
+      // Synchronous execution inside direct click / touchend user gesture
+      fireSingleTaptic();
+
       if (navigator.vibrate) {
         try {
-          if (kind === 'success') navigator.vibrate([12, 35, 18]);
-          else if (kind === 'warning') navigator.vibrate([22, 40, 22]);
+          if (kind === 'success') navigator.vibrate([12, 30, 18]);
+          else if (kind === 'warning') navigator.vibrate([22, 35, 22]);
           else if (kind === 'medium') navigator.vibrate(16);
           else navigator.vibrate(10);
         } catch (e) {}
-      }
-
-      fireSingleTaptic();
-      if (kind === 'success' || kind === 'warning') {
-        setTimeout(fireSingleTaptic, 55);
       }
     };
 
@@ -2238,13 +2258,13 @@
 
     window.selectGradientPreset = function(startHex, endHex) {
       if (state.theme !== 'frosted') return;
-      applyGradientColors(startHex, endHex, true);
       window.triggerHaptic('light');
+      applyGradientColors(startHex, endHex, true);
     };
 
     window.resetDefaultGradient = function() {
-      applyGradientColors(DEFAULT_GRAD_START, DEFAULT_GRAD_END, true);
       window.triggerHaptic('light');
+      applyGradientColors(DEFAULT_GRAD_START, DEFAULT_GRAD_END, true);
       showToast('Reset to default gradient colors');
     };
 
@@ -2264,7 +2284,11 @@
 
     window.selectTheme = function(t, silent) {
       var prevTheme = state.theme;
-      state.theme = THEMES.indexOf(t) >= 0 ? t : 'dark';
+      var nextTheme = THEMES.indexOf(t) >= 0 ? t : 'dark';
+      if (!silent && prevTheme !== nextTheme) {
+        window.triggerHaptic('light');
+      }
+      state.theme = nextTheme;
       document.documentElement.setAttribute('data-theme', state.theme);
 
       THEMES.forEach(function(name) {
@@ -2274,9 +2298,6 @@
 
       try { localStorage.setItem(THEME_KEY, state.theme); } catch (e) {}
       applyGradientColors(state.gradStart, state.gradEnd, false);
-      if (!silent && prevTheme !== state.theme) {
-        window.triggerHaptic('light');
-      }
     };
 
     /* ========================================================================
@@ -2452,7 +2473,6 @@
       var strip = document.getElementById('pivotStrip');
       if (!header || !strip) return;
 
-      // Direct event delegation on #pivotHeader for reliable tap/click switching
       header.addEventListener('click', function(e) {
         var tab = e.target.closest('.pivot-tab');
         if (!tab) return;
@@ -2462,7 +2482,6 @@
         }
       });
 
-      // Horizontal swipe gesture support on the pivot header
       var startX = 0;
       var startY = 0;
       var tracking = false;
@@ -2678,6 +2697,7 @@
     }
 
     window.addExerciseToWorkout = function(exName) {
+      window.triggerHaptic('light');
       var exObj = state.db.exercises.find(function(x) { return x.name === exName || x.id === exName; });
       var resolvedName = exObj ? exObj.name : exName;
       var entries = ensureDayEntries(state.selectedDate);
@@ -2691,7 +2711,6 @@
       }
       touchExerciseRecency(resolvedName);
       saveDB();
-      window.triggerHaptic('light');
       window.switchPane(0);
     };
 
@@ -2703,6 +2722,7 @@
 
       var exName = entry.name || entry.exerciseId;
       if (isCardioCategory(entry.category, exName)) {
+        window.triggerHaptic('success');
         var cInput = document.getElementById('c_entry_' + entryIdx);
         var tInput = document.getElementById('t_entry_' + entryIdx);
         var dInput = document.getElementById('d_entry_' + entryIdx);
@@ -2720,7 +2740,6 @@
         });
         touchExerciseRecency(exName);
         saveDB();
-        window.triggerHaptic('success');
         renderWorkoutPane();
 
         var toastParts = [];
@@ -2740,6 +2759,7 @@
         return;
       }
 
+      window.triggerHaptic('success');
       entry.sets.push({
         weight: weight,
         reps: reps,
@@ -2747,18 +2767,19 @@
       });
       touchExerciseRecency(exName);
       saveDB();
-      window.triggerHaptic('success');
       renderWorkoutPane();
       showToast('Logged ' + weight + ' lb × ' + reps);
     };
 
-    window.deleteSet = function(entryIdx, setIdx, ev) {
+    window.deleteSet = function(entryIdx, setIdx, ev, skipHaptic) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
+      if (!skipHaptic) {
+        window.triggerHaptic('medium');
+      }
       var entries = getDayEntries(state.selectedDate);
       if (entries[entryIdx]) {
         entries[entryIdx].sets.splice(setIdx, 1);
         saveDB();
-        window.triggerHaptic('medium');
         renderWorkoutPane();
         if (state.detail.open) renderDetailTrackTab();
       }
@@ -2766,13 +2787,13 @@
 
     window.removeExerciseFromDay = function(entryIdx, ev) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
+      window.triggerHaptic('medium');
       var entries = getDayEntries(state.selectedDate);
       entries.splice(entryIdx, 1);
       if (entries.length === 0) {
         delete state.db.logs[state.selectedDate];
       }
       saveDB();
-      window.triggerHaptic('medium');
       renderWorkoutPane();
     };
 
@@ -2918,7 +2939,7 @@
     }
 
     /* ========================================================================
-       SWIPE-TO-DELETE SET ROW GESTURE HANDLERS (TOUCH & MOUSE)
+       SWIPE-TO-DELETE SET ROW GESTURE HANDLERS (SYNCHRONOUS HAPTIC ON RELEASE)
        ======================================================================== */
     var activeSwipeRowEl = null;
 
@@ -3001,13 +3022,16 @@
               var setIdx = parseInt(el.getAttribute('data-set-idx'), 10);
 
               if (curX <= -88) {
+                // Fire haptic synchronously inside the direct touchend/mouseup user gesture
+                window.triggerHaptic('medium');
                 el.style.transform = 'translateX(-100%)';
                 activeSwipeRowEl = null;
                 setTimeout(function() {
-                  window.deleteSet(entryIdx, setIdx);
+                  window.deleteSet(entryIdx, setIdx, null, true);
                   showToast('Set deleted');
                 }, 160);
               } else if (curX <= -38) {
+                window.triggerHaptic('light');
                 el.style.transform = 'translateX(-76px)';
                 el.dataset.open = '1';
                 if (wrapEl) wrapEl.classList.add('swiping');
@@ -3282,6 +3306,7 @@
       }
 
       if (cardioMode) {
+        window.triggerHaptic('success');
         var cal = parseOptionalNum(document.getElementById('detailCaloriesInput').value);
         var mins = parseOptionalNum(document.getElementById('detailTimeInput').value);
         var dist = parseOptionalNum(document.getElementById('detailDistanceInput').value);
@@ -3306,7 +3331,6 @@
         }
         touchExerciseRecency(exName);
         saveDB();
-        window.triggerHaptic('success');
         renderDetailTrackTab();
         return;
       }
@@ -3318,6 +3342,7 @@
         return;
       }
 
+      window.triggerHaptic('success');
       if (state.detail.editingSetIdx >= 0 && entry.sets[state.detail.editingSetIdx]) {
         entry.sets[state.detail.editingSetIdx].weight = w;
         entry.sets[state.detail.editingSetIdx].reps = r;
@@ -3335,7 +3360,6 @@
 
       touchExerciseRecency(exName);
       saveDB();
-      window.triggerHaptic('success');
       renderDetailTrackTab();
     };
 
@@ -3361,6 +3385,7 @@
 
     window.deleteDetailSet = function(idx, ev) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
+      window.triggerHaptic('medium');
       var exName = state.detail.exerciseName;
       var entries = getDayEntries(state.selectedDate);
       var entryIdx = entries.findIndex(function(e) { return e.name === exName || e.exerciseId === exName; });
@@ -3371,7 +3396,6 @@
           document.getElementById('detailSaveBtn').textContent = 'Save';
         }
         saveDB();
-        window.triggerHaptic('medium');
         renderDetailTrackTab();
       }
     };
@@ -3431,6 +3455,7 @@
       var srcEntry = srcEntries.find(function(e) { return e.name === exName || e.exerciseId === exName; });
       if (!srcEntry || !srcEntry.sets.length) return;
 
+      window.triggerHaptic('success');
       var destEntries = ensureDayEntries(targetDate);
       var destEntry = destEntries.find(function(e) { return e.name === exName || e.exerciseId === exName; });
       if (!destEntry) {
@@ -3459,7 +3484,6 @@
 
       touchExerciseRecency(exName);
       saveDB();
-      window.triggerHaptic('success');
       updateDateHeader();
       showToast('Copied ' + srcEntry.sets.length + ' sets to ' + getFriendlyDateLabel(targetDate));
       window.switchDetailTab('track');
@@ -3933,13 +3957,13 @@
       var name = (document.getElementById('newExNameInput').value || '').trim();
       var cat = document.getElementById('newExCatSelect').value || 'Chest';
       if (!name) return;
+      window.triggerHaptic('success');
       if (!state.db.exercises.some(function(e) { return e.name.toLowerCase() === name.toLowerCase(); })) {
         state.db.exercises.push({ id: name, name: name, category: cat });
         saveDB();
       }
       window.closeNewExModal();
       window.renderExerciseLibrary();
-      window.triggerHaptic('success');
       showToast('Added ' + name);
     };
 
@@ -3979,6 +4003,7 @@
     window.loadRoutine = function(idx) {
       var rt = state.db.routines[idx];
       if (!rt) return;
+      window.triggerHaptic('success');
       var entries = ensureDayEntries(state.selectedDate);
       rt.exerciseIds.forEach(function(exName) {
         if (!entries.some(function(e) { return e.exerciseId === exName; })) {
@@ -3993,7 +4018,6 @@
         touchExerciseRecency(exName);
       });
       saveDB();
-      window.triggerHaptic('success');
       window.switchPane(0);
     };
 
@@ -4010,6 +4034,7 @@
         return;
       }
 
+      window.triggerHaptic('success');
       var prevDate = priorDates[priorDates.length - 1];
       var clonedEntries = state.db.logs[prevDate].map(function(entry) {
         var resolvedName = entry.name || entry.exerciseId;
@@ -4037,7 +4062,6 @@
       state.db.logs[targetDate] = clonedEntries;
       state.selectedDate = targetDate;
       saveDB();
-      window.triggerHaptic('success');
       updateDateHeader();
       if (state.activePane !== 0) {
         window.switchPane(0);
@@ -4724,7 +4748,6 @@
 
           state.db.exercises = Object.keys(exMap).map(function(k) { return exMap[k]; });
           saveDB();
-          window.triggerHaptic('success');
           updateDataSummary();
           renderWorkoutPane();
           if (state.activePane === 1) renderExerciseLibrary();
@@ -4809,6 +4832,7 @@
     };
 
     window.loadSampleWorkoutData = function() {
+      window.triggerHaptic('success');
       var d1 = getOffsetISO(-7);
       var d2 = getOffsetISO(-3);
       var d3 = getOffsetISO(-1);
@@ -4865,7 +4889,6 @@
         }
       ];
       saveDB();
-      window.triggerHaptic('success');
       updateDataSummary();
       renderWorkoutPane();
       if (state.activePane === 1) renderExerciseLibrary();
@@ -4873,11 +4896,11 @@
     };
 
     window.clearAllData = function() {
+      window.triggerHaptic('warning');
       state.db.logs = {};
       state.db.recentOrder = [];
       state.db.exercises = DEFAULT_EXERCISES.slice();
       saveDB();
-      window.triggerHaptic('warning');
       updateDataSummary();
       renderWorkoutPane();
       if (state.activePane === 1) renderExerciseLibrary();
@@ -4899,13 +4922,11 @@
     });
 
     function bootstrapApp() {
-      // 1. Render core Workout pane & headers immediately so main screen is never blank
       updateDateHeader();
       updateDayBarVisibility();
       renderWorkoutPane();
       initPivotHeaderEvents();
 
-      // 2. Apply saved theme & Frosted gradient settings safely
       try { renderGradientPresets(); } catch (e) {}
       try {
         var savedGrad = JSON.parse(localStorage.getItem(GRAD_COLORS_KEY) || 'null');
@@ -4925,7 +4946,6 @@
         try { window.selectTheme('dark', true); } catch (e2) {}
       }
 
-      // 3. Attach secondary touch gestures & load IndexedDB history asynchronously
       try { initDaySwipe(); } catch (e) {}
       try { initCanvasTouch(); } catch (e) {}
       try { initDetailCanvasTouch(); } catch (e) {}
