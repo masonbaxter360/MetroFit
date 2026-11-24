@@ -7,7 +7,49 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-mobile-web-app-title" content="GYM // BXTR" />
   <meta name="theme-color" content="#000000" />
+  <link id="dynamicAppManifest" rel="manifest" />
   <title>GYM // BXTR</title>
+  <script>
+    (function() {
+      try {
+        var iconSvg =
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">' +
+            '<defs>' +
+              '<linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">' +
+                '<stop offset="0%" stop-color="#ec008c"/>' +
+                '<stop offset="100%" stop-color="#f26522"/>' +
+              '</linearGradient>' +
+            '</defs>' +
+            '<rect width="512" height="512" rx="112" fill="#000000"/>' +
+            '<polygon points="164,384 218,384 282,128 228,128" fill="url(#g)"/>' +
+            '<polygon points="256,384 310,384 374,128 320,128" fill="url(#g)"/>' +
+          '</svg>';
+        var iconUri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(iconSvg);
+        var manifestObj = {
+          name: 'GYM // BXTR',
+          short_name: 'GYM // BXTR',
+          start_url: './',
+          scope: './',
+          display: 'standalone',
+          orientation: 'portrait',
+          background_color: '#000000',
+          theme_color: '#000000',
+          icons: [
+            {
+              src: iconUri,
+              sizes: '512x512',
+              type: 'image/svg+xml',
+              purpose: 'any maskable'
+            }
+          ]
+        };
+        var linkEl = document.getElementById('dynamicAppManifest');
+        if (linkEl) {
+          linkEl.setAttribute('href', 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifestObj)));
+        }
+      } catch (e) {}
+    })();
+  </script>
   <style>
     /* ==========================================================================
        GYM // BXTR — ZUNE 4.8 / WINDOWS PHONE 7 METRO DESIGN TOKENS
@@ -1753,6 +1795,21 @@
       <div class="tile-grid" id="dataSummaryTiles"></div>
       <div id="dataRangeReadout" class="exercise-meta" style="margin:-6px 0 12px 0;"></div>
 
+      <div class="metro-section-label">OFFLINE &amp; PWA SHELL STATUS</div>
+      <div class="exercise-card" style="border-left-color:var(--wp-cyan);">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <div class="exercise-name" style="font-size:17px;">Offline Readiness</div>
+          <span id="offlineNetBadge" class="pr-badge" style="background:var(--wp-green);">ONLINE</span>
+        </div>
+        <div id="offlineSwStatus" class="exercise-meta" style="margin:6px 0 12px 0; line-height:1.45;">
+          CACHE STATUS: CHECKING...
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="metro-btn-outline" onclick="downloadServiceWorkerFile()">DOWNLOAD SW.JS</button>
+          <button type="button" class="metro-btn-outline" onclick="refreshOfflineStatusUI()">CHECK STATUS</button>
+        </div>
+      </div>
+
       <div class="metro-section-label">IMPORT FITNOTES .CSV</div>
       <div class="exercise-card">
         <div class="exercise-name" style="font-size:17px;">Restore FitNotes Workout History</div>
@@ -2850,6 +2907,43 @@
       return maxW;
     }
 
+    /**
+     * Finds the most recent prior workout date (before excludeDate) that logged
+     * weighted sets (> 0) for exName, takes the lowest weight from that session,
+     * and returns lowestWeight + 5 lb for progressive starting overload.
+     */
+    function getSuggestedStartingWeight(exName, excludeDate) {
+      var target = String(exName || '').trim().toLowerCase();
+      if (!target) return null;
+
+      var dates = Object.keys(state.db.logs).sort().reverse();
+      for (var i = 0; i < dates.length; i++) {
+        var d = dates[i];
+        if (excludeDate && d >= excludeDate) continue;
+        var entries = state.db.logs[d] || [];
+        var minWeightInSession = null;
+
+        for (var j = 0; j < entries.length; j++) {
+          var entryName = String(entries[j].name || entries[j].exerciseId || '').trim().toLowerCase();
+          if (entryName !== target) continue;
+          var sets = entries[j].sets || [];
+          for (var k = 0; k < sets.length; k++) {
+            var w = parseFloat(sets[k].weight);
+            if (!isNaN(w) && w > 0) {
+              if (minWeightInSession === null || w < minWeightInSession) {
+                minWeightInSession = w;
+              }
+            }
+          }
+        }
+
+        if (minWeightInSession !== null) {
+          return Math.round((minWeightInSession + 5) * 10) / 10;
+        }
+      }
+      return null;
+    }
+
     window.addExerciseToWorkout = function(exName) {
       window.triggerHaptic('light');
       var exObj = state.db.exercises.find(function(x) { return x.name === exName || x.id === exName; });
@@ -3181,7 +3275,10 @@
               '<button type="button" class="metro-btn" onclick="logSetInline(' + entryIdx + ',event)">LOG</button>' +
             '</div>';
         } else {
-          var defW = lastSet ? (lastSet.weight !== undefined ? lastSet.weight : '') : (priorBest || '');
+          var suggestedStartW = getSuggestedStartingWeight(exName, state.selectedDate);
+          var defW = lastSet
+            ? (lastSet.weight !== undefined ? lastSet.weight : '')
+            : (suggestedStartW !== null ? suggestedStartW : '');
           var defR = lastSet ? (lastSet.reps !== undefined ? lastSet.reps : '') : '';
           quickAddHtml =
             '<div class="quick-add-row">' +
@@ -3483,9 +3580,9 @@
           rInp.value = targetSet.reps || 0;
           saveBtn.textContent = 'Update';
         } else {
-          var priorBest = getHistoricalBestWeight(exName, state.selectedDate);
+          var suggestedStartW = getSuggestedStartingWeight(exName, state.selectedDate);
           var lastSet = sets.length > 0 ? sets[sets.length - 1] : null;
-          wInp.value = lastSet ? (lastSet.weight || 0) : (priorBest || 0);
+          wInp.value = lastSet ? (lastSet.weight || 0) : (suggestedStartW !== null ? suggestedStartW : 0);
           rInp.value = lastSet ? (lastSet.reps || 10) : 10;
           saveBtn.textContent = 'Save';
         }
@@ -4867,7 +4964,131 @@
           ? ('ACTIVE RANGE: ' + dates[0] + ' TO ' + dates[dates.length - 1] + ' • ' + state.db.exercises.length + ' EXERCISES')
           : ('0 WORKOUTS LOGGED • ' + state.db.exercises.length + ' EXERCISES IN LIBRARY');
       }
+      refreshOfflineStatusUI();
     }
+
+    /* ========================================================================
+       OFFLINE STATUS INDICATOR, SERVICE WORKER REGISTRATION & SW.JS GENERATOR
+       ======================================================================== */
+    var swControlled = false;
+
+    window.refreshOfflineStatusUI = function() {
+      var netBadge = document.getElementById('offlineNetBadge');
+      var swStatusEl = document.getElementById('offlineSwStatus');
+      var isOnline = typeof navigator !== 'undefined' ? navigator.onLine !== false : true;
+
+      if (netBadge) {
+        netBadge.textContent = isOnline ? 'ONLINE' : 'OFFLINE';
+        netBadge.style.background = isOnline ? 'var(--wp-green)' : 'var(--zune-orange)';
+      }
+
+      var hasController = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
+      if (swStatusEl) {
+        if (swControlled || hasController) {
+          swStatusEl.textContent = 'CACHE STATUS: ACTIVE (SW.JS SHELL CACHED) • INDEXEDDB LOCAL STORAGE READY';
+        } else {
+          swStatusEl.textContent = 'CACHE STATUS: LOCAL DB READY (SINGLE-FILE) • DROP SW.JS IN GITHUB PAGES ROOT FOR FULL AIRPLANE-MODE BOOT';
+        }
+      }
+    };
+
+    function registerOfflineServiceWorker() {
+      try {
+        if (!('serviceWorker' in navigator)) return;
+        if (!window.location || !String(window.location.protocol || '').startsWith('http')) return;
+
+        navigator.serviceWorker.register('./sw.js', { scope: './' }).then(function(reg) {
+          if (reg.active) {
+            swControlled = true;
+            window.refreshOfflineStatusUI();
+          }
+          reg.addEventListener('updatefound', function() {
+            var newWorker = reg.installing;
+            if (!newWorker) return;
+            newWorker.addEventListener('statechange', function() {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                swControlled = true;
+                window.refreshOfflineStatusUI();
+                showToast('App shell updated — reload for latest');
+              } else if (newWorker.state === 'activated') {
+                swControlled = true;
+                window.refreshOfflineStatusUI();
+              }
+            });
+          });
+        }).catch(function() {
+          // Silent fallback when running single-file without ./sw.js present
+          window.refreshOfflineStatusUI();
+        });
+      } catch (e) {}
+    }
+
+    window.downloadServiceWorkerFile = function() {
+      window.triggerHaptic('light');
+      var swSource = [
+        "/* GYM // BXTR — Offline-First App Shell Service Worker */",
+        "const CACHE_NAME = 'gym-bxtr-shell-v1';",
+        "const CORE_ASSETS = ['./', './index.html'];",
+        "",
+        "self.addEventListener('install', (event) => {",
+        "  event.waitUntil(",
+        "    caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting())",
+        "  );",
+        "});",
+        "",
+        "self.addEventListener('activate', (event) => {",
+        "  event.waitUntil(",
+        "    caches.keys().then((keys) =>",
+        "      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))",
+        "    ).then(() => self.clients.claim())",
+        "  );",
+        "});",
+        "",
+        "self.addEventListener('fetch', (event) => {",
+        "  if (event.request.method !== 'GET') return;",
+        "  const isNav = event.request.mode === 'navigate';",
+        "  if (isNav) {",
+        "    event.respondWith(",
+        "      fetch(event.request)",
+        "        .then((res) => {",
+        "          const copy = res.clone();",
+        "          caches.open(CACHE_NAME).then((c) => c.put(event.request, copy));",
+        "          return res;",
+        "        })",
+        "        .catch(() => caches.match(event.request).then((r) => r || caches.match('./index.html')))",
+        "    );",
+        "    return;",
+        "  }",
+        "  event.respondWith(",
+        "    caches.match(event.request).then((cached) => {",
+        "      if (cached) return cached;",
+        "      return fetch(event.request).then((res) => {",
+        "        if (res && res.status === 200 && res.type === 'basic') {",
+        "          const copy = res.clone();",
+        "          caches.open(CACHE_NAME).then((c) => c.put(event.request, copy));",
+        "        }",
+        "        return res;",
+        "      });",
+        "    })",
+        "  );",
+        "});",
+        ""
+      ].join('\n');
+
+      var blob = new Blob([swSource], { type: 'application/javascript;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'sw.js';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Downloaded sw.js — place beside index.html');
+    };
+
+    window.addEventListener('online', function() { window.refreshOfflineStatusUI(); });
+    window.addEventListener('offline', function() { window.refreshOfflineStatusUI(); });
 
     function parseCSVRows(text) {
       var rows = [];
@@ -5226,6 +5447,8 @@
       try { initCanvasTouch(); } catch (e) {}
       try { initDetailCanvasTouch(); } catch (e) {}
       try { loadDBFromIndexedDB(); } catch (e) {}
+      try { registerOfflineServiceWorker(); } catch (e) {}
+      try { window.refreshOfflineStatusUI(); } catch (e) {}
     }
 
     if (document.readyState === 'loading') {
