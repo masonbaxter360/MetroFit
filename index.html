@@ -76,10 +76,16 @@
         linear-gradient(160deg, #12091a 0%, #090c18 52%, #190c14 100%);
       --bg-header: rgba(14, 12, 22, 0.62);
       --bg-subbar: rgba(var(--grad-start-rgb), 0.14);
-      --bg-card: rgba(16, 18, 26, 0.72);
-      --bg-card-alt: rgba(24, 28, 38, 0.84);
-      --bg-set-row: rgba(18, 22, 32, 0.88);
-      --bg-input: rgba(0, 0, 0, 0.38);
+      --bg-card:
+        linear-gradient(135deg, rgba(var(--grad-start-rgb), 0.16) 0%, rgba(var(--grad-end-rgb), 0.14) 100%),
+        rgba(14, 18, 28, 0.68);
+      --bg-card-alt:
+        linear-gradient(135deg, rgba(var(--grad-start-rgb), 0.22) 0%, rgba(var(--grad-end-rgb), 0.18) 100%),
+        rgba(20, 24, 36, 0.78);
+      --bg-set-row:
+        linear-gradient(135deg, rgba(var(--grad-start-rgb), 0.26) 0%, rgba(var(--grad-end-rgb), 0.22) 100%),
+        rgba(14, 18, 28, 0.74);
+      --bg-input: rgba(0, 0, 0, 0.34);
       --bg-appbar:
         linear-gradient(90deg, rgba(var(--grad-start-rgb), 0.22) 0%, rgba(var(--grad-end-rgb), 0.20) 100%),
         rgba(12, 14, 22, 0.84);
@@ -408,6 +414,7 @@
       gap: 6px;
       padding: 10px 6px;
       border-top: 1px solid var(--border-subtle);
+      background: var(--bg-set-row);
       font-size: 15px;
       cursor: pointer;
       transition: background 0.14s ease;
