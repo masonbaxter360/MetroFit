@@ -2939,11 +2939,14 @@
       abs: true,
       cardio: true,
       cardiovascular: true,
-      forearms: true
+      forearms: true,
+      neck: true,
+      'jammer legs': true,
+      'lower back': true
     };
 
     function isExcludedNextUpCategory(cat) {
-      var clean = String(cat || '').trim().toLowerCase();
+      var clean = String(cat || '').trim().toLowerCase().replace(/\s+/g, ' ');
       return !clean || clean === 'general' || !!NEXT_UP_EXCLUDED[clean];
     }
 
