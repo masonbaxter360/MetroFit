@@ -225,7 +225,7 @@
     }
 
     /* ==========================================================================
-       DAY NAVIGATION BAR (HIDDEN ON SETTINGS TAB)
+       DAY NAVIGATION BAR (VISIBLE ONLY ON WORKOUT PANE)
        ========================================================================== */
     .day-nav-bar {
       display: flex;
@@ -240,7 +240,7 @@
       flex-shrink: 0;
     }
 
-    .day-nav-bar.hidden-on-settings {
+    .day-nav-bar.hidden-bar {
       display: none !important;
     }
 
@@ -1420,12 +1420,12 @@
     </nav>
   </header>
 
-  <!-- Swipeable Day Navigation Bar (Hidden on Settings Pane) -->
+  <!-- Swipeable Day Navigation Bar (Visible ONLY on Workout Pane) -->
   <div class="day-nav-bar" id="dayNavBar">
     <button type="button" class="day-arrow" data-action="prev-day" onclick="shiftDate(-1)" aria-label="Previous day">‹</button>
     <div class="day-title-wrap" data-action="jump-today" onclick="jumpToToday()">
-      <div class="day-title" id="activeDateLabel">Today</div>
-      <div class="day-subtitle" id="activeDateSub">LOADING</div>
+      <div class="day-title" id="selectedDateLabel">Today</div>
+      <div class="day-subtitle" id="selectedDateSub">LOADING</div>
     </div>
     <button type="button" class="day-arrow" data-action="next-day" onclick="shiftDate(1)" aria-label="Next day">›</button>
   </div>
@@ -1913,7 +1913,7 @@
     ];
 
     /* ========================================================================
-       PURE LOCAL CALENDAR DATE ARITHMETIC (NO UTC / DST SKIPPING)
+       100% PURE LOCAL-NOON CALENDAR DATE ARITHMETIC (ZERO UTC / toISOString())
        ======================================================================== */
     function formatLocalISO(dt) {
       var y = dt.getFullYear();
@@ -1937,11 +1937,39 @@
       return formatLocalISO(dt);
     }
 
+    function normalizeDateKey(raw) {
+      var s = String(raw || '').trim();
+      var isoMatch = s.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+      if (isoMatch) {
+        return isoMatch[1] + '-' + String(Number(isoMatch[2])).padStart(2, '0') + '-' + String(Number(isoMatch[3])).padStart(2, '0');
+      }
+      var usMatch = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      if (usMatch) {
+        return usMatch[3] + '-' + String(Number(usMatch[1])).padStart(2, '0') + '-' + String(Number(usMatch[2])).padStart(2, '0');
+      }
+      return s;
+    }
+
+    function normalizeLogsKeys(logsObj) {
+      var clean = {};
+      if (!logsObj || typeof logsObj !== 'object') return clean;
+      Object.keys(logsObj).forEach(function(rawKey) {
+        var normKey = normalizeDateKey(rawKey);
+        if (!normKey) return;
+        if (!clean[normKey]) clean[normKey] = [];
+        var list = Array.isArray(logsObj[rawKey]) ? logsObj[rawKey] : [];
+        list.forEach(function(entry) {
+          clean[normKey].push(entry);
+        });
+      });
+      return clean;
+    }
+
     var state = {
       theme: 'dark',
       gradStart: DEFAULT_GRAD_START,
       gradEnd: DEFAULT_GRAD_END,
-      activeDate: getOffsetISO(0),
+      selectedDate: getOffsetISO(0),
       activePane: 0,
       selectedCategory: 'All',
       slideDir: '',
@@ -2176,7 +2204,7 @@
           if (req.result && req.result.logs) {
             state.db.exercises = req.result.exercises && req.result.exercises.length ? req.result.exercises : DEFAULT_EXERCISES.slice();
             state.db.routines = req.result.routines && req.result.routines.length ? req.result.routines : DEFAULT_ROUTINES.slice();
-            state.db.logs = req.result.logs || {};
+            state.db.logs = normalizeLogsKeys(req.result.logs || {});
             refreshActivePane();
           }
         };
@@ -2185,7 +2213,7 @@
           var raw = localStorage.getItem(LS_FALLBACK_KEY);
           if (raw) {
             var parsed = JSON.parse(raw);
-            if (parsed.logs) state.db.logs = parsed.logs;
+            if (parsed.logs) state.db.logs = normalizeLogsKeys(parsed.logs);
             if (parsed.exercises) state.db.exercises = parsed.exercises;
             refreshActivePane();
           }
@@ -2194,7 +2222,7 @@
     }
 
     /* ========================================================================
-       DATE & PANE NAVIGATION (LOCAL NOON DATE MATH + HIDE ON SETTINGS)
+       DATE & PANE NAVIGATION (LOCAL NOON DATE MATH + DAY BAR ONLY ON WORKOUT)
        ======================================================================== */
     function getFriendlyDateLabel(iso) {
       var today = getOffsetISO(0);
@@ -2208,12 +2236,12 @@
     }
 
     function updateDateHeader() {
-      var iso = state.activeDate;
+      var iso = state.selectedDate;
       var dt = parseLocalDate(iso);
       var fullStr = dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase();
 
-      var titleEl = document.getElementById('activeDateLabel');
-      var subEl = document.getElementById('activeDateSub');
+      var titleEl = document.getElementById('selectedDateLabel');
+      var subEl = document.getElementById('selectedDateSub');
       if (!titleEl || !subEl) return;
 
       titleEl.textContent = getFriendlyDateLabel(iso);
@@ -2223,15 +2251,14 @@
     function updateDayBarVisibility() {
       var dayBar = document.getElementById('dayNavBar');
       if (!dayBar) return;
-      // Hide day navigation strip on Settings (4) and Charts (3)
-      var hide = (state.activePane === 4 || state.activePane === 3);
-      dayBar.classList.toggle('hidden-on-settings', hide);
+      // Show day navigation strip ONLY when activePane === 0 ('workout')
+      dayBar.classList.toggle('hidden-bar', state.activePane !== 0);
     }
 
     window.shiftDate = function(delta) {
-      var cur = parseLocalDate(state.activeDate);
+      var cur = parseLocalDate(state.selectedDate);
       var next = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + delta, 12, 0, 0);
-      state.activeDate = formatLocalISO(next);
+      state.selectedDate = formatLocalISO(next);
       state.slideDir = delta > 0 ? 'anim-next' : 'anim-prev';
       updateDateHeader();
       if (state.activePane !== 0) {
@@ -2243,9 +2270,9 @@
 
     window.jumpToToday = function() {
       var today = getOffsetISO(0);
-      if (state.activeDate !== today) {
-        state.slideDir = state.activeDate < today ? 'anim-next' : 'anim-prev';
-        state.activeDate = today;
+      if (state.selectedDate !== today) {
+        state.slideDir = state.selectedDate < today ? 'anim-next' : 'anim-prev';
+        state.selectedDate = today;
         updateDateHeader();
       }
       if (state.activePane !== 0) window.switchPane(0);
@@ -2461,7 +2488,7 @@
 
     window.addExerciseToWorkout = function(exName) {
       var exObj = state.db.exercises.find(function(x) { return x.name === exName || x.id === exName; });
-      var entries = ensureDayEntries(state.activeDate);
+      var entries = ensureDayEntries(state.selectedDate);
       if (!entries.some(function(e) { return e.exerciseId === exName; })) {
         entries.push({
           exerciseId: exName,
@@ -2476,7 +2503,7 @@
 
     window.logSetInline = function(entryIdx, ev) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
-      var entries = getDayEntries(state.activeDate);
+      var entries = getDayEntries(state.selectedDate);
       var entry = entries[entryIdx];
       if (!entry) return;
 
@@ -2529,7 +2556,7 @@
 
     window.deleteSet = function(entryIdx, setIdx, ev) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
-      var entries = getDayEntries(state.activeDate);
+      var entries = getDayEntries(state.selectedDate);
       if (entries[entryIdx]) {
         entries[entryIdx].sets.splice(setIdx, 1);
         saveDB();
@@ -2540,10 +2567,10 @@
 
     window.removeExerciseFromDay = function(entryIdx, ev) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
-      var entries = getDayEntries(state.activeDate);
+      var entries = getDayEntries(state.selectedDate);
       entries.splice(entryIdx, 1);
       if (entries.length === 0) {
-        delete state.db.logs[state.activeDate];
+        delete state.db.logs[state.selectedDate];
       }
       saveDB();
       renderWorkoutPane();
@@ -2552,7 +2579,7 @@
     function renderWorkoutPane() {
       var container = document.getElementById('workoutExercisesContainer');
       if (!container) return;
-      var entries = getDayEntries(state.activeDate);
+      var entries = getDayEntries(state.selectedDate);
       var animClass = state.slideDir || '';
       state.slideDir = '';
       activeSwipeRowEl = null;
@@ -2589,8 +2616,8 @@
         var exName = entry.name || entry.exerciseId;
         var safeExName = exName.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
         var cardioMode = isCardioCategory(entry.category, exName);
-        var priorBest = cardioMode ? 0 : getHistoricalBestWeight(exName, state.activeDate);
-        var cardioBest = cardioMode ? getHistoricalBestCardioSummary(exName, state.activeDate) : '';
+        var priorBest = cardioMode ? 0 : getHistoricalBestWeight(exName, state.selectedDate);
+        var cardioBest = cardioMode ? getHistoricalBestCardioSummary(exName, state.selectedDate) : '';
         var lastSet = entry.sets.length > 0 ? entry.sets[entry.sets.length - 1] : null;
 
         var setsHtml = entry.sets.map(function(s, sIdx) {
@@ -2919,14 +2946,14 @@
 
       var cardioMode = isCardioCategory(state.detail.category, exName);
       document.getElementById('detailExerciseTitle').textContent = exName;
-      document.getElementById('detailExerciseDateSub').textContent = getFriendlyDateLabel(state.activeDate).toUpperCase();
+      document.getElementById('detailExerciseDateSub').textContent = getFriendlyDateLabel(state.selectedDate).toUpperCase();
 
       var strBox = document.getElementById('detailStrengthTrackControls');
       var carBox = document.getElementById('detailCardioTrackControls');
       if (strBox) strBox.style.display = cardioMode ? 'none' : 'block';
       if (carBox) carBox.style.display = cardioMode ? 'block' : 'none';
 
-      var entries = getDayEntries(state.activeDate);
+      var entries = getDayEntries(state.selectedDate);
       var entry = entries.find(function(e) { return e.name === exName || e.exerciseId === exName; });
       var sets = entry ? entry.sets : [];
       var saveBtn = document.getElementById('detailSaveBtn');
@@ -2958,7 +2985,7 @@
           rInp.value = targetSet.reps || 0;
           saveBtn.textContent = 'Update';
         } else {
-          var priorBest = getHistoricalBestWeight(exName, state.activeDate);
+          var priorBest = getHistoricalBestWeight(exName, state.selectedDate);
           var lastSet = sets.length > 0 ? sets[sets.length - 1] : null;
           wInp.value = lastSet ? (lastSet.weight || 0) : (priorBest || 0);
           rInp.value = lastSet ? (lastSet.reps || 10) : 10;
@@ -3044,7 +3071,7 @@
     window.saveDetailSet = function() {
       var exName = state.detail.exerciseName;
       var cardioMode = isCardioCategory(state.detail.category, exName);
-      var entries = ensureDayEntries(state.activeDate);
+      var entries = ensureDayEntries(state.selectedDate);
       var entry = entries.find(function(e) { return e.name === exName || e.exerciseId === exName; });
       if (!entry) {
         entry = {
@@ -3112,7 +3139,7 @@
 
     window.selectDetailSetForEdit = function(idx) {
       var exName = state.detail.exerciseName;
-      var entries = getDayEntries(state.activeDate);
+      var entries = getDayEntries(state.selectedDate);
       var entry = entries.find(function(e) { return e.name === exName || e.exerciseId === exName; });
       if (!entry || !entry.sets[idx]) return;
 
@@ -3133,7 +3160,7 @@
     window.deleteDetailSet = function(idx, ev) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
       var exName = state.detail.exerciseName;
-      var entries = getDayEntries(state.activeDate);
+      var entries = getDayEntries(state.selectedDate);
       var entryIdx = entries.findIndex(function(e) { return e.name === exName || e.exerciseId === exName; });
       if (entryIdx >= 0) {
         entries[entryIdx].sets.splice(idx, 1);
@@ -3151,13 +3178,13 @@
       if (!listEl) return;
       var exName = state.detail.exerciseName;
       var cardioMode = isCardioCategory(state.detail.category, exName);
-      var entries = getDayEntries(state.activeDate);
+      var entries = getDayEntries(state.selectedDate);
       var entry = entries.find(function(e) { return e.name === exName || e.exerciseId === exName; });
       var sets = entry ? entry.sets : [];
-      var priorBest = cardioMode ? 0 : getHistoricalBestWeight(exName, state.activeDate);
+      var priorBest = cardioMode ? 0 : getHistoricalBestWeight(exName, state.selectedDate);
 
       if (sets.length === 0) {
-        listEl.innerHTML = '<div class="exercise-meta" style="text-align:center; padding:18px 0;">No sets logged for this exercise on ' + escapeHtml(getFriendlyDateLabel(state.activeDate)) + '.</div>';
+        listEl.innerHTML = '<div class="exercise-meta" style="text-align:center; padding:18px 0;">No sets logged for this exercise on ' + escapeHtml(getFriendlyDateLabel(state.selectedDate)) + '.</div>';
         return;
       }
 
@@ -3192,13 +3219,16 @@
         '</div>';
     }
 
-    window.copyExerciseSessionToActiveDate = function(sourceDate) {
+    window.copyExerciseSessionToSelectedDate = function(sourceDate) {
+      var targetDate = state.selectedDate;
+      if (!sourceDate || sourceDate === targetDate) return;
+
       var exName = state.detail.exerciseName;
       var srcEntries = state.db.logs[sourceDate] || [];
       var srcEntry = srcEntries.find(function(e) { return e.name === exName || e.exerciseId === exName; });
       if (!srcEntry || !srcEntry.sets.length) return;
 
-      var destEntries = ensureDayEntries(state.activeDate);
+      var destEntries = ensureDayEntries(targetDate);
       var destEntry = destEntries.find(function(e) { return e.name === exName || e.exerciseId === exName; });
       if (!destEntry) {
         destEntry = {
@@ -3225,7 +3255,8 @@
       });
 
       saveDB();
-      showToast('Copied ' + srcEntry.sets.length + ' sets to ' + getFriendlyDateLabel(state.activeDate));
+      updateDateHeader();
+      showToast('Copied ' + srcEntry.sets.length + ' sets to ' + getFriendlyDateLabel(targetDate));
       window.switchDetailTab('track');
     };
 
@@ -3253,7 +3284,7 @@
       container.innerHTML = sessions.map(function(sess) {
         var dt = parseLocalDate(sess.date);
         var fullDateLabel = dt.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase();
-        var isCurrent = sess.date === state.activeDate;
+        var isCurrent = sess.date === state.selectedDate;
 
         var rows = sess.sets.map(function(s, idx) {
           if (cardioMode || s.kind === 'cardio') {
@@ -3282,7 +3313,7 @@
             '<span class="hist-session-date">' + fullDateLabel + '</span>' +
             (isCurrent
               ? '<span class="exercise-meta" style="color:var(--text-muted);">CURRENT</span>'
-              : '<button type="button" class="hist-copy-btn" onclick="copyExerciseSessionToActiveDate(\'' + sess.date + '\')">COPY</button>') +
+              : '<button type="button" class="hist-copy-btn" onclick="copyExerciseSessionToSelectedDate(\'' + sess.date + '\')">COPY</button>') +
           '</div>' +
           '<div class="exercise-card" style="padding:4px 12px; margin-bottom:8px;">' + rows + '</div>'
         );
@@ -3659,7 +3690,7 @@
     };
 
     window.openDatePickerModal = function() {
-      document.getElementById('modalDateInput').value = state.activeDate;
+      document.getElementById('modalDateInput').value = state.selectedDate;
       document.getElementById('dateOverlay').classList.add('open');
     };
 
@@ -3670,7 +3701,7 @@
     window.applyModalDate = function() {
       var val = document.getElementById('modalDateInput').value;
       if (val) {
-        state.activeDate = val;
+        state.selectedDate = normalizeDateKey(val);
         updateDateHeader();
         window.switchPane(0);
       }
@@ -3678,7 +3709,7 @@
     };
 
     /* ========================================================================
-       ROUTINES & COPY PREVIOUS WORKOUT
+       ROUTINES & COPY PREVIOUS WORKOUT (STRICTLY INTO state.selectedDate)
        ======================================================================== */
     function renderRoutinesPane() {
       var el = document.getElementById('routinesContainer');
@@ -3694,7 +3725,7 @@
     window.loadRoutine = function(idx) {
       var rt = state.db.routines[idx];
       if (!rt) return;
-      var entries = ensureDayEntries(state.activeDate);
+      var entries = ensureDayEntries(state.selectedDate);
       rt.exerciseIds.forEach(function(exName) {
         if (!entries.some(function(e) { return e.exerciseId === exName; })) {
           var exObj = state.db.exercises.find(function(x) { return x.name === exName; });
@@ -3711,20 +3742,26 @@
     };
 
     window.copyLastWorkout = function() {
-      var dates = Object.keys(state.db.logs)
-        .filter(function(d) { return d !== state.activeDate && state.db.logs[d].length > 0; })
+      // Capture target date explicitly so copying NEVER alters state.selectedDate or other days
+      var targetDate = state.selectedDate;
+      var priorDates = Object.keys(state.db.logs)
+        .filter(function(d) {
+          return d < targetDate && Array.isArray(state.db.logs[d]) && state.db.logs[d].length > 0;
+        })
         .sort();
-      if (dates.length === 0) {
-        showToast('No previous workout found to copy');
+
+      if (priorDates.length === 0) {
+        showToast('No previous workout before ' + getFriendlyDateLabel(targetDate));
         return;
       }
-      var prevDate = dates[dates.length - 1];
-      state.db.logs[state.activeDate] = state.db.logs[prevDate].map(function(entry) {
+
+      var prevDate = priorDates[priorDates.length - 1];
+      var clonedEntries = state.db.logs[prevDate].map(function(entry) {
         return {
           exerciseId: entry.exerciseId,
           name: entry.name || entry.exerciseId,
           category: entry.category || 'General',
-          sets: entry.sets.map(function(s) {
+          sets: (entry.sets || []).map(function(s) {
             return {
               weight: s.weight || 0,
               reps: s.reps || 0,
@@ -3739,9 +3776,17 @@
           })
         };
       });
+
+      state.db.logs[targetDate] = clonedEntries;
+      state.selectedDate = targetDate;
       saveDB();
-      window.switchPane(0);
-      showToast('Copied workout from ' + prevDate);
+      updateDateHeader();
+      if (state.activePane !== 0) {
+        window.switchPane(0);
+      } else {
+        renderWorkoutPane();
+      }
+      showToast('Copied ' + getFriendlyDateLabel(prevDate) + ' → ' + getFriendlyDateLabel(targetDate));
     };
 
     /* ========================================================================
@@ -4357,7 +4402,7 @@
           for (var i = 1; i < rows.length; i++) {
             var r = rows[i];
             if (!r || r.length < 2) continue;
-            var date = (r[idxDate] || '').trim();
+            var date = normalizeDateKey(r[idxDate]);
             var exName = (r[idxEx] || '').trim();
             if (!date || !exName) continue;
 
