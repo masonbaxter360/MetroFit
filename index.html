@@ -896,36 +896,58 @@
     }
 
     /* ==========================================================================
-       EXERCISE LIBRARY & ALPHABET JUMP TILES
+       EXERCISE LIBRARY (LAST USED ORDER)
        ========================================================================== */
-    .letter-tile {
-      width: 42px;
-      height: 42px;
-      background: var(--zune-gradient);
-      color: #ffffff;
-      font-size: 22px;
-      font-weight: 300;
+    .lib-sort-bar {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      margin: 14px 0 8px 0;
-      text-transform: lowercase;
-      cursor: pointer;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      padding: 4px 0 8px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 2px;
+    }
+
+    .lib-sort-badge {
+      color: var(--zune-pink);
     }
 
     .lib-item {
-      padding: 11px 0;
+      padding: 12px 0;
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
       cursor: pointer;
+    }
+
+    .lib-item:active {
+      opacity: 0.78;
+    }
+
+    .lib-item-main {
+      min-width: 0;
+      flex: 1;
     }
 
     .lib-item-title {
       font-size: 18px;
       font-weight: 300;
       color: var(--text-primary);
+      line-height: 1.22;
+    }
+
+    .lib-item-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-top: 3px;
     }
 
     .lib-item-cat {
@@ -933,6 +955,17 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--zune-orange);
+    }
+
+    .lib-item-last-used {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+    }
+
+    .lib-item-last-used.never {
+      color: var(--text-muted);
     }
 
     /* ==========================================================================
@@ -1393,32 +1426,6 @@
       pointer-events: auto;
     }
 
-    .jump-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      max-width: 380px;
-      margin: 0 auto;
-    }
-
-    .jump-cell {
-      aspect-ratio: 1;
-      background: var(--zune-gradient);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      font-weight: 300;
-      color: #ffffff;
-      cursor: pointer;
-    }
-
-    .jump-cell.empty {
-      background: var(--bg-card);
-      color: var(--text-muted);
-      pointer-events: none;
-    }
-
     #toastBanner {
       position: fixed;
       left: 50%;
@@ -1474,13 +1481,17 @@
       <div id="workoutExercisesContainer"></div>
     </section>
 
-    <!-- PANE 1: EXERCISES LIBRARY -->
+    <!-- PANE 1: EXERCISES LIBRARY (SORTED BY LAST USED) -->
     <section class="pane" id="pane-1">
       <div style="display:flex; gap:8px; margin-bottom:10px;">
         <input type="text" id="exerciseSearch" class="metro-input" placeholder="Search exercises..." oninput="renderExerciseLibrary()" />
         <button type="button" class="metro-btn" data-action="new-exercise" onclick="promptNewExercise()">+ NEW</button>
       </div>
       <div id="categoryFilterBar" style="display:flex; gap:6px; overflow-x:auto; padding-bottom:8px;"></div>
+      <div class="lib-sort-bar">
+        <span>SORT ORDER: <span class="lib-sort-badge">LAST USED FIRST</span></span>
+        <span id="libCountReadout">0 EXERCISES</span>
+      </div>
       <div id="exerciseLibraryList"></div>
     </section>
 
@@ -1822,11 +1833,6 @@
   </footer>
 </div>
 
-<!-- Zune Alphabet Jump Overlay -->
-<div class="jump-overlay" id="jumpOverlay" onclick="closeJumpOverlay()">
-  <div class="jump-grid" id="jumpGrid" onclick="event.stopPropagation()"></div>
-</div>
-
 <!-- Date Picker Modal -->
 <div class="jump-overlay" id="dateOverlay" onclick="closeDatePickerModal()">
   <div class="exercise-card" style="max-width:340px; margin:60px auto;" onclick="event.stopPropagation()">
@@ -2044,7 +2050,8 @@
       db: {
         exercises: DEFAULT_EXERCISES.slice(),
         routines: DEFAULT_ROUTINES.slice(),
-        logs: {}
+        logs: {},
+        recentOrder: []
       }
     };
 
@@ -2228,7 +2235,8 @@
       try {
         localStorage.setItem(LS_FALLBACK_KEY, JSON.stringify({
           exercises: state.db.exercises,
-          routines: state.db.routines
+          routines: state.db.routines,
+          recentOrder: state.db.recentOrder || []
         }));
       } catch (e) {}
 
@@ -2249,6 +2257,7 @@
             state.db.exercises = req.result.exercises && req.result.exercises.length ? req.result.exercises : DEFAULT_EXERCISES.slice();
             state.db.routines = req.result.routines && req.result.routines.length ? req.result.routines : DEFAULT_ROUTINES.slice();
             state.db.logs = normalizeLogsKeys(req.result.logs || {});
+            state.db.recentOrder = Array.isArray(req.result.recentOrder) ? req.result.recentOrder : [];
             refreshActivePane();
           }
         };
@@ -2259,6 +2268,7 @@
             var parsed = JSON.parse(raw);
             if (parsed.logs) state.db.logs = normalizeLogsKeys(parsed.logs);
             if (parsed.exercises) state.db.exercises = parsed.exercises;
+            if (Array.isArray(parsed.recentOrder)) state.db.recentOrder = parsed.recentOrder;
             refreshActivePane();
           }
         } catch (e) {}
@@ -2295,7 +2305,6 @@
     function updateDayBarVisibility() {
       var dayBar = document.getElementById('dayNavBar');
       if (!dayBar) return;
-      // Show day navigation strip ONLY when activePane === 0 ('workout')
       dayBar.classList.toggle('hidden-bar', state.activePane !== 0);
     }
 
@@ -2398,6 +2407,16 @@
     /* ========================================================================
        WORKOUT LOGGING (STRENGTH & CARDIO + SWIPE-TO-DELETE SET ROWS)
        ======================================================================== */
+    function touchExerciseRecency(exName) {
+      if (!exName) return;
+      var target = String(exName).trim();
+      if (!target) return;
+      if (!Array.isArray(state.db.recentOrder)) state.db.recentOrder = [];
+      state.db.recentOrder = [target].concat(state.db.recentOrder.filter(function(n) {
+        return n.toLowerCase() !== target.toLowerCase();
+      }));
+    }
+
     function isCardioCategory(cat, exName) {
       var c = String(cat || '').trim().toLowerCase();
       if (c === 'cardio' || c === 'cardiovascular') return true;
@@ -2545,16 +2564,18 @@
 
     window.addExerciseToWorkout = function(exName) {
       var exObj = state.db.exercises.find(function(x) { return x.name === exName || x.id === exName; });
+      var resolvedName = exObj ? exObj.name : exName;
       var entries = ensureDayEntries(state.selectedDate);
-      if (!entries.some(function(e) { return e.exerciseId === exName; })) {
+      if (!entries.some(function(e) { return e.exerciseId === resolvedName || e.name === resolvedName; })) {
         entries.push({
-          exerciseId: exName,
-          name: exObj ? exObj.name : exName,
+          exerciseId: resolvedName,
+          name: resolvedName,
           category: exObj ? exObj.category : 'General',
           sets: []
         });
-        saveDB();
       }
+      touchExerciseRecency(resolvedName);
+      saveDB();
       window.switchPane(0);
     };
 
@@ -2581,6 +2602,7 @@
           distanceUnit: dist !== null ? 'mi' : '',
           kind: 'cardio'
         });
+        touchExerciseRecency(exName);
         saveDB();
         renderWorkoutPane();
 
@@ -2606,6 +2628,7 @@
         reps: reps,
         kind: weight > 0 ? 'wr' : 'r'
       });
+      touchExerciseRecency(exName);
       saveDB();
       renderWorkoutPane();
       showToast('Logged ' + weight + ' lb × ' + reps);
@@ -3163,6 +3186,7 @@
           entry.sets.push(payload);
           showToast('Logged cardio entry');
         }
+        touchExerciseRecency(exName);
         saveDB();
         renderDetailTrackTab();
         return;
@@ -3190,6 +3214,7 @@
         showToast('Logged ' + w + ' lb × ' + r);
       }
 
+      touchExerciseRecency(exName);
       saveDB();
       renderDetailTrackTab();
     };
@@ -3311,6 +3336,7 @@
         });
       });
 
+      touchExerciseRecency(exName);
       saveDB();
       updateDateHeader();
       showToast('Copied ' + srcEntry.sets.length + ' sets to ' + getFriendlyDateLabel(targetDate));
@@ -3651,11 +3677,59 @@
     }
 
     /* ========================================================================
-       EXERCISE LIBRARY & ALPHABET JUMP
+       EXERCISE LIBRARY — SORTED BY LAST USED (WITHIN ALL OR SELECTED CATEGORY)
        ======================================================================== */
+    function buildExerciseLastUsedMap() {
+      var map = {};
+      var dates = Object.keys(state.db.logs).sort();
+      for (var i = 0; i < dates.length; i++) {
+        var d = dates[i];
+        var entries = state.db.logs[d] || [];
+        for (var j = 0; j < entries.length; j++) {
+          var entry = entries[j];
+          var key = String(entry.name || entry.exerciseId || '').toLowerCase();
+          if (!key) continue;
+          // Track latest logged date and order within that day
+          map[key] = {
+            date: d,
+            daySeq: j,
+            hasSets: Array.isArray(entry.sets) && entry.sets.length > 0
+          };
+        }
+      }
+
+      // Apply live session recency ties/boosts so newly added/logged exercises jump straight to #1
+      var recent = Array.isArray(state.db.recentOrder) ? state.db.recentOrder : [];
+      for (var r = 0; r < recent.length; r++) {
+        var rKey = String(recent[r] || '').toLowerCase();
+        if (!rKey) continue;
+        if (!map[rKey]) {
+          map[rKey] = {
+            date: state.selectedDate,
+            daySeq: 10000 - r,
+            liveRank: r
+          };
+        } else {
+          map[rKey].liveRank = r;
+        }
+      }
+      return map;
+    }
+
+    function formatLastUsedBadge(info) {
+      if (!info || !info.date) return 'NOT YET LOGGED';
+      var today = getOffsetISO(0);
+      var yesterday = getOffsetISO(-1);
+      if (info.date === today) return 'LAST USED TODAY';
+      if (info.date === yesterday) return 'LAST USED YESTERDAY';
+      var dt = parseLocalDate(info.date);
+      return 'LAST USED ' + dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
+    }
+
     window.renderExerciseLibrary = function() {
       var catBar = document.getElementById('categoryFilterBar');
       var listEl = document.getElementById('exerciseLibraryList');
+      var countEl = document.getElementById('libCountReadout');
       if (!catBar || !listEl) return;
 
       var catSet = new Set(['All']);
@@ -3667,31 +3741,58 @@
         return '<button type="button" class="' + cls + '" style="padding:5px 10px; white-space:nowrap;" onclick="selectLibCat(\'' + escapeHtml(cat).replace(/'/g, "\\'") + '\')">' + escapeHtml(cat) + '</button>';
       }).join('');
 
-      var q = (document.getElementById('exerciseSearch').value || '').toLowerCase();
+      var lastUsedMap = buildExerciseLastUsedMap();
+      var q = (document.getElementById('exerciseSearch').value || '').toLowerCase().trim();
+
       var filtered = state.db.exercises
         .filter(function(ex) { return state.selectedCategory === 'All' || ex.category === state.selectedCategory; })
-        .filter(function(ex) { return ex.name.toLowerCase().indexOf(q) >= 0 || (ex.category || '').toLowerCase().indexOf(q) >= 0; })
-        .sort(function(a, b) { return a.name.localeCompare(b.name); });
+        .filter(function(ex) { return !q || ex.name.toLowerCase().indexOf(q) >= 0 || (ex.category || '').toLowerCase().indexOf(q) >= 0; })
+        .slice()
+        .sort(function(a, b) {
+          var aInfo = lastUsedMap[a.name.toLowerCase()];
+          var bInfo = lastUsedMap[b.name.toLowerCase()];
 
-      var currentLetter = '';
+          if (aInfo && !bInfo) return -1;
+          if (!aInfo && bInfo) return 1;
+          if (aInfo && bInfo) {
+            if (aInfo.date !== bInfo.date) {
+              return bInfo.date.localeCompare(aInfo.date);
+            }
+            var aLive = typeof aInfo.liveRank === 'number' ? aInfo.liveRank : 999999;
+            var bLive = typeof bInfo.liveRank === 'number' ? bInfo.liveRank : 999999;
+            if (aLive !== bLive) {
+              return aLive - bLive;
+            }
+            if ((bInfo.daySeq || 0) !== (aInfo.daySeq || 0)) {
+              return (bInfo.daySeq || 0) - (aInfo.daySeq || 0);
+            }
+          }
+          return a.name.localeCompare(b.name);
+        });
+
+      if (countEl) {
+        countEl.textContent = filtered.length + (filtered.length === 1 ? ' EXERCISE' : ' EXERCISES');
+      }
+
       listEl.innerHTML = filtered.map(function(ex) {
-        var first = ex.name.charAt(0).toLowerCase();
-        var key = /[a-z]/.test(first) ? first : '#';
-        var header = '';
-        if (key !== currentLetter) {
-          currentLetter = key;
-          header = '<div class="letter-tile" id="letter_' + key + '" onclick="openJumpOverlay()">' + key + '</div>';
-        }
         var safeName = ex.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        return header +
+        var info = lastUsedMap[ex.name.toLowerCase()];
+        var lastUsedLabel = formatLastUsedBadge(info);
+        var neverCls = info ? '' : ' never';
+
+        return (
           '<div class="lib-item" onclick="addExerciseToWorkout(\'' + safeName + '\')">' +
-            '<div>' +
+            '<div class="lib-item-main">' +
               '<div class="lib-item-title">' + escapeHtml(ex.name) + '</div>' +
-              '<div class="lib-item-cat">' + escapeHtml(ex.category) + '</div>' +
+              '<div class="lib-item-meta-row">' +
+                '<span class="lib-item-cat">' + escapeHtml(ex.category) + '</span>' +
+                '<span class="lib-item-last-used' + neverCls + '">• ' + escapeHtml(lastUsedLabel) + '</span>' +
+              '</div>' +
             '</div>' +
-            '<span style="color:var(--zune-pink); font-size:20px;">+</span>' +
-          '</div>';
-      }).join('') || '<div class="exercise-meta">No matching exercises.</div>';
+            '<span style="color:var(--zune-pink); font-size:22px; flex-shrink:0;">+</span>' +
+          '</div>'
+        );
+      }).join('') || '<div class="exercise-meta" style="padding:18px 0;">No matching exercises.</div>';
     };
 
     window.selectLibCat = function(cat) {
@@ -3719,31 +3820,6 @@
       window.closeNewExModal();
       window.renderExerciseLibrary();
       showToast('Added ' + name);
-    };
-
-    window.openJumpOverlay = function() {
-      var letters = ['#'].concat('abcdefghijklmnopqrstuvwxyz'.split(''));
-      var present = new Set(state.db.exercises.map(function(e) {
-        var c = e.name.charAt(0).toLowerCase();
-        return /[a-z]/.test(c) ? c : '#';
-      }));
-      document.getElementById('jumpGrid').innerHTML = letters.map(function(l) {
-        return '<div class="jump-cell ' + (present.has(l) ? '' : 'empty') + '" onclick="jumpToLetter(\'' + l + '\')">' + l + '</div>';
-      }).join('');
-      document.getElementById('jumpOverlay').classList.add('open');
-    };
-
-    window.closeJumpOverlay = function() {
-      document.getElementById('jumpOverlay').classList.remove('open');
-    };
-
-    window.jumpToLetter = function(letter) {
-      window.closeJumpOverlay();
-      var pane = document.getElementById('pane-1');
-      var target = document.getElementById('letter_' + letter);
-      if (pane && target) {
-        pane.scrollTo({ top: target.offsetTop - 12, behavior: 'smooth' });
-      }
     };
 
     window.openDatePickerModal = function() {
@@ -3793,13 +3869,13 @@
             sets: []
           });
         }
+        touchExerciseRecency(exName);
       });
       saveDB();
       window.switchPane(0);
     };
 
     window.copyLastWorkout = function() {
-      // Capture target date explicitly so copying NEVER alters state.selectedDate or other days
       var targetDate = state.selectedDate;
       var priorDates = Object.keys(state.db.logs)
         .filter(function(d) {
@@ -3814,9 +3890,11 @@
 
       var prevDate = priorDates[priorDates.length - 1];
       var clonedEntries = state.db.logs[prevDate].map(function(entry) {
+        var resolvedName = entry.name || entry.exerciseId;
+        touchExerciseRecency(resolvedName);
         return {
           exerciseId: entry.exerciseId,
-          name: entry.name || entry.exerciseId,
+          name: resolvedName,
           category: entry.category || 'General',
           sets: (entry.sets || []).map(function(s) {
             return {
@@ -4525,6 +4603,7 @@
           saveDB();
           updateDataSummary();
           renderWorkoutPane();
+          if (state.activePane === 1) renderExerciseLibrary();
           if (statusEl) {
             statusEl.textContent = 'IMPORTED ' + count.toLocaleString() + ' SETS ACROSS ' + Object.keys(logs).length.toLocaleString() + ' DAYS.';
           }
@@ -4664,15 +4743,18 @@
       saveDB();
       updateDataSummary();
       renderWorkoutPane();
+      if (state.activePane === 1) renderExerciseLibrary();
       showToast('Loaded sample workout history');
     };
 
     window.clearAllData = function() {
       state.db.logs = {};
+      state.db.recentOrder = [];
       state.db.exercises = DEFAULT_EXERCISES.slice();
       saveDB();
       updateDataSummary();
       renderWorkoutPane();
+      if (state.activePane === 1) renderExerciseLibrary();
       showToast('All local workout data cleared');
     };
 
