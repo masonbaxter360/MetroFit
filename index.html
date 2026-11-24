@@ -1727,12 +1727,15 @@
 <div id="toastBanner"></div>
 
 <script>
+  // Global error guard: ignore Safari Share Sheet / cross-origin WebKit injected script noise (line 0)
   window.onerror = function(msg, src, line) {
+    if (!src || msg === 'Script error.' || line === 0) return true;
     var b = document.getElementById('errorBanner');
     if (b) {
       b.style.display = 'block';
       b.textContent = 'Runtime error: ' + msg + ' (line ' + line + ')';
     }
+    return false;
   };
 
   (function() {
