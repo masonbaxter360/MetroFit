@@ -671,6 +671,26 @@
       font-size: 13px;
     }
 
+    .delete-ex-btn {
+      background: linear-gradient(135deg, #f43f5e 0%, #dc2626 52%, #991b1b 100%);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      line-height: 1;
+      flex-shrink: 0;
+      transition: transform 0.12s ease, filter 0.12s ease;
+    }
+
+    .delete-ex-btn:active {
+      transform: scale(0.95);
+      filter: brightness(0.9);
+    }
+
     .quick-add-row {
       display: grid;
       grid-template-columns: 1fr 1fr auto;
@@ -1761,7 +1781,7 @@
     </section>
   </main>
 
-  <!-- Windows Phone 7 Bottom Application Bar: workout | calendar | + start | charts | settings -->
+  <!-- Windows Phone 7 Bottom Application Bar: workout | add | calendar | charts | settings -->
   <footer class="wp-appbar">
     <button type="button" class="appbar-action active" id="appbar_0" onclick="switchPane(0)">
       <div class="circle-icon" aria-hidden="true">
@@ -1775,13 +1795,13 @@
       </div>
       <span class="appbar-label">workout</span>
     </button>
+    <button type="button" class="appbar-action" id="appbar_1" onclick="switchPane(1)">
+      <div class="circle-icon">+</div>
+      <span class="appbar-label">add</span>
+    </button>
     <button type="button" class="appbar-action" data-action="open-calendar" onclick="openDatePickerModal()">
       <div class="circle-icon">▦</div>
       <span class="appbar-label">calendar</span>
-    </button>
-    <button type="button" class="appbar-action" id="appbar_1" onclick="switchPane(1)">
-      <div class="circle-icon">+</div>
-      <span class="appbar-label">start</span>
     </button>
     <button type="button" class="appbar-action" id="appbar_3" onclick="switchPane(3)">
       <div class="circle-icon">↗</div>
@@ -3178,7 +3198,7 @@
                 '<div class="exercise-name">' + escapeHtml(exName) + '</div>' +
                 '<div class="exercise-meta">' + metaLine + '</div>' +
               '</div>' +
-              '<button type="button" class="icon-btn" onclick="removeExerciseFromDay(' + entryIdx + ',event)">🗑</button>' +
+              '<button type="button" class="delete-ex-btn" onclick="removeExerciseFromDay(' + entryIdx + ',event)">Delete</button>' +
             '</div>' +
             setsHtml +
             quickAddHtml +
