@@ -68,9 +68,9 @@
 
     html[data-theme="frosted"] {
       --bg-shell:
-        radial-gradient(circle at 12% 14%, rgba(var(--grad-start-rgb), 0.50) 0%, transparent 48%),
-        radial-gradient(circle at 88% 24%, rgba(var(--grad-end-rgb), 0.45) 0%, transparent 52%),
-        radial-gradient(circle at 46% 86%, rgba(var(--grad-start-rgb), 0.30) 0%, transparent 58%),
+        radial-gradient(circle at 12% 14%, rgba(var(--grad-start-rgb), 0.55) 0%, transparent 50%),
+        radial-gradient(circle at 88% 24%, rgba(var(--grad-end-rgb), 0.50) 0%, transparent 54%),
+        radial-gradient(circle at 46% 86%, rgba(var(--grad-start-rgb), 0.34) 0%, transparent 60%),
         linear-gradient(160deg, #12091a 0%, #090c18 52%, #190c14 100%);
       --bg-header: rgba(14, 10, 22, 0.56);
       --bg-subbar: rgba(255, 255, 255, 0.05);
@@ -152,7 +152,7 @@
     }
 
     /* ==========================================================================
-       TOP METRO HEADER & THEME CONTROLS
+       TOP METRO HEADER (CLEAN BRAND BAR + OVERSIZED 56px PIVOT TABS)
        ========================================================================== */
     .metro-header {
       padding: 10px 18px 0 18px;
@@ -188,127 +188,6 @@
       background: var(--zune-gradient);
     }
 
-    .header-theme-controls {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .theme-pill-btn {
-      background: var(--bg-card);
-      border: 1px solid var(--border-strong);
-      color: var(--text-primary);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 5px 10px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-    }
-
-    .theme-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--zune-gradient);
-      display: inline-block;
-    }
-
-    /* Gradient Picker Button: Visible ONLY in Frosted Mode */
-    .grad-picker-btn {
-      background: var(--bg-card);
-      border: 1px solid var(--border-strong);
-      color: var(--text-primary);
-      padding: 4px 7px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-    }
-
-    html[data-theme="frosted"] .grad-picker-btn {
-      display: inline-flex;
-    }
-
-    .grad-swatch-preview {
-      width: 16px;
-      height: 14px;
-      background: var(--zune-gradient);
-      display: inline-block;
-    }
-
-    /* Collapsible Gradient Color Picker Bar (Frosted Mode Only) */
-    .grad-picker-bar {
-      display: none;
-      background: var(--bg-card);
-      border-top: 1px solid var(--border-subtle);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 10px 18px;
-      flex-shrink: 0;
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      z-index: 25;
-    }
-
-    html[data-theme="frosted"] .grad-picker-bar.open {
-      display: block;
-    }
-
-    .grad-presets-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      margin-bottom: 10px;
-    }
-    .grad-presets-row::-webkit-scrollbar { display: none; }
-
-    .grad-preset-chip {
-      width: 32px;
-      height: 24px;
-      border: 1px solid var(--border-strong);
-      flex-shrink: 0;
-      padding: 0;
-    }
-
-    .grad-inputs-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr auto auto;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .color-input-box {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      background: var(--bg-input);
-      border: 1px solid var(--border-strong);
-      padding: 4px 8px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .color-input-box input[type="color"] {
-      width: 26px;
-      height: 22px;
-      border: none;
-      background: none;
-      padding: 0;
-      cursor: pointer;
-    }
-
-    /* ==========================================================================
-       OVERSIZED ZUNE / WP7 PIVOT MENU (56px)
-       ========================================================================== */
     .pivot-strip {
       display: flex;
       gap: 26px;
@@ -381,7 +260,7 @@
     }
 
     /* ==========================================================================
-       PANES VIEWPORT & SCROLL CLEARANCE
+       PANES VIEWPORT & FULL BOTTOM SCROLL CLEARANCE
        ========================================================================== */
     .panes-container {
       flex: 1 1 auto;
@@ -405,7 +284,7 @@
 
     /* Clean Empty Day Stage */
     .empty-day-stage {
-      min-height: 60vh;
+      min-height: 58vh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -691,6 +570,168 @@
     }
 
     /* ==========================================================================
+       SETTINGS: THEME TILES & FROSTED GRADIENT COLOR PICKER
+       ========================================================================== */
+    .theme-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .theme-choice-tile {
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      padding: 12px 10px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 76px;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+    }
+
+    .theme-choice-tile.active {
+      border: 2px solid var(--zune-pink);
+      background: var(--tile-tint-pink);
+    }
+
+    .theme-choice-preview {
+      width: 24px;
+      height: 14px;
+      border: 1px solid var(--border-strong);
+      margin-bottom: 8px;
+    }
+
+    .theme-choice-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .theme-choice-desc {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .frosted-picker-panel {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-left: 3px solid var(--zune-pink);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+    }
+
+    html[data-theme="frosted"] .frosted-picker-panel {
+      display: block;
+    }
+
+    .grad-presets-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-bottom: 12px;
+      padding-bottom: 2px;
+    }
+    .grad-presets-row::-webkit-scrollbar { display: none; }
+
+    .grad-preset-chip {
+      width: 36px;
+      height: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      flex-shrink: 0;
+      padding: 0;
+    }
+
+    .grad-sliders-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .hue-control-card {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border-strong);
+      padding: 8px 9px;
+    }
+
+    .hue-control-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .hue-native-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .hue-native-input {
+      width: 24px;
+      height: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .hue-range-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 16px;
+      border-radius: 0;
+      outline: none;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: linear-gradient(
+        to right,
+        #ff0000 0%,
+        #ffff00 17%,
+        #00ff00 33%,
+        #00ffff 50%,
+        #0000ff 67%,
+        #ff00ff 83%,
+        #ff0000 100%
+      );
+      touch-action: pan-x;
+    }
+
+    .hue-range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 22px;
+      background: #ffffff;
+      border: 2px solid #000000;
+      cursor: pointer;
+    }
+
+    .hue-range-slider::-moz-range-thumb {
+      width: 14px;
+      height: 22px;
+      background: #ffffff;
+      border: 2px solid #000000;
+      border-radius: 0;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
        EXERCISE LIBRARY & ALPHABET JUMP TILES
        ========================================================================== */
     .letter-tile {
@@ -883,7 +924,7 @@
     }
 
     /* ==========================================================================
-       WINDOWS PHONE 7 BOTTOM APPLICATION BAR
+       WINDOWS PHONE 7 BOTTOM APPLICATION BAR (CALENDAR | + START | CHARTS | SETTINGS)
        ========================================================================== */
     .wp-appbar {
       position: fixed;
@@ -1238,41 +1279,15 @@
   <header class="metro-header">
     <div class="brand-bar">
       <div class="brand-title"><span class="zune-glyph"></span> GYM // BXTR</div>
-      <div class="header-theme-controls">
-        <button type="button" class="grad-picker-btn" id="gradientPickerBtn" data-action="toggle-grad-picker" onclick="toggleGradPicker()" title="Customize gradient colors" aria-label="Customize gradient colors">
-          <span class="grad-swatch-preview"></span>
-        </button>
-        <button type="button" class="theme-pill-btn" id="themeToggleBtn" data-action="cycle-theme" onclick="cycleTheme()">
-          <span class="theme-dot"></span>
-          <span id="themeLabel">THEME: DARK</span>
-        </button>
-      </div>
     </div>
     <nav class="pivot-strip" id="pivotStrip">
       <div class="pivot-tab active" data-pane="0" onclick="switchPane(0)">workout</div>
       <div class="pivot-tab" data-pane="1" onclick="switchPane(1)">exercises</div>
       <div class="pivot-tab" data-pane="2" onclick="switchPane(2)">routines</div>
       <div class="pivot-tab" data-pane="3" onclick="switchPane(3)">charts</div>
-      <div class="pivot-tab" data-pane="4" onclick="switchPane(4)">data</div>
+      <div class="pivot-tab" data-pane="4" onclick="switchPane(4)">settings</div>
     </nav>
   </header>
-
-  <!-- Custom Gradient Color Picker Bar (Frosted Mode Only) -->
-  <div class="grad-picker-bar" id="gradPickerBar">
-    <div class="grad-presets-row" id="gradPresetsRow"></div>
-    <div class="grad-inputs-row">
-      <label class="color-input-box">
-        <span>START</span>
-        <input type="color" id="gradStartInput" value="#ec008c" oninput="onCustomGradientInput()" />
-      </label>
-      <label class="color-input-box">
-        <span>END</span>
-        <input type="color" id="gradEndInput" value="#f26522" oninput="onCustomGradientInput()" />
-      </label>
-      <button type="button" class="metro-btn-outline" style="padding:6px 8px;" data-action="reset-grad" onclick="resetDefaultGradient()">DEFAULT COLORS</button>
-      <button type="button" class="metro-btn-outline" style="padding:6px 10px;" data-action="toggle-grad-picker" onclick="toggleGradPicker()">DONE</button>
-    </div>
-  </div>
 
   <!-- Day Navigation Strip -->
   <div class="day-nav-bar" id="dayNavBar">
@@ -1367,10 +1382,65 @@
       </div>
     </section>
 
-    <!-- PANE 4: FITNOTES CSV IMPORT / EXPORT & DATA -->
+    <!-- PANE 4: SETTINGS (APPEARANCE & THEMES + FITNOTES CSV DATA) -->
     <section class="pane" id="pane-4">
+      <div class="metro-section-label" style="margin-top:4px;">APPEARANCE &amp; THEMES</div>
+      <div class="theme-selector-grid">
+        <button type="button" class="theme-choice-tile active" id="themeTile_dark" onclick="selectTheme('dark')">
+          <div class="theme-choice-preview" style="background:#000000;"></div>
+          <div>
+            <div class="theme-choice-name">Dark</div>
+            <div class="theme-choice-desc">OLED Black</div>
+          </div>
+        </button>
+        <button type="button" class="theme-choice-tile" id="themeTile_light" onclick="selectTheme('light')">
+          <div class="theme-choice-preview" style="background:#f4f4f4;"></div>
+          <div>
+            <div class="theme-choice-name">Light</div>
+            <div class="theme-choice-desc">WP7 Daylight</div>
+          </div>
+        </button>
+        <button type="button" class="theme-choice-tile" id="themeTile_frosted" onclick="selectTheme('frosted')">
+          <div class="theme-choice-preview" id="frostedTileSwatch" style="background:linear-gradient(135deg,#ec008c 0%,#f26522 100%);"></div>
+          <div>
+            <div class="theme-choice-name">Frosted</div>
+            <div class="theme-choice-desc">Zune Gradient</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Frosted Theme Gradient Color Picker (Visible when Frosted is selected) -->
+      <div class="frosted-picker-panel" id="frostedPickerPanel">
+        <div class="exercise-meta" style="margin-bottom:8px; color:var(--text-primary); font-weight:700;">FROSTED GRADIENT COLOR PICKER</div>
+        <div class="grad-presets-row" id="gradPresetsRow"></div>
+        <div class="grad-sliders-grid">
+          <div class="hue-control-card">
+            <div class="hue-control-top">
+              <span>COLOR 1</span>
+              <span class="hue-native-wrap">
+                <span id="gradStartHexText">#EC008C</span>
+                <input type="color" id="gradStartInput" class="hue-native-input" value="#ec008c" oninput="onCustomGradientInput()" onchange="onCustomGradientInput()" />
+              </span>
+            </div>
+            <input type="range" id="gradStartHueSlider" class="hue-range-slider" min="0" max="360" value="324" oninput="onHueSliderInput()" onchange="onHueSliderInput()" />
+          </div>
+          <div class="hue-control-card">
+            <div class="hue-control-top">
+              <span>COLOR 2</span>
+              <span class="hue-native-wrap">
+                <span id="gradEndHexText">#F26522</span>
+                <input type="color" id="gradEndInput" class="hue-native-input" value="#f26522" oninput="onCustomGradientInput()" onchange="onCustomGradientInput()" />
+              </span>
+            </div>
+            <input type="range" id="gradEndHueSlider" class="hue-range-slider" min="0" max="360" value="19" oninput="onHueSliderInput()" onchange="onHueSliderInput()" />
+          </div>
+        </div>
+        <button type="button" class="metro-btn-outline" style="width:100%;" data-action="reset-grad" onclick="resetDefaultGradient()">DEFAULT COLORS</button>
+      </div>
+
       <div class="metro-section-label">WORKOUT DATABASE</div>
       <div class="tile-grid" id="dataSummaryTiles"></div>
+      <div id="dataRangeReadout" class="exercise-meta" style="margin:-6px 0 12px 0;"></div>
 
       <div class="metro-section-label">IMPORT FITNOTES .CSV</div>
       <div class="exercise-card">
@@ -1380,8 +1450,8 @@
         </div>
         <input type="file" id="csvFileInput" accept=".csv,text/csv" style="display:none;" onchange="importFitNotesCSV(event)" />
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button type="button" class="metro-btn" onclick="document.getElementById('csvFileInput').click()">SELECT .CSV FILE</button>
-          <button type="button" class="metro-btn-outline" onclick="loadSampleWorkoutData()">LOAD DEMO SAMPLE</button>
+          <button type="button" class="metro-btn" onclick="document.getElementById('csvFileInput').click()">IMPORT FITNOTES .CSV</button>
+          <button type="button" class="metro-btn-outline" onclick="loadSampleWorkoutData()">LOAD SAMPLE HISTORY</button>
         </div>
         <div id="csvImportStatus" class="exercise-meta" style="margin-top:10px; color:var(--zune-pink);"></div>
       </div>
@@ -1396,27 +1466,32 @@
       </div>
 
       <div class="metro-section-label">DANGER ZONE</div>
-      <button type="button" class="metro-btn-outline" style="border-color:#a02020; color:#ff6b6b;" onclick="clearAllData()">RESET ALL LOCAL WORKOUT DATA</button>
+      <button type="button" class="metro-btn-outline" style="border-color:#a02020; color:#ff6b6b;" onclick="clearAllData()">CLEAR ALL DATA</button>
     </section>
   </main>
 
-  <!-- Windows Phone 7 Bottom Application Bar -->
+  <!-- Windows Phone 7 Bottom Application Bar: calendar | + start | charts | settings -->
   <footer class="wp-appbar">
     <button type="button" class="appbar-action" data-action="open-calendar" onclick="openDatePickerModal()">
       <div class="circle-icon">▦</div>
       <span class="appbar-label">calendar</span>
     </button>
-    <button type="button" class="appbar-action" data-pane="1" onclick="switchPane(1)">
+    <button type="button" class="appbar-action" id="appbar_1" onclick="switchPane(1)">
       <div class="circle-icon">+</div>
       <span class="appbar-label">start</span>
     </button>
-    <button type="button" class="appbar-action" data-pane="3" onclick="switchPane(3)">
+    <button type="button" class="appbar-action" id="appbar_3" onclick="switchPane(3)">
       <div class="circle-icon">↗</div>
       <span class="appbar-label">charts</span>
     </button>
-    <button type="button" class="appbar-action" data-pane="4" onclick="switchPane(4)">
-      <div class="circle-icon">⇄</div>
-      <span class="appbar-label">csv data</span>
+    <button type="button" class="appbar-action" id="appbar_4" onclick="switchPane(4)">
+      <div class="circle-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </div>
+      <span class="appbar-label">settings</span>
     </button>
   </footer>
 </div>
@@ -1729,7 +1804,7 @@
     }
 
     /* ========================================================================
-       THEME & FROSTED-ONLY GRADIENT COLOR PICKER
+       THEME & FROSTED GRADIENT COLOR PICKER (INSIDE SETTINGS)
        ======================================================================== */
     function hexToRgbTuple(hex) {
       var clean = String(hex || '').replace('#', '').trim();
@@ -1739,6 +1814,47 @@
       var num = parseInt(clean, 16);
       if (isNaN(num)) return '236, 0, 140';
       return ((num >> 16) & 255) + ', ' + ((num >> 8) & 255) + ', ' + (num & 255);
+    }
+
+    function hslToHex(h, s, l) {
+      s /= 100;
+      l /= 100;
+      var c = (1 - Math.abs(2 * l - 1)) * s;
+      var x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+      var m = l - c / 2;
+      var r = 0, g = 0, b = 0;
+      if (h >= 0 && h < 60) { r = c; g = x; b = 0; }
+      else if (h >= 60 && h < 120) { r = x; g = c; b = 0; }
+      else if (h >= 120 && h < 180) { r = 0; g = c; b = x; }
+      else if (h >= 180 && h < 240) { r = 0; g = x; b = c; }
+      else if (h >= 240 && h < 300) { r = x; g = 0; b = c; }
+      else { r = c; g = 0; b = x; }
+      var toHex = function(n) {
+        return Math.round((n + m) * 255).toString(16).padStart(2, '0');
+      };
+      return '#' + toHex(r) + toHex(g) + toHex(b);
+    }
+
+    function hexToHue(hex) {
+      var clean = String(hex || '').replace('#', '').trim();
+      if (clean.length === 3) {
+        clean = clean[0] + clean[0] + clean[1] + clean[1] + clean[2] + clean[2];
+      }
+      var num = parseInt(clean, 16);
+      if (isNaN(num)) return 324;
+      var r = ((num >> 16) & 255) / 255;
+      var g = ((num >> 8) & 255) / 255;
+      var b = (num & 255) / 255;
+      var max = Math.max(r, g, b);
+      var min = Math.min(r, g, b);
+      var d = max - min;
+      if (d === 0) return 0;
+      var h = 0;
+      if (max === r) h = ((g - b) / d) % 6;
+      else if (max === g) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      h = Math.round(h * 60);
+      return h < 0 ? h + 360 : h;
     }
 
     function applyGradientColors(startHex, endHex, persist) {
@@ -1756,8 +1872,19 @@
 
       var sInp = document.getElementById('gradStartInput');
       var eInp = document.getElementById('gradEndInput');
+      var sText = document.getElementById('gradStartHexText');
+      var eText = document.getElementById('gradEndHexText');
+      var sSlider = document.getElementById('gradStartHueSlider');
+      var eSlider = document.getElementById('gradEndHueSlider');
+      var swatch = document.getElementById('frostedTileSwatch');
+
       if (sInp) sInp.value = state.gradStart;
       if (eInp) eInp.value = state.gradEnd;
+      if (sText) sText.textContent = state.gradStart.toUpperCase();
+      if (eText) eText.textContent = state.gradEnd.toUpperCase();
+      if (sSlider) sSlider.value = hexToHue(state.gradStart);
+      if (eSlider) eSlider.value = hexToHue(state.gradEnd);
+      if (swatch) swatch.style.background = 'linear-gradient(135deg,' + state.gradStart + ' 0%,' + state.gradEnd + ' 100%)';
 
       if (persist) {
         try {
@@ -1772,17 +1899,11 @@
       var row = document.getElementById('gradPresetsRow');
       if (!row) return;
       row.innerHTML =
-        '<span style="font-size:10px; font-weight:700; letter-spacing:0.1em; color:var(--text-secondary); text-transform:uppercase; flex-shrink:0;">GRADIENT:</span>' +
+        '<span style="font-size:10px; font-weight:700; letter-spacing:0.1em; color:var(--text-secondary); text-transform:uppercase; flex-shrink:0;">PRESETS:</span>' +
         GRADIENT_PRESETS.map(function(p) {
           return '<button type="button" class="grad-preset-chip" title="' + escapeHtml(p.name) + '" style="background:linear-gradient(135deg,' + p.start + ' 0%,' + p.end + ' 100%);" onclick="selectGradientPreset(\'' + p.start + '\',\'' + p.end + '\')"></button>';
         }).join('');
     }
-
-    window.toggleGradPicker = function() {
-      if (state.theme !== 'frosted') return;
-      var bar = document.getElementById('gradPickerBar');
-      if (bar) bar.classList.toggle('open');
-    };
 
     window.selectGradientPreset = function(startHex, endHex) {
       if (state.theme !== 'frosted') return;
@@ -1801,31 +1922,24 @@
       applyGradientColors(sVal, eVal, true);
     };
 
-    function applyTheme(t) {
+    window.onHueSliderInput = function() {
+      if (state.theme !== 'frosted') return;
+      var h1 = parseInt(document.getElementById('gradStartHueSlider').value, 10) || 0;
+      var h2 = parseInt(document.getElementById('gradEndHueSlider').value, 10) || 0;
+      applyGradientColors(hslToHex(h1, 92, 52), hslToHex(h2, 92, 54), true);
+    };
+
+    window.selectTheme = function(t) {
       state.theme = THEMES.indexOf(t) >= 0 ? t : 'dark';
       document.documentElement.setAttribute('data-theme', state.theme);
 
-      var pickerBtn = document.getElementById('gradientPickerBtn');
-      var pickerBar = document.getElementById('gradPickerBar');
-      if (pickerBtn) {
-        pickerBtn.style.display = state.theme === 'frosted' ? 'inline-flex' : 'none';
-      }
-      if (pickerBar && state.theme !== 'frosted') {
-        pickerBar.classList.remove('open');
-      }
+      THEMES.forEach(function(name) {
+        var tile = document.getElementById('themeTile_' + name);
+        if (tile) tile.classList.toggle('active', name === state.theme);
+      });
 
-      var lbl = document.getElementById('themeLabel');
-      if (lbl) {
-        lbl.textContent = 'THEME: ' + (state.theme === 'frosted' ? 'FROSTED' : state.theme.toUpperCase());
-      }
       try { localStorage.setItem(THEME_KEY, state.theme); } catch (e) {}
       applyGradientColors(state.gradStart, state.gradEnd, false);
-    }
-
-    window.cycleTheme = function() {
-      var idx = THEMES.indexOf(state.theme);
-      var next = THEMES[(idx + 1) % THEMES.length];
-      applyTheme(next);
     };
 
     /* ========================================================================
@@ -1961,6 +2075,10 @@
       for (var j = 0; j < panes.length; j++) {
         panes[j].classList.toggle('active', j === idx);
       }
+      [1, 3, 4].forEach(function(pIdx) {
+        var btn = document.getElementById('appbar_' + pIdx);
+        if (btn) btn.classList.toggle('active', idx === pIdx);
+      });
       refreshActivePane();
     };
 
@@ -1995,7 +2113,7 @@
     }
 
     /* ========================================================================
-       WORKOUT LOGGING (NO SUMMARY CARDS; INLINE QUICK ENTRY + CLICKABLE ROWS)
+       WORKOUT LOGGING (INLINE QUICK ENTRY + CLICKABLE SET ROWS & HEADERS)
        ======================================================================== */
     function getDayEntries(dateIso) {
       return state.db.logs[dateIso] || [];
@@ -3005,7 +3123,6 @@
       if (interval === 'year') return dateIso.slice(0, 4);
       if (interval === 'month') return dateIso.slice(0, 7);
       if (interval === 'week') {
-        // Rolling 7-day week where first day is tomorrow's weekday (e.g., Today=Mon -> week is Tue..Mon)
         var today = new Date();
         var tomorrowDayOfWeek = (today.getDay() + 1) % 7;
         var p = dateIso.split('-').map(Number);
@@ -3320,12 +3437,13 @@
     }
 
     /* ========================================================================
-       FITNOTES .CSV IMPORT / EXPORT & DATA SUMMARY
+       FITNOTES .CSV IMPORT / EXPORT & SETTINGS SUMMARY
        ======================================================================== */
     function updateDataSummary() {
       var el = document.getElementById('dataSummaryTiles');
+      var rangeEl = document.getElementById('dataRangeReadout');
       if (!el) return;
-      var dates = Object.keys(state.db.logs);
+      var dates = Object.keys(state.db.logs).sort();
       var totalSets = 0;
       dates.forEach(function(d) {
         state.db.logs[d].forEach(function(e) { totalSets += e.sets.length; });
@@ -3339,6 +3457,11 @@
           '<div class="tile-value">' + totalSets.toLocaleString() + '</div>' +
           '<div class="tile-label">sets recorded</div>' +
         '</div>';
+      if (rangeEl) {
+        rangeEl.textContent = dates.length
+          ? ('ACTIVE RANGE: ' + dates[0] + ' TO ' + dates[dates.length - 1] + ' • ' + state.db.exercises.length + ' EXERCISES')
+          : ('0 WORKOUTS LOGGED • ' + state.db.exercises.length + ' EXERCISES IN LIBRARY');
+      }
     }
 
     function parseCSV(text) {
@@ -3570,7 +3693,7 @@
       saveDB();
       updateDataSummary();
       renderWorkoutPane();
-      showToast('Loaded demo workout history');
+      showToast('Loaded sample workout history');
     };
 
     window.clearAllData = function() {
@@ -3589,9 +3712,7 @@
       var target = e.target.closest('[data-action]');
       if (!target) return;
       var act = target.getAttribute('data-action');
-      if (act === 'cycle-theme') window.cycleTheme();
-      else if (act === 'toggle-grad-picker') window.toggleGradPicker();
-      else if (act === 'reset-grad') window.resetDefaultGradient();
+      if (act === 'reset-grad') window.resetDefaultGradient();
       else if (act === 'prev-day') window.shiftDate(-1);
       else if (act === 'next-day') window.shiftDate(1);
       else if (act === 'jump-today') window.jumpToToday();
@@ -3615,9 +3736,9 @@
 
     try {
       var savedTheme = localStorage.getItem(THEME_KEY);
-      applyTheme(savedTheme || 'dark');
+      window.selectTheme(savedTheme || 'dark');
     } catch (e) {
-      applyTheme('dark');
+      window.selectTheme('dark');
     }
 
     updateDateHeader();
