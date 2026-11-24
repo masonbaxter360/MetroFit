@@ -10,7 +10,7 @@
   <title>GYM // BXTR</title>
   <style>
     /* ==========================================================================
-       ZUNEFIT METRO DESIGN TOKENS (DARK / LIGHT / FROSTED)
+       GYM // BXTR — ZUNE 4.8 / WINDOWS PHONE 7 METRO DESIGN TOKENS
        ========================================================================== */
     :root,
     html[data-theme="dark"] {
@@ -26,8 +26,8 @@
       --bg-input: #000000;
       --bg-appbar: #0c0c0c;
       --bg-modal: rgba(0, 0, 0, 0.96);
-      --border-subtle: #202020;
-      --border-strong: #383838;
+      --border-subtle: #222222;
+      --border-strong: #3a3a3a;
       --text-primary: #ffffff;
       --text-secondary: #9c9c9c;
       --text-muted: #555555;
@@ -68,9 +68,9 @@
 
     html[data-theme="frosted"] {
       --bg-shell:
-        radial-gradient(circle at 12% 14%, rgba(var(--grad-start-rgb), 0.48) 0%, transparent 48%),
-        radial-gradient(circle at 88% 24%, rgba(var(--grad-end-rgb), 0.44) 0%, transparent 52%),
-        radial-gradient(circle at 46% 86%, rgba(var(--grad-start-rgb), 0.28) 0%, transparent 58%),
+        radial-gradient(circle at 12% 14%, rgba(var(--grad-start-rgb), 0.50) 0%, transparent 48%),
+        radial-gradient(circle at 88% 24%, rgba(var(--grad-end-rgb), 0.45) 0%, transparent 52%),
+        radial-gradient(circle at 46% 86%, rgba(var(--grad-start-rgb), 0.30) 0%, transparent 58%),
         linear-gradient(160deg, #12091a 0%, #090c18 52%, #190c14 100%);
       --bg-header: rgba(14, 10, 22, 0.56);
       --bg-subbar: rgba(255, 255, 255, 0.05);
@@ -78,7 +78,7 @@
       --bg-card-alt: rgba(255, 255, 255, 0.15);
       --bg-input: rgba(0, 0, 0, 0.34);
       --bg-appbar: rgba(12, 10, 20, 0.72);
-      --bg-modal: rgba(10, 8, 18, 0.94);
+      --bg-modal: rgba(10, 8, 18, 0.95);
       --border-subtle: rgba(255, 255, 255, 0.16);
       --border-strong: rgba(255, 255, 255, 0.32);
       --text-primary: #ffffff;
@@ -103,6 +103,12 @@
     input, textarea, select {
       user-select: text;
       font-family: var(--font-metro);
+    }
+
+    button {
+      cursor: pointer;
+      font-family: var(--font-metro);
+      touch-action: manipulation;
     }
 
     html, body {
@@ -145,7 +151,9 @@
       word-break: break-word;
     }
 
-    /* Top Metro Header */
+    /* ==========================================================================
+       TOP METRO HEADER & THEME CONTROLS
+       ========================================================================== */
     .metro-header {
       padding: 10px 18px 0 18px;
       flex-shrink: 0;
@@ -180,6 +188,12 @@
       background: var(--zune-gradient);
     }
 
+    .header-theme-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .theme-pill-btn {
       background: var(--bg-card);
       border: 1px solid var(--border-strong);
@@ -192,7 +206,6 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      cursor: pointer;
       backdrop-filter: var(--glass-blur);
       -webkit-backdrop-filter: var(--glass-blur);
     }
@@ -204,12 +217,7 @@
       display: inline-block;
     }
 
-    .header-theme-controls {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
+    /* Gradient Picker Button: Visible ONLY in Frosted Mode */
     .grad-picker-btn {
       background: var(--bg-card);
       border: 1px solid var(--border-strong);
@@ -218,13 +226,11 @@
       display: none;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
       backdrop-filter: var(--glass-blur);
       -webkit-backdrop-filter: var(--glass-blur);
     }
 
-    html[data-theme="frosted"] .grad-picker-btn,
-    body.theme-frosted .grad-picker-btn {
+    html[data-theme="frosted"] .grad-picker-btn {
       display: inline-flex;
     }
 
@@ -235,7 +241,7 @@
       display: inline-block;
     }
 
-    /* Collapsible Gradient Color Picker Bar */
+    /* Collapsible Gradient Color Picker Bar (Frosted Mode Only) */
     .grad-picker-bar {
       display: none;
       background: var(--bg-card);
@@ -248,7 +254,7 @@
       z-index: 25;
     }
 
-    .grad-picker-bar.open {
+    html[data-theme="frosted"] .grad-picker-bar.open {
       display: block;
     }
 
@@ -263,17 +269,17 @@
     .grad-presets-row::-webkit-scrollbar { display: none; }
 
     .grad-preset-chip {
-      width: 30px;
+      width: 32px;
       height: 24px;
       border: 1px solid var(--border-strong);
       flex-shrink: 0;
-      cursor: pointer;
+      padding: 0;
     }
 
     .grad-inputs-row {
       display: grid;
       grid-template-columns: 1fr 1fr auto auto;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
     }
 
@@ -281,26 +287,28 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
       background: var(--bg-input);
       border: 1px solid var(--border-strong);
       padding: 4px 8px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
     .color-input-box input[type="color"] {
-      width: 28px;
-      height: 24px;
+      width: 26px;
+      height: 22px;
       border: none;
       background: none;
       padding: 0;
       cursor: pointer;
     }
 
-    /* Pivot Title Strip */
+    /* ==========================================================================
+       OVERSIZED ZUNE / WP7 PIVOT MENU (56px)
+       ========================================================================== */
     .pivot-strip {
       display: flex;
       gap: 26px;
@@ -326,7 +334,9 @@
       font-weight: 300;
     }
 
-    /* FitNotes Day Navigation Strip */
+    /* ==========================================================================
+       DAY NAVIGATION BAR
+       ========================================================================== */
     .day-nav-bar {
       display: flex;
       align-items: center;
@@ -348,7 +358,6 @@
       font-weight: 300;
       line-height: 1;
       padding: 2px 12px;
-      cursor: pointer;
     }
 
     .day-title-wrap {
@@ -371,7 +380,9 @@
       margin-top: 1px;
     }
 
-    /* Panes Viewport */
+    /* ==========================================================================
+       PANES VIEWPORT & SCROLL CLEARANCE
+       ========================================================================== */
     .panes-container {
       flex: 1 1 auto;
       min-height: 0;
@@ -392,14 +403,14 @@
       display: block;
     }
 
-    /* Clean FitNotes Empty Day State in Zune Metro Style */
+    /* Clean Empty Day Stage */
     .empty-day-stage {
-      min-height: 62vh;
+      min-height: 60vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 40px;
+      gap: 38px;
       padding: 20px 0;
     }
 
@@ -411,7 +422,6 @@
       flex-direction: column;
       align-items: center;
       gap: 14px;
-      cursor: pointer;
       padding: 12px 24px;
     }
 
@@ -449,7 +459,6 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-top: 6px;
     }
 
     @keyframes slideFromRight {
@@ -463,7 +472,9 @@
     .anim-next { animation: slideFromRight 0.2s ease-out; }
     .anim-prev { animation: slideFromLeft 0.2s ease-out; }
 
-    /* Metro Tiles & Cards */
+    /* ==========================================================================
+       METRO CARDS, SET ROWS, & INLINE QUICK LOGGING
+       ========================================================================== */
     .metro-section-label {
       font-size: 11px;
       font-weight: 700;
@@ -569,10 +580,8 @@
       align-items: center;
       justify-content: center;
       font-size: 13px;
-      cursor: pointer;
     }
 
-    /* Inline Quick Set Entry Row inside Exercise Card */
     .quick-add-row {
       display: grid;
       grid-template-columns: 1fr 1fr auto;
@@ -625,7 +634,6 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
       padding: 10px 14px;
-      cursor: pointer;
     }
 
     .metro-btn-outline {
@@ -637,7 +645,6 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
       padding: 8px 12px;
-      cursor: pointer;
       backdrop-filter: var(--glass-blur);
       -webkit-backdrop-filter: var(--glass-blur);
     }
@@ -683,7 +690,9 @@
       opacity: 0.9;
     }
 
-    /* Exercise Library List + Zune Letter Tiles */
+    /* ==========================================================================
+       EXERCISE LIBRARY & ALPHABET JUMP TILES
+       ========================================================================== */
     .letter-tile {
       width: 42px;
       height: 42px;
@@ -721,7 +730,9 @@
       color: var(--zune-orange);
     }
 
-    /* Multi-Dimensional FitNotes Charts UI */
+    /* ==========================================================================
+       MULTI-DIMENSIONAL CHARTS UI
+       ========================================================================== */
     .chart-filter-stack {
       display: flex;
       flex-direction: column;
@@ -741,7 +752,6 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      cursor: pointer;
       backdrop-filter: var(--glass-blur);
       -webkit-backdrop-filter: var(--glass-blur);
     }
@@ -765,7 +775,6 @@
       font-size: 12px;
       font-weight: 600;
       padding: 7px 4px;
-      cursor: pointer;
       text-align: center;
     }
 
@@ -809,7 +818,6 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
     }
 
     .point-readout {
@@ -843,7 +851,6 @@
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      cursor: pointer;
       text-align: center;
     }
 
@@ -875,7 +882,9 @@
       background: var(--zune-gradient);
     }
 
-    /* Windows Phone 7 Bottom Application Bar */
+    /* ==========================================================================
+       WINDOWS PHONE 7 BOTTOM APPLICATION BAR
+       ========================================================================== */
     .wp-appbar {
       position: fixed;
       left: 0;
@@ -901,7 +910,6 @@
       background: none;
       border: none;
       color: var(--text-primary);
-      cursor: pointer;
       padding: 4px 12px;
     }
 
@@ -938,11 +946,12 @@
     /* ==========================================================================
        FULL-SCREEN EXERCISE DETAIL VIEW (TRACK | HISTORY | RECORDS | CHARTS)
        ========================================================================== */
-    #exerciseDetailScreen {
+    #detailView {
       position: fixed;
       inset: 0;
       z-index: 60;
       display: none;
+      pointer-events: none;
       flex-direction: column;
       background: var(--bg-shell);
       color: var(--text-primary);
@@ -952,8 +961,9 @@
       padding-right: env(safe-area-inset-right);
     }
 
-    #exerciseDetailScreen.open {
+    #detailView.open {
       display: flex;
+      pointer-events: auto;
     }
 
     .detail-top-bar {
@@ -979,13 +989,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
     }
 
     .detail-title-box {
       text-align: center;
       flex: 1;
-      padding: 0 10px;
+      padding: 0 8px;
       min-width: 0;
     }
 
@@ -1004,6 +1013,38 @@
       text-transform: uppercase;
       color: var(--zune-orange);
       margin-top: 2px;
+    }
+
+    .detail-timer-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 6px 9px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .detail-timer-pill.running {
+      border-color: var(--zune-pink);
+      color: var(--zune-pink);
+    }
+
+    .detail-rest-drawer {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 18px;
+      background: var(--bg-subbar);
+      border-bottom: 1px solid var(--border-subtle);
+      flex-shrink: 0;
+    }
+
+    .detail-rest-drawer.open {
+      display: flex;
     }
 
     .detail-body {
@@ -1046,7 +1087,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
     }
 
     .stepper-btn:active {
@@ -1088,7 +1128,6 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
       padding: 13px 12px;
-      cursor: pointer;
     }
 
     .btn-metro-clear {
@@ -1100,10 +1139,8 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
       padding: 13px 12px;
-      cursor: pointer;
     }
 
-    /* History Card inside Exercise Detail */
     .hist-session-header {
       display: flex;
       justify-content: space-between;
@@ -1127,11 +1164,12 @@
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      cursor: pointer;
       padding: 2px 6px;
     }
 
-    /* Overlays (Strictly hidden & pointer-events:none until .open) */
+    /* ==========================================================================
+       OVERLAYS & MODALS (STRICTLY HIDDEN & POINTER-EVENTS: NONE UNTIL .OPEN)
+       ========================================================================== */
     .jump-overlay {
       position: fixed;
       inset: 0;
@@ -1201,10 +1239,10 @@
     <div class="brand-bar">
       <div class="brand-title"><span class="zune-glyph"></span> GYM // BXTR</div>
       <div class="header-theme-controls">
-        <button class="grad-picker-btn" id="gradientPickerBtn" onclick="toggleGradPicker()" title="Customize gradient colors" aria-label="Customize gradient colors">
+        <button type="button" class="grad-picker-btn" id="gradientPickerBtn" data-action="toggle-grad-picker" onclick="toggleGradPicker()" title="Customize gradient colors" aria-label="Customize gradient colors">
           <span class="grad-swatch-preview"></span>
         </button>
-        <button class="theme-pill-btn" id="themeToggleBtn" onclick="cycleTheme()">
+        <button type="button" class="theme-pill-btn" id="themeToggleBtn" data-action="cycle-theme" onclick="cycleTheme()">
           <span class="theme-dot"></span>
           <span id="themeLabel">THEME: DARK</span>
         </button>
@@ -1219,7 +1257,7 @@
     </nav>
   </header>
 
-  <!-- Custom Gradient Color Picker Bar -->
+  <!-- Custom Gradient Color Picker Bar (Frosted Mode Only) -->
   <div class="grad-picker-bar" id="gradPickerBar">
     <div class="grad-presets-row" id="gradPresetsRow"></div>
     <div class="grad-inputs-row">
@@ -1231,23 +1269,23 @@
         <span>END</span>
         <input type="color" id="gradEndInput" value="#f26522" oninput="onCustomGradientInput()" />
       </label>
-      <button class="metro-btn-outline" style="padding:6px 9px;" onclick="resetDefaultGradient()">DEFAULT COLORS</button>
-      <button class="metro-btn-outline" style="padding:6px 10px;" onclick="toggleGradPicker()">DONE</button>
+      <button type="button" class="metro-btn-outline" style="padding:6px 8px;" data-action="reset-grad" onclick="resetDefaultGradient()">DEFAULT COLORS</button>
+      <button type="button" class="metro-btn-outline" style="padding:6px 10px;" data-action="toggle-grad-picker" onclick="toggleGradPicker()">DONE</button>
     </div>
   </div>
 
-  <!-- FitNotes Day Navigation Strip (Swipe Left / Right Supported) -->
+  <!-- Day Navigation Strip -->
   <div class="day-nav-bar" id="dayNavBar">
-    <button class="day-arrow" aria-label="Previous day" onclick="shiftDate(-1)">‹</button>
-    <div class="day-title-wrap" onclick="jumpToToday()" title="Tap to return to Today">
+    <button type="button" class="day-arrow" aria-label="Previous day" data-action="prev-day" onclick="shiftDate(-1)">‹</button>
+    <div class="day-title-wrap" data-action="jump-today" onclick="jumpToToday()" title="Tap to return to Today">
       <div class="day-title" id="activeDateLabel">Today</div>
       <div class="day-subtitle" id="activeDateSub"></div>
     </div>
-    <button class="day-arrow" aria-label="Next day" onclick="shiftDate(1)">›</button>
+    <button type="button" class="day-arrow" aria-label="Next day" data-action="next-day" onclick="shiftDate(1)">›</button>
   </div>
 
   <main class="panes-container">
-    <!-- PANE 0: WORKOUT LOG (INLINE SET ENTRY + CLICKABLE SETS/HEADERS FOR DETAIL VIEW) -->
+    <!-- PANE 0: WORKOUT LOG -->
     <section class="pane active" id="pane-0">
       <div id="workoutExercisesContainer"></div>
     </section>
@@ -1256,7 +1294,7 @@
     <section class="pane" id="pane-1">
       <div style="display:flex; gap:8px; margin-bottom:10px;">
         <input id="exerciseSearch" class="metro-input" placeholder="filter exercises or muscle..." oninput="renderExerciseLibrary()" />
-        <button class="metro-btn" onclick="promptNewExercise()">+ NEW</button>
+        <button type="button" class="metro-btn" data-action="new-exercise" onclick="promptNewExercise()">+ NEW</button>
       </div>
       <div id="categoryFilterBar" style="display:flex; gap:6px; overflow-x:auto; padding-bottom:8px;"></div>
       <div id="exerciseLibraryList"></div>
@@ -1268,34 +1306,34 @@
       <div id="routinesContainer"></div>
       <div class="metro-section-label" style="margin-top:20px;">WORKOUT SHORTCUTS</div>
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <button class="metro-btn-outline" onclick="copyLastWorkout()">COPY PREVIOUS WORKOUT</button>
-        <button class="metro-btn-outline" onclick="exportFitNotesCSV()">EXPORT .CSV</button>
+        <button type="button" class="metro-btn-outline" data-action="copy-prev" onclick="copyLastWorkout()">COPY PREVIOUS WORKOUT</button>
+        <button type="button" class="metro-btn-outline" data-action="export-csv" onclick="exportFitNotesCSV()">EXPORT .CSV</button>
       </div>
     </section>
 
-    <!-- PANE 3: MULTI-DIMENSIONAL FITNOTES CHARTS -->
+    <!-- PANE 3: MULTI-DIMENSIONAL CHARTS -->
     <section class="pane" id="pane-3">
       <div class="chart-filter-stack">
-        <button class="chart-dropdown-btn" onclick="openChartDropdown('metric')">
+        <button type="button" class="chart-dropdown-btn" onclick="openChartDropdown('metric')">
           <span class="chart-dropdown-caret">▶</span>
           <span id="chartMetricLabel">Volume</span>
         </button>
-        <button class="chart-dropdown-btn" onclick="openChartDropdown('interval')">
+        <button type="button" class="chart-dropdown-btn" onclick="openChartDropdown('interval')">
           <span class="chart-dropdown-caret">▶</span>
           <span id="chartIntervalLabel">Per Workout</span>
         </button>
-        <button class="chart-dropdown-btn" onclick="openChartDropdown('scope')">
+        <button type="button" class="chart-dropdown-btn" onclick="openChartDropdown('scope')">
           <span class="chart-dropdown-caret">▶</span>
           <span id="chartScopeLabel">All</span>
         </button>
       </div>
 
       <div class="range-segmented" id="chartRangeBar">
-        <button class="range-btn active" data-range="all" onclick="setChartRange('all')">All</button>
-        <button class="range-btn" data-range="1y" onclick="setChartRange('1y')">1y</button>
-        <button class="range-btn" data-range="6mo" onclick="setChartRange('6mo')">6mo</button>
-        <button class="range-btn" data-range="3mo" onclick="setChartRange('3mo')">3mo</button>
-        <button class="range-btn" data-range="1mo" onclick="setChartRange('1mo')">1mo</button>
+        <button type="button" class="range-btn active" data-range="all" onclick="setChartRange('all')">All</button>
+        <button type="button" class="range-btn" data-range="1y" onclick="setChartRange('1y')">1y</button>
+        <button type="button" class="range-btn" data-range="6mo" onclick="setChartRange('6mo')">6mo</button>
+        <button type="button" class="range-btn" data-range="3mo" onclick="setChartRange('3mo')">3mo</button>
+        <button type="button" class="range-btn" data-range="1mo" onclick="setChartRange('1mo')">1mo</button>
       </div>
 
       <div id="chartViewWorkouts">
@@ -1303,12 +1341,12 @@
           <canvas id="progressCanvas" width="660" height="320"></canvas>
         </div>
         <div class="point-inspector">
-          <button class="point-step-btn" onclick="stepChartPoint(-1)" aria-label="Previous point">‹</button>
+          <button type="button" class="point-step-btn" onclick="stepChartPoint(-1)" aria-label="Previous point">‹</button>
           <div class="point-readout" id="pointReadout">
             <div>Select a point on the graph</div>
-            <div class="point-readout-sub" id="pointReadoutSub">TAP GRAPH OR USE ARROWS</div>
+            <div class="point-readout-sub">TAP GRAPH OR USE ARROWS</div>
           </div>
-          <button class="point-step-btn" onclick="stepChartPoint(1)" aria-label="Next point">›</button>
+          <button type="button" class="point-step-btn" onclick="stepChartPoint(1)" aria-label="Next point">›</button>
         </div>
       </div>
 
@@ -1323,9 +1361,9 @@
       </div>
 
       <div class="chart-subtabs">
-        <button class="chart-subtab" id="subtab_breakdown" onclick="setChartSubView('breakdown')">Breakdown</button>
-        <button class="chart-subtab active" id="subtab_workouts" onclick="setChartSubView('workouts')">Workouts</button>
-        <button class="chart-subtab" id="subtab_exercises" onclick="setChartSubView('exercises')">Exercises</button>
+        <button type="button" class="chart-subtab" id="subtab_breakdown" onclick="setChartSubView('breakdown')">BREAKDOWN</button>
+        <button type="button" class="chart-subtab active" id="subtab_workouts" onclick="setChartSubView('workouts')">WORKOUTS</button>
+        <button type="button" class="chart-subtab" id="subtab_exercises" onclick="setChartSubView('exercises')">EXERCISES</button>
       </div>
     </section>
 
@@ -1338,12 +1376,12 @@
       <div class="exercise-card">
         <div class="exercise-name" style="font-size:17px;">Restore FitNotes Workout History</div>
         <div class="exercise-meta" style="margin:6px 0 12px 0; text-transform:none; letter-spacing:0.02em; line-height:1.4;">
-          Supports full FitNotes .csv exports (Date, Exercise, Category, Weight (kg), Weight (lbs), Reps, Distance, Distance Unit, Time, Notes, Kind) including 57,000+ rows.
+          Supports full FitNotes .csv exports (Date, Exercise, Category, Weight (kg), Weight (lbs), Reps, Distance, Distance Unit, Time, Notes, Kind) including multi-thousand-row logs.
         </div>
         <input type="file" id="csvFileInput" accept=".csv,text/csv" style="display:none;" onchange="importFitNotesCSV(event)" />
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="metro-btn" onclick="document.getElementById('csvFileInput').click()">SELECT .CSV FILE</button>
-          <button class="metro-btn-outline" onclick="loadSampleWorkoutData()">LOAD DEMO SAMPLE</button>
+          <button type="button" class="metro-btn" onclick="document.getElementById('csvFileInput').click()">SELECT .CSV FILE</button>
+          <button type="button" class="metro-btn-outline" onclick="loadSampleWorkoutData()">LOAD DEMO SAMPLE</button>
         </div>
         <div id="csvImportStatus" class="exercise-meta" style="margin-top:10px; color:var(--zune-pink);"></div>
       </div>
@@ -1354,29 +1392,29 @@
         <div class="exercise-meta" style="margin:6px 0 12px 0; text-transform:none; letter-spacing:0.02em; line-height:1.4;">
           Downloads a FitNotes-compatible .csv file of all recorded workouts to your iPhone Files / iCloud Drive.
         </div>
-        <button class="metro-btn-outline" onclick="exportFitNotesCSV()">EXPORT FITNOTES .CSV</button>
+        <button type="button" class="metro-btn-outline" data-action="export-csv" onclick="exportFitNotesCSV()">EXPORT FITNOTES .CSV</button>
       </div>
 
       <div class="metro-section-label">DANGER ZONE</div>
-      <button class="metro-btn-outline" style="border-color:#a02020; color:#ff6b6b;" onclick="clearAllData()">RESET ALL LOCAL WORKOUT DATA</button>
+      <button type="button" class="metro-btn-outline" style="border-color:#a02020; color:#ff6b6b;" onclick="clearAllData()">RESET ALL LOCAL WORKOUT DATA</button>
     </section>
   </main>
 
   <!-- Windows Phone 7 Bottom Application Bar -->
   <footer class="wp-appbar">
-    <button class="appbar-action" onclick="openDatePickerModal()">
+    <button type="button" class="appbar-action" data-action="open-calendar" onclick="openDatePickerModal()">
       <div class="circle-icon">▦</div>
       <span class="appbar-label">calendar</span>
     </button>
-    <button class="appbar-action" onclick="switchPane(1)">
+    <button type="button" class="appbar-action" data-pane="1" onclick="switchPane(1)">
       <div class="circle-icon">+</div>
       <span class="appbar-label">start</span>
     </button>
-    <button class="appbar-action" onclick="switchPane(3)">
+    <button type="button" class="appbar-action" data-pane="3" onclick="switchPane(3)">
       <div class="circle-icon">↗</div>
       <span class="appbar-label">charts</span>
     </button>
-    <button class="appbar-action" onclick="switchPane(4)">
+    <button type="button" class="appbar-action" data-pane="4" onclick="switchPane(4)">
       <div class="circle-icon">⇄</div>
       <span class="appbar-label">csv data</span>
     </button>
@@ -1386,14 +1424,26 @@
 <!-- ==========================================================================
      FULL-SCREEN EXERCISE DETAIL VIEW (TRACK | HISTORY | RECORDS | CHARTS)
      ========================================================================== -->
-<div id="exerciseDetailScreen">
+<div id="detailView">
   <div class="detail-top-bar">
-    <button class="detail-back-btn" onclick="closeExerciseDetail()" aria-label="Back to workout">‹</button>
+    <button type="button" class="detail-back-btn" onclick="closeExerciseDetail()" aria-label="Back to workout">‹</button>
     <div class="detail-title-box">
       <div class="detail-ex-title" id="detailExerciseTitle">Exercise</div>
       <div class="detail-ex-sub" id="detailExerciseDateSub">TODAY</div>
     </div>
-    <div style="width:38px;"></div>
+    <button type="button" class="detail-timer-pill" id="detailTimerPill" onclick="toggleDetailRestDrawer()">
+      <span>⏱</span><span id="detailTimerClock">01:30</span>
+    </button>
+  </div>
+
+  <!-- Collapsible Rest Timer Drawer inside Exercise Detail View -->
+  <div class="detail-rest-drawer" id="detailRestDrawer">
+    <div style="font-size:12px; font-weight:700; letter-spacing:0.1em; color:var(--text-secondary);">REST TIMER</div>
+    <div style="display:flex; align-items:center; gap:6px;">
+      <button type="button" class="metro-btn-outline" style="padding:5px 8px;" onclick="adjustRest(-15)">-15s</button>
+      <button type="button" class="metro-btn-outline" style="padding:5px 8px;" onclick="adjustRest(15)">+15s</button>
+      <button type="button" class="metro-btn" style="padding:6px 10px;" id="detailRestToggleBtn" onclick="toggleRestTimer()">START</button>
+    </div>
   </div>
 
   <div class="detail-body">
@@ -1402,24 +1452,24 @@
       <div class="stepper-group">
         <div class="stepper-label">Weight (lb):</div>
         <div class="stepper-controls">
-          <button class="stepper-btn" onclick="adjustDetailWeight(-2.5)">−</button>
+          <button type="button" class="stepper-btn" onclick="adjustDetailWeight(-2.5)">−</button>
           <input type="number" step="2.5" id="detailWeightInput" class="stepper-val-input" value="135" />
-          <button class="stepper-btn" onclick="adjustDetailWeight(2.5)">+</button>
+          <button type="button" class="stepper-btn" onclick="adjustDetailWeight(2.5)">+</button>
         </div>
       </div>
 
       <div class="stepper-group">
         <div class="stepper-label">Reps:</div>
         <div class="stepper-controls">
-          <button class="stepper-btn" onclick="adjustDetailReps(-1)">−</button>
+          <button type="button" class="stepper-btn" onclick="adjustDetailReps(-1)">−</button>
           <input type="number" step="1" id="detailRepsInput" class="stepper-val-input" value="10" />
-          <button class="stepper-btn" onclick="adjustDetailReps(1)">+</button>
+          <button type="button" class="stepper-btn" onclick="adjustDetailReps(1)">+</button>
         </div>
       </div>
 
       <div class="detail-action-row">
-        <button class="btn-metro-save" id="detailSaveBtn" onclick="saveDetailSet()">Save</button>
-        <button class="btn-metro-clear" onclick="clearDetailInputs()">Clear</button>
+        <button type="button" class="btn-metro-save" id="detailSaveBtn" onclick="saveDetailSet()">Save</button>
+        <button type="button" class="btn-metro-clear" onclick="clearDetailInputs()">Clear</button>
       </div>
 
       <div id="detailTodaySetsList"></div>
@@ -1438,18 +1488,18 @@
     <!-- SUB-VIEW 3: CHARTS -->
     <div id="detailTab_charts" style="display:none;">
       <div class="chart-filter-stack">
-        <button class="chart-dropdown-btn" onclick="cycleDetailChartMetric()">
+        <button type="button" class="chart-dropdown-btn" onclick="cycleDetailChartMetric()">
           <span class="chart-dropdown-caret">▶</span>
           <span id="detailChartMetricLabel">Workout Volume</span>
         </button>
       </div>
 
       <div class="range-segmented" id="detailChartRangeBar">
-        <button class="range-btn active" data-drange="all" onclick="setDetailChartRange('all')">All</button>
-        <button class="range-btn" data-drange="1y" onclick="setDetailChartRange('1y')">1y</button>
-        <button class="range-btn" data-drange="6mo" onclick="setDetailChartRange('6mo')">6mo</button>
-        <button class="range-btn" data-drange="3mo" onclick="setDetailChartRange('3mo')">3mo</button>
-        <button class="range-btn" data-drange="1mo" onclick="setDetailChartRange('1mo')">1mo</button>
+        <button type="button" class="range-btn active" data-drange="all" onclick="setDetailChartRange('all')">All</button>
+        <button type="button" class="range-btn" data-drange="1y" onclick="setDetailChartRange('1y')">1y</button>
+        <button type="button" class="range-btn" data-drange="6mo" onclick="setDetailChartRange('6mo')">6mo</button>
+        <button type="button" class="range-btn" data-drange="3mo" onclick="setDetailChartRange('3mo')">3mo</button>
+        <button type="button" class="range-btn" data-drange="1mo" onclick="setDetailChartRange('1mo')">1mo</button>
       </div>
 
       <div class="chart-canvas-wrap">
@@ -1457,31 +1507,31 @@
       </div>
 
       <div class="point-inspector">
-        <button class="point-step-btn" onclick="stepDetailChartPoint(-1)" aria-label="Previous point">‹</button>
+        <button type="button" class="point-step-btn" onclick="stepDetailChartPoint(-1)" aria-label="Previous point">‹</button>
         <div class="point-readout" id="detailPointReadout">
           <div>Select a point on the graph</div>
           <div class="point-readout-sub">TAP GRAPH OR USE ARROWS</div>
         </div>
-        <button class="point-step-btn" onclick="stepDetailChartPoint(1)" aria-label="Next point">›</button>
+        <button type="button" class="point-step-btn" onclick="stepDetailChartPoint(1)" aria-label="Next point">›</button>
       </div>
     </div>
   </div>
 
-  <!-- Bottom Bar inside Exercise Detail View: Track | History | Records | Charts -->
+  <!-- Bottom Bar inside Exercise Detail View: track | history | records | charts -->
   <footer class="wp-appbar">
-    <button class="appbar-action active" id="dnav_track" onclick="switchDetailTab('track')">
+    <button type="button" class="appbar-action active" id="dnav_track" onclick="switchDetailTab('track')">
       <div class="circle-icon">☰</div>
       <span class="appbar-label">track</span>
     </button>
-    <button class="appbar-action" id="dnav_history" onclick="switchDetailTab('history')">
+    <button type="button" class="appbar-action" id="dnav_history" onclick="switchDetailTab('history')">
       <div class="circle-icon">◷</div>
       <span class="appbar-label">history</span>
     </button>
-    <button class="appbar-action" id="dnav_records" onclick="switchDetailTab('records')">
+    <button type="button" class="appbar-action" id="dnav_records" onclick="switchDetailTab('records')">
       <div class="circle-icon">★</div>
       <span class="appbar-label">records</span>
     </button>
-    <button class="appbar-action" id="dnav_charts" onclick="switchDetailTab('charts')">
+    <button type="button" class="appbar-action" id="dnav_charts" onclick="switchDetailTab('charts')">
       <div class="circle-icon">↗</div>
       <span class="appbar-label">charts</span>
     </button>
@@ -1499,8 +1549,8 @@
     <div class="metro-section-label" style="margin-top:0;">JUMP TO WORKOUT DATE</div>
     <input type="date" id="modalDateInput" class="metro-input" style="margin-bottom:12px;" />
     <div style="display:flex; gap:8px;">
-      <button class="metro-btn" style="flex:1;" onclick="applyModalDate()">GO TO DATE</button>
-      <button class="metro-btn-outline" onclick="jumpToToday(); closeDatePickerModal();">TODAY</button>
+      <button type="button" class="metro-btn" style="flex:1;" onclick="applyModalDate()">GO TO DATE</button>
+      <button type="button" class="metro-btn-outline" onclick="jumpToToday(); closeDatePickerModal();">TODAY</button>
     </div>
   </div>
 </div>
@@ -1522,8 +1572,8 @@
       <option value="Cardio">Cardio</option>
     </select>
     <div style="display:flex; gap:8px;">
-      <button class="metro-btn" style="flex:1;" onclick="confirmNewExercise()">SAVE</button>
-      <button class="metro-btn-outline" onclick="closeNewExModal()">CANCEL</button>
+      <button type="button" class="metro-btn" style="flex:1;" onclick="confirmNewExercise()">SAVE</button>
+      <button type="button" class="metro-btn-outline" onclick="closeNewExModal()">CANCEL</button>
     </div>
   </div>
 </div>
@@ -1533,7 +1583,7 @@
   <div class="exercise-card" style="max-width:380px; margin:30px auto; max-height:78vh; overflow-y:auto;" onclick="event.stopPropagation()">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
       <div class="metro-section-label" style="margin:0;" id="chartModalTitle">SELECT FILTER</div>
-      <button class="icon-btn" onclick="closeChartDropdown()">×</button>
+      <button type="button" class="icon-btn" onclick="closeChartDropdown()">×</button>
     </div>
     <div id="chartModalBody"></div>
   </div>
@@ -1552,12 +1602,12 @@
 
   (function() {
     var THEMES = ['dark', 'light', 'frosted'];
-    var THEME_KEY = 'zunefit_theme_v3';
-    var GRAD_COLORS_KEY = 'zunefit_gradient_colors';
+    var THEME_KEY = 'gymbxtr_theme_v1';
+    var GRAD_COLORS_KEY = 'gymbxtr_gradient_colors_v1';
     var DEFAULT_GRAD_START = '#ec008c';
     var DEFAULT_GRAD_END = '#f26522';
-    var LS_FALLBACK_KEY = 'zunefit_ls_backup_v3';
-    var IDB_NAME = 'ZuneFitDB_v3';
+    var LS_FALLBACK_KEY = 'gymbxtr_ls_backup_v1';
+    var IDB_NAME = 'GymBxtrIndexedDB';
     var IDB_STORE = 'store';
 
     var GRADIENT_PRESETS = [
@@ -1622,12 +1672,15 @@
 
     var state = {
       theme: 'dark',
-      gradStart: '#ec008c',
-      gradEnd: '#f26522',
+      gradStart: DEFAULT_GRAD_START,
+      gradEnd: DEFAULT_GRAD_END,
       activeDate: getOffsetISO(0),
       activePane: 0,
       selectedCategory: 'All',
       slideDir: '',
+      restSeconds: 90,
+      restRunning: false,
+      restTimerId: null,
       detail: {
         open: false,
         exerciseName: '',
@@ -1676,7 +1729,7 @@
     }
 
     /* ========================================================================
-       THEME & CUSTOM GRADIENT COLOR MANAGEMENT
+       THEME & FROSTED-ONLY GRADIENT COLOR PICKER
        ======================================================================== */
     function hexToRgbTuple(hex) {
       var clean = String(hex || '').replace('#', '').trim();
@@ -1718,29 +1771,31 @@
     function renderGradientPresets() {
       var row = document.getElementById('gradPresetsRow');
       if (!row) return;
-      row.innerHTML = '<span style="font-size:10px; font-weight:700; letter-spacing:0.1em; color:var(--text-secondary); text-transform:uppercase; flex-shrink:0;">GRADIENT:</span>' +
+      row.innerHTML =
+        '<span style="font-size:10px; font-weight:700; letter-spacing:0.1em; color:var(--text-secondary); text-transform:uppercase; flex-shrink:0;">GRADIENT:</span>' +
         GRADIENT_PRESETS.map(function(p) {
-          return '<button class="grad-preset-chip" title="' + escapeHtml(p.name) + '" style="background:linear-gradient(135deg,' + p.start + ' 0%,' + p.end + ' 100%);" onclick="selectGradientPreset(\'' + p.start + '\',\'' + p.end + '\')"></button>';
+          return '<button type="button" class="grad-preset-chip" title="' + escapeHtml(p.name) + '" style="background:linear-gradient(135deg,' + p.start + ' 0%,' + p.end + ' 100%);" onclick="selectGradientPreset(\'' + p.start + '\',\'' + p.end + '\')"></button>';
         }).join('');
     }
 
     window.toggleGradPicker = function() {
       if (state.theme !== 'frosted') return;
       var bar = document.getElementById('gradPickerBar');
-      if (!bar) return;
-      bar.classList.toggle('open');
+      if (bar) bar.classList.toggle('open');
     };
 
     window.selectGradientPreset = function(startHex, endHex) {
+      if (state.theme !== 'frosted') return;
       applyGradientColors(startHex, endHex, true);
     };
 
     window.resetDefaultGradient = function() {
       applyGradientColors(DEFAULT_GRAD_START, DEFAULT_GRAD_END, true);
-      showToast('Gradient reset to default colors');
+      showToast('Reset to default gradient colors');
     };
 
     window.onCustomGradientInput = function() {
+      if (state.theme !== 'frosted') return;
       var sVal = document.getElementById('gradStartInput').value;
       var eVal = document.getElementById('gradEndInput').value;
       applyGradientColors(sVal, eVal, true);
@@ -1749,7 +1804,6 @@
     function applyTheme(t) {
       state.theme = THEMES.indexOf(t) >= 0 ? t : 'dark';
       document.documentElement.setAttribute('data-theme', state.theme);
-      document.body.classList.toggle('theme-frosted', state.theme === 'frosted');
 
       var pickerBtn = document.getElementById('gradientPickerBtn');
       var pickerBar = document.getElementById('gradPickerBar');
@@ -1761,31 +1815,11 @@
       }
 
       var lbl = document.getElementById('themeLabel');
-      if (lbl) lbl.textContent = 'THEME: ' + (state.theme === 'frosted' ? 'FROSTED' : state.theme.toUpperCase());
+      if (lbl) {
+        lbl.textContent = 'THEME: ' + (state.theme === 'frosted' ? 'FROSTED' : state.theme.toUpperCase());
+      }
       try { localStorage.setItem(THEME_KEY, state.theme); } catch (e) {}
       applyGradientColors(state.gradStart, state.gradEnd, false);
-    }
-      bar.classList.toggle('open', opening);
-    };
-
-    window.selectGradientPreset = function(startHex, endHex) {
-      applyGradientColors(startHex, endHex, true);
-    };
-
-    window.onCustomGradientInput = function() {
-      var sVal = document.getElementById('gradStartInput').value;
-      var eVal = document.getElementById('gradEndInput').value;
-      applyGradientColors(sVal, eVal, true);
-    };
-
-    function applyTheme(t) {
-      state.theme = THEMES.indexOf(t) >= 0 ? t : 'dark';
-      document.documentElement.setAttribute('data-theme', state.theme);
-      var lbl = document.getElementById('themeLabel');
-      if (lbl) lbl.textContent = 'THEME: ' + (state.theme === 'frosted' ? 'FROSTED' : state.theme.toUpperCase());
-      try { localStorage.setItem(THEME_KEY, state.theme); } catch (e) {}
-      if (state.detail.open && state.detail.tab === 'charts') renderDetailChart();
-      if (state.activePane === 3) renderChartsPane();
     }
 
     window.cycleTheme = function() {
@@ -1961,7 +1995,7 @@
     }
 
     /* ========================================================================
-       WORKOUT LOGGING (BOTH INLINE QUICK LOGGING & CLICKABLE SETS FOR DETAIL)
+       WORKOUT LOGGING (NO SUMMARY CARDS; INLINE QUICK ENTRY + CLICKABLE ROWS)
        ======================================================================== */
     function getDayEntries(dateIso) {
       return state.db.logs[dateIso] || [];
@@ -2067,7 +2101,7 @@
       if (entries.length === 0) {
         container.innerHTML =
           '<div class="empty-day-stage ' + animClass + '">' +
-            '<button class="empty-action-btn" onclick="switchPane(1)">' +
+            '<button type="button" class="empty-action-btn" onclick="switchPane(1)">' +
               '<div class="metro-action-tile">' +
                 '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--zune-pink)" stroke-width="1.8">' +
                   '<rect x="3" y="3" width="13" height="13" />' +
@@ -2078,7 +2112,7 @@
               '</div>' +
               '<span class="empty-action-label">Start New Workout</span>' +
             '</button>' +
-            '<button class="empty-action-btn" onclick="copyLastWorkout()">' +
+            '<button type="button" class="empty-action-btn" onclick="copyLastWorkout()">' +
               '<div class="metro-action-tile secondary">' +
                 '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--zune-orange)" stroke-width="1.8">' +
                   '<rect x="8" y="8" width="12" height="13" />' +
@@ -2091,27 +2125,6 @@
           '</div>';
         return;
       }
-
-      var totalSets = 0;
-      var totalVolume = 0;
-      entries.forEach(function(entry) {
-        entry.sets.forEach(function(s) {
-          totalSets++;
-          totalVolume += (s.weight || 0) * (s.reps || 0);
-        });
-      });
-
-      var summaryHtml =
-        '<div class="tile-grid" style="margin-top:4px;">' +
-          '<div class="metro-tile tile-pink">' +
-            '<div class="tile-value">' + totalSets + '</div>' +
-            '<div class="tile-label">sets logged</div>' +
-          '</div>' +
-          '<div class="metro-tile tile-dark">' +
-            '<div class="tile-value">' + Math.round(totalVolume).toLocaleString() + '</div>' +
-            '<div class="tile-label">volume (lbs)</div>' +
-          '</div>' +
-        '</div>';
 
       var cardsHtml = entries.map(function(entry, entryIdx) {
         var exName = entry.name || entry.exerciseId;
@@ -2134,7 +2147,7 @@
               '<div class="set-val">' + escapeHtml(col1) + '<span>' + escapeHtml(unit1) + '</span></div>' +
               '<div class="set-val">' + escapeHtml(col2) + '<span>' + escapeHtml(unit2) + '</span></div>' +
               '<div>' + (isPR ? '<span class="pr-badge">PR</span>' : '') + '</div>' +
-              '<button class="icon-btn" onclick="deleteSet(' + entryIdx + ',' + sIdx + ',event)">×</button>' +
+              '<button type="button" class="icon-btn" onclick="deleteSet(' + entryIdx + ',' + sIdx + ',event)">×</button>' +
             '</div>';
           if (s.notes) {
             row += '<div class="set-note-line">' + escapeHtml(s.notes) + '</div>';
@@ -2149,16 +2162,16 @@
                 '<div class="exercise-name">' + escapeHtml(exName) + '</div>' +
                 '<div class="exercise-meta">' + escapeHtml(entry.category || 'General') + (priorBest ? ' • PREV MAX: ' + priorBest + ' LB' : '') + '</div>' +
               '</div>' +
-              '<button class="icon-btn" onclick="removeExerciseFromDay(' + entryIdx + ',event)">🗑</button>' +
+              '<button type="button" class="icon-btn" onclick="removeExerciseFromDay(' + entryIdx + ',event)">🗑</button>' +
             '</div>' +
             setsHtml +
             '<div class="quick-add-row">' +
               '<input id="w_entry_' + entryIdx + '" type="number" step="2.5" class="metro-input" placeholder="lb" value="' + (lastSet.weight !== undefined ? lastSet.weight : '') + '" onkeydown="if(event.key===\'Enter\')logSetInline(' + entryIdx + ',event)" />' +
               '<input id="r_entry_' + entryIdx + '" type="number" step="1" class="metro-input" placeholder="reps" value="' + (lastSet.reps !== undefined ? lastSet.reps : '') + '" onkeydown="if(event.key===\'Enter\')logSetInline(' + entryIdx + ',event)" />' +
-              '<button class="metro-btn" onclick="logSetInline(' + entryIdx + ',event)">LOG</button>' +
+              '<button type="button" class="metro-btn" onclick="logSetInline(' + entryIdx + ',event)">LOG</button>' +
             '</div>' +
             '<div class="card-footer-link" onclick="openExerciseDetail(\'' + safeExName + '\',-1)">' +
-              '<span>history • records • chart</span>' +
+              '<span>HISTORY • RECORDS • CHART</span>' +
               '<span>›</span>' +
             '</div>' +
           '</div>'
@@ -2176,6 +2189,58 @@
       { id: 'maxWeight', label: 'Max Weight', unit: 'lb' },
       { id: 'e1rm', label: 'Estimated 1RM', unit: 'lb' }
     ];
+
+    function formatTimerString(sec) {
+      var m = Math.floor(sec / 60);
+      var s = sec % 60;
+      return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }
+
+    function updateRestTimerUI() {
+      var str = formatTimerString(state.restSeconds);
+      var clk = document.getElementById('detailTimerClock');
+      var pill = document.getElementById('detailTimerPill');
+      var btn = document.getElementById('detailRestToggleBtn');
+      if (clk) clk.textContent = str;
+      if (pill) pill.classList.toggle('running', state.restRunning);
+      if (btn) btn.textContent = state.restRunning ? 'STOP' : 'START';
+    }
+
+    window.toggleDetailRestDrawer = function() {
+      var d = document.getElementById('detailRestDrawer');
+      if (d) d.classList.toggle('open');
+    };
+
+    window.adjustRest = function(delta) {
+      state.restSeconds = Math.max(15, state.restSeconds + delta);
+      updateRestTimerUI();
+    };
+
+    window.toggleRestTimer = function() {
+      if (state.restRunning) {
+        clearInterval(state.restTimerId);
+        state.restRunning = false;
+        updateRestTimerUI();
+      } else {
+        state.restRunning = true;
+        updateRestTimerUI();
+        state.restTimerId = setInterval(function() {
+          if (state.restSeconds > 0) {
+            state.restSeconds--;
+            updateRestTimerUI();
+          } else {
+            clearInterval(state.restTimerId);
+            state.restRunning = false;
+            state.restSeconds = 90;
+            updateRestTimerUI();
+            showToast('Rest timer complete');
+            if (navigator.vibrate) {
+              try { navigator.vibrate([200, 100, 200]); } catch (e) {}
+            }
+          }
+        }, 1000);
+      }
+    };
 
     window.openExerciseDetail = function(exName, setIdx) {
       var exObj = state.db.exercises.find(function(x) { return x.name === exName || x.id === exName; });
@@ -2212,14 +2277,15 @@
         }
       }
 
-      document.getElementById('exerciseDetailScreen').classList.add('open');
+      updateRestTimerUI();
+      document.getElementById('detailView').classList.add('open');
       window.switchDetailTab('track');
     };
 
     window.closeExerciseDetail = function() {
       state.detail.open = false;
       state.detail.editingSetIdx = -1;
-      document.getElementById('exerciseDetailScreen').classList.remove('open');
+      document.getElementById('detailView').classList.remove('open');
       renderWorkoutPane();
     };
 
@@ -2342,7 +2408,7 @@
             '<div class="set-val">' + (s.weight || 0) + '<span>lb</span></div>' +
             '<div class="set-val">' + (s.reps || 0) + '<span>reps</span></div>' +
             '<div>' + (isPR ? '<span class="pr-badge">PR</span>' : '') + '</div>' +
-            '<button class="icon-btn" onclick="deleteDetailSet(' + idx + ',event)">×</button>' +
+            '<button type="button" class="icon-btn" onclick="deleteDetailSet(' + idx + ',event)">×</button>' +
           '</div>';
         }).join('') +
         '</div>';
@@ -2383,7 +2449,7 @@
         return (
           '<div class="hist-session-header">' +
             '<div class="hist-session-date">' + heading + '</div>' +
-            '<button class="hist-copy-btn" onclick="copyExerciseSessionFromDate(\'' + sess.date + '\')">Copy</button>' +
+            '<button type="button" class="hist-copy-btn" onclick="copyExerciseSessionFromDate(\'' + sess.date + '\')">COPY</button>' +
           '</div>' +
           '<div class="exercise-card" style="padding:4px 12px;">' + rows + '</div>'
         );
@@ -2551,7 +2617,8 @@
           readout.innerHTML = '<div>Select a point on the graph</div><div class="point-readout-sub">TAP GRAPH OR USE ARROWS</div>';
         } else {
           var pt = points[idx];
-          readout.innerHTML = '<div>' + formatShortDate(pt.key) + ' — <strong>' + pt.value.toLocaleString() + ' ' + mObj.unit + '</strong></div>' +
+          readout.innerHTML =
+            '<div>' + formatShortDate(pt.key) + ' — <strong>' + pt.value.toLocaleString() + ' ' + mObj.unit + '</strong></div>' +
             '<div class="point-readout-sub">SESSION ' + (idx + 1) + ' OF ' + points.length + '</div>';
         }
       }
@@ -2594,7 +2661,7 @@
 
       catBar.innerHTML = categories.map(function(cat) {
         var cls = state.selectedCategory === cat ? 'metro-btn' : 'metro-btn-outline';
-        return '<button class="' + cls + '" style="padding:5px 10px; white-space:nowrap;" onclick="selectLibCat(\'' + escapeHtml(cat).replace(/'/g, "\\'") + '\')">' + escapeHtml(cat) + '</button>';
+        return '<button type="button" class="' + cls + '" style="padding:5px 10px; white-space:nowrap;" onclick="selectLibCat(\'' + escapeHtml(cat).replace(/'/g, "\\'") + '\')">' + escapeHtml(cat) + '</button>';
       }).join('');
 
       var q = (document.getElementById('exerciseSearch').value || '').toLowerCase();
@@ -2770,6 +2837,9 @@
       ctx.clearRect(0, 0, W, H);
 
       var isLight = state.theme === 'light';
+      var isFrosted = state.theme === 'frosted';
+      var activeStart = isFrosted ? state.gradStart : DEFAULT_GRAD_START;
+      var activeEnd = isFrosted ? state.gradEnd : DEFAULT_GRAD_END;
       var textColor = isLight ? '#555555' : '#9c9c9c';
       var gridColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)';
 
@@ -2819,8 +2889,8 @@
       canvas._coords = coords;
 
       var grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
-      grad.addColorStop(0, 'rgba(' + hexToRgbTuple(state.gradStart) + ', 0.28)');
-      grad.addColorStop(1, 'rgba(' + hexToRgbTuple(state.gradEnd) + ', 0.02)');
+      grad.addColorStop(0, 'rgba(' + hexToRgbTuple(activeStart) + ', 0.28)');
+      grad.addColorStop(1, 'rgba(' + hexToRgbTuple(activeEnd) + ', 0.02)');
       ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.moveTo(coords[0].x, padT + plotH);
@@ -2829,7 +2899,7 @@
       ctx.closePath();
       ctx.fill();
 
-      ctx.strokeStyle = state.gradStart;
+      ctx.strokeStyle = activeStart;
       ctx.lineWidth = points.length > 350 ? 1.5 : 2.5;
       ctx.beginPath();
       coords.forEach(function(c, idx) {
@@ -2839,7 +2909,7 @@
       ctx.stroke();
 
       var dotR = points.length > 450 ? 2 : 3.5;
-      ctx.fillStyle = state.gradEnd;
+      ctx.fillStyle = activeEnd;
       coords.forEach(function(c) {
         ctx.beginPath();
         ctx.arc(c.x, c.y, dotR, 0, Math.PI * 2);
@@ -2855,7 +2925,7 @@
         ctx.lineTo(sel.x, padT + plotH);
         ctx.stroke();
 
-        ctx.fillStyle = state.gradStart;
+        ctx.fillStyle = activeStart;
         ctx.beginPath();
         ctx.arc(sel.x, sel.y, 6, 0, Math.PI * 2);
         ctx.fill();
@@ -2882,7 +2952,7 @@
     }
 
     /* ========================================================================
-       GLOBAL MULTI-DIMENSIONAL FITNOTES CHARTS (ROLLING 7-DAY WEEK BUCKETS)
+       GLOBAL MULTI-DIMENSIONAL CHARTS (ROLLING 7-DAY WEEK ANCHORED TO TOMORROW)
        ======================================================================== */
     var METRICS = [
       { id: 'volume', label: 'Volume', unit: 'lb' },
@@ -3432,7 +3502,7 @@
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
       a.href = url;
-      a.download = 'FitNotes-' + getOffsetISO(0) + '.csv';
+      a.download = 'GYM-BXTR-' + getOffsetISO(0) + '.csv';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -3513,18 +3583,34 @@
     };
 
     /* ========================================================================
-       IMMEDIATE SYNCHRONOUS BOOTSTRAP
+       DELEGATED CLICK FALLBACK + IMMEDIATE SYNCHRONOUS BOOTSTRAP
        ======================================================================== */
+    document.addEventListener('click', function(e) {
+      var target = e.target.closest('[data-action]');
+      if (!target) return;
+      var act = target.getAttribute('data-action');
+      if (act === 'cycle-theme') window.cycleTheme();
+      else if (act === 'toggle-grad-picker') window.toggleGradPicker();
+      else if (act === 'reset-grad') window.resetDefaultGradient();
+      else if (act === 'prev-day') window.shiftDate(-1);
+      else if (act === 'next-day') window.shiftDate(1);
+      else if (act === 'jump-today') window.jumpToToday();
+      else if (act === 'open-calendar') window.openDatePickerModal();
+      else if (act === 'new-exercise') window.promptNewExercise();
+      else if (act === 'copy-prev') window.copyLastWorkout();
+      else if (act === 'export-csv') window.exportFitNotesCSV();
+    });
+
     renderGradientPresets();
     try {
       var savedGrad = JSON.parse(localStorage.getItem(GRAD_COLORS_KEY) || 'null');
       if (savedGrad && savedGrad.start && savedGrad.end) {
         applyGradientColors(savedGrad.start, savedGrad.end, false);
       } else {
-        applyGradientColors('#ec008c', '#f26522', false);
+        applyGradientColors(DEFAULT_GRAD_START, DEFAULT_GRAD_END, false);
       }
     } catch (e) {
-      applyGradientColors('#ec008c', '#f26522', false);
+      applyGradientColors(DEFAULT_GRAD_START, DEFAULT_GRAD_END, false);
     }
 
     try {
