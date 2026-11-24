@@ -1937,11 +1937,11 @@
         </div>
 
         <div class="stepper-group">
-          <div class="stepper-label">Time (min, optional):</div>
+          <div class="stepper-label">Time (mm:ss, optional):</div>
           <div class="stepper-controls">
-            <button type="button" class="stepper-btn" onclick="adjustDetailTime(-5)">−</button>
-            <input type="number" step="1" min="0" id="detailTimeInput" class="stepper-val-input" placeholder="—" />
-            <button type="button" class="stepper-btn" onclick="adjustDetailTime(5)">+</button>
+            <button type="button" class="stepper-btn" onclick="adjustDetailTime(-0.5)">−</button>
+            <input type="text" inputmode="text" id="detailTimeInput" class="stepper-val-input" placeholder="00:00" oninput="sanitizeCardioTimeInput(this)" onblur="normalizeCardioTimeField(this)" />
+            <button type="button" class="stepper-btn" onclick="adjustDetailTime(0.5)">+</button>
           </div>
         </div>
 
@@ -2783,25 +2783,66 @@
       return isNaN(n) ? null : n;
     }
 
-    function parseTimeToMinutes(rawTime, rawUnit) {
+    function parseCardioTimeToSeconds(rawTime, rawUnit) {
       if (rawTime === undefined || rawTime === null) return null;
       var str = String(rawTime).trim();
       if (!str) return null;
       if (str.indexOf(':') >= 0) {
         var parts = str.split(':').map(function(p) { return parseFloat(p) || 0; });
         if (parts.length === 3) {
-          return Math.round(((parts[0] * 60) + parts[1] + (parts[2] / 60)) * 100) / 100;
+          return Math.max(0, Math.round((parts[0] * 3600) + (parts[1] * 60) + parts[2]));
         }
         if (parts.length === 2) {
-          return Math.round((parts[0] + (parts[1] / 60)) * 100) / 100;
+          return Math.max(0, Math.round((parts[0] * 60) + parts[1]));
         }
       }
       var num = parseFloat(str);
       if (isNaN(num)) return null;
       var u = String(rawUnit || '').toLowerCase();
-      if (u.indexOf('sec') === 0 || u === 's') return Math.round((num / 60) * 100) / 100;
-      if (u.indexOf('hr') === 0 || u.indexOf('hour') === 0 || u === 'h') return Math.round((num * 60) * 100) / 100;
-      return num;
+      if (u.indexOf('sec') === 0 || u === 's') return Math.max(0, Math.round(num));
+      if (u.indexOf('hr') === 0 || u.indexOf('hour') === 0 || u === 'h') return Math.max(0, Math.round(num * 3600));
+      return Math.max(0, Math.round(num * 60));
+    }
+
+    function formatCardioSecondsToClock(totalSec) {
+      if (totalSec === undefined || totalSec === null || isNaN(totalSec)) return '';
+      var sec = Math.max(0, Math.round(totalSec));
+      var hrs = Math.floor(sec / 3600);
+      var rem = sec % 3600;
+      var mins = Math.floor(rem / 60);
+      var secs = rem % 60;
+      if (hrs > 0) {
+        return hrs + ':' + String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+      }
+      return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+    }
+
+    window.sanitizeCardioTimeInput = function(el) {
+      if (!el) return;
+      var cleaned = String(el.value || '').replace(/[^0-9:]/g, '');
+      var parts = cleaned.split(':');
+      if (parts.length > 3) {
+        cleaned = parts.slice(0, 3).join(':');
+      }
+      if (el.value !== cleaned) {
+        el.value = cleaned;
+      }
+    };
+
+    window.normalizeCardioTimeField = function(el) {
+      if (!el) return;
+      var raw = String(el.value || '').trim();
+      if (!raw) return;
+      var sec = parseCardioTimeToSeconds(raw);
+      if (sec !== null) {
+        el.value = formatCardioSecondsToClock(sec);
+      }
+    };
+
+    function parseTimeToMinutes(rawTime, rawUnit) {
+      var sec = parseCardioTimeToSeconds(rawTime, rawUnit);
+      if (sec === null) return null;
+      return Math.round((sec / 60) * 100) / 100;
     }
 
     function parseDistanceToMiles(rawDist, rawUnit) {
@@ -2824,15 +2865,26 @@
       var cal = (setObj.calories !== undefined && setObj.calories !== null && setObj.calories !== '')
         ? parseFloat(setObj.calories)
         : null;
-      var mins = (setObj.timeMinutes !== undefined && setObj.timeMinutes !== null && setObj.timeMinutes !== '')
-        ? parseFloat(setObj.timeMinutes)
-        : (setObj.time ? parseTimeToMinutes(setObj.time) : null);
+      var timeSeconds = null;
+      if (setObj.timeSeconds !== undefined && setObj.timeSeconds !== null && setObj.timeSeconds !== '') {
+        var parsedSec = parseFloat(setObj.timeSeconds);
+        if (!isNaN(parsedSec)) timeSeconds = Math.round(parsedSec);
+      } else if (setObj.time !== undefined && setObj.time !== null && String(setObj.time).trim() !== '') {
+        timeSeconds = parseCardioTimeToSeconds(setObj.time);
+      } else if (setObj.timeMinutes !== undefined && setObj.timeMinutes !== null && setObj.timeMinutes !== '') {
+        var parsedMin = parseFloat(setObj.timeMinutes);
+        if (!isNaN(parsedMin)) timeSeconds = Math.round(parsedMin * 60);
+      }
+      var mins = timeSeconds !== null ? (Math.round((timeSeconds / 60) * 100) / 100) : null;
+      var timeClock = timeSeconds !== null ? formatCardioSecondsToClock(timeSeconds) : '';
       var dist = (setObj.distance !== undefined && setObj.distance !== null && setObj.distance !== '')
         ? parseFloat(setObj.distance)
         : null;
       return {
         calories: (cal !== null && !isNaN(cal)) ? cal : null,
+        timeSeconds: timeSeconds,
         timeMinutes: (mins !== null && !isNaN(mins)) ? mins : null,
+        timeClock: timeClock,
         distance: (dist !== null && !isNaN(dist)) ? dist : null
       };
     }
@@ -2841,7 +2893,7 @@
       var v = getCardioSetValues(setObj);
       var parts = [];
       if (v.calories !== null) parts.push({ val: v.calories, unit: 'cal' });
-      if (v.timeMinutes !== null) parts.push({ val: v.timeMinutes, unit: 'min' });
+      if (v.timeSeconds !== null) parts.push({ val: v.timeClock, unit: '' });
       if (v.distance !== null) parts.push({ val: v.distance, unit: 'mi' });
       return parts;
     }
@@ -2849,7 +2901,7 @@
     function getHistoricalBestCardioSummary(exName, excludeDate) {
       var bestCal = 0;
       var bestDist = 0;
-      var bestTime = 0;
+      var bestTimeSec = 0;
       var dates = Object.keys(state.db.logs);
       for (var i = 0; i < dates.length; i++) {
         var d = dates[i];
@@ -2862,7 +2914,7 @@
               var v = getCardioSetValues(sets[k]);
               if (v.calories !== null && v.calories > bestCal) bestCal = v.calories;
               if (v.distance !== null && v.distance > bestDist) bestDist = v.distance;
-              if (v.timeMinutes !== null && v.timeMinutes > bestTime) bestTime = v.timeMinutes;
+              if (v.timeSeconds !== null && v.timeSeconds > bestTimeSec) bestTimeSec = v.timeSeconds;
             }
           }
         }
@@ -2870,7 +2922,7 @@
       var chunks = [];
       if (bestCal > 0) chunks.push(bestCal + ' CAL');
       if (bestDist > 0) chunks.push(bestDist + ' MI');
-      if (bestTime > 0) chunks.push(bestTime + ' MIN');
+      if (bestTimeSec > 0) chunks.push(formatCardioSecondsToClock(bestTimeSec));
       return chunks.join(' • ');
     }
 
@@ -2975,14 +3027,17 @@
         var tInput = document.getElementById('t_entry_' + entryIdx);
         var dInput = document.getElementById('d_entry_' + entryIdx);
         var cal = cInput ? parseOptionalNum(cInput.value) : null;
-        var mins = tInput ? parseOptionalNum(tInput.value) : null;
+        var timeSec = tInput ? parseCardioTimeToSeconds(tInput.value) : null;
+        var mins = timeSec !== null ? (Math.round((timeSec / 60) * 100) / 100) : null;
+        var timeClock = timeSec !== null ? formatCardioSecondsToClock(timeSec) : '';
         var dist = dInput ? parseOptionalNum(dInput.value) : null;
 
         entry.sets.push({
           calories: cal,
+          timeSeconds: timeSec,
           timeMinutes: mins,
           distance: dist,
-          time: mins !== null ? String(mins) : '',
+          time: timeClock,
           distanceUnit: dist !== null ? 'mi' : '',
           kind: 'cardio'
         });
@@ -2992,7 +3047,7 @@
 
         var toastParts = [];
         if (cal !== null) toastParts.push(cal + ' cal');
-        if (mins !== null) toastParts.push(mins + ' min');
+        if (timeClock) toastParts.push(timeClock);
         if (dist !== null) toastParts.push(dist + ' mi');
         showToast(toastParts.length ? ('Logged ' + toastParts.join(' • ')) : 'Logged cardio entry');
         return;
@@ -3216,7 +3271,7 @@
             var cParts = formatCardioSetParts(s);
             var pillsHtml = cParts.length
               ? cParts.map(function(p) {
-                  return '<span class="cardio-metric-pill">' + escapeHtml(p.val) + '<span>' + escapeHtml(p.unit) + '</span></span>';
+                  return '<span class="cardio-metric-pill">' + escapeHtml(p.val) + (p.unit ? '<span>' + escapeHtml(p.unit) + '</span>' : '') + '</span>';
                 }).join('')
               : '<span class="cardio-quick-entry-tag">COMPLETED</span>';
 
@@ -3266,11 +3321,11 @@
 
         var quickAddHtml = '';
         if (cardioMode) {
-          var lastCardio = lastSet ? getCardioSetValues(lastSet) : { calories: null, timeMinutes: null, distance: null };
+          var lastCardio = lastSet ? getCardioSetValues(lastSet) : { calories: null, timeSeconds: null, timeMinutes: null, timeClock: '', distance: null };
           quickAddHtml =
             '<div class="quick-add-row cardio-quick-row">' +
               '<input id="c_entry_' + entryIdx + '" type="number" step="5" min="0" class="metro-input" placeholder="cal" value="' + (lastCardio.calories !== null ? lastCardio.calories : '') + '" onkeydown="if(event.key===\'Enter\')logSetInline(' + entryIdx + ',event)" />' +
-              '<input id="t_entry_' + entryIdx + '" type="number" step="1" min="0" class="metro-input" placeholder="time" value="' + (lastCardio.timeMinutes !== null ? lastCardio.timeMinutes : '') + '" onkeydown="if(event.key===\'Enter\')logSetInline(' + entryIdx + ',event)" />' +
+              '<input id="t_entry_' + entryIdx + '" type="text" inputmode="text" class="metro-input" placeholder="00:00" value="' + escapeHtml(lastCardio.timeClock) + '" oninput="sanitizeCardioTimeInput(this)" onblur="normalizeCardioTimeField(this)" onkeydown="if(event.key===\'Enter\'){normalizeCardioTimeField(this);logSetInline(' + entryIdx + ',event);}" />' +
               '<input id="d_entry_' + entryIdx + '" type="number" step="0.1" min="0" class="metro-input" placeholder="dist" value="' + (lastCardio.distance !== null ? lastCardio.distance : '') + '" onkeydown="if(event.key===\'Enter\')logSetInline(' + entryIdx + ',event)" />' +
               '<button type="button" class="metro-btn" onclick="logSetInline(' + entryIdx + ',event)">LOG</button>' +
             '</div>';
@@ -3560,13 +3615,13 @@
         if (state.detail.editingSetIdx >= 0 && sets[state.detail.editingSetIdx]) {
           var cVals = getCardioSetValues(sets[state.detail.editingSetIdx]);
           cInp.value = cVals.calories !== null ? cVals.calories : '';
-          tInp.value = cVals.timeMinutes !== null ? cVals.timeMinutes : '';
+          tInp.value = cVals.timeClock || '';
           dInp.value = cVals.distance !== null ? cVals.distance : '';
           saveBtn.textContent = 'Update';
         } else {
-          var lastC = sets.length > 0 ? getCardioSetValues(sets[sets.length - 1]) : { calories: null, timeMinutes: null, distance: null };
+          var lastC = sets.length > 0 ? getCardioSetValues(sets[sets.length - 1]) : { calories: null, timeClock: '', distance: null };
           cInp.value = lastC.calories !== null ? lastC.calories : '';
-          tInp.value = lastC.timeMinutes !== null ? lastC.timeMinutes : '';
+          tInp.value = lastC.timeClock || '';
           dInp.value = lastC.distance !== null ? lastC.distance : '';
           saveBtn.textContent = 'Save';
         }
@@ -3639,14 +3694,11 @@
 
     window.adjustDetailTime = function(delta) {
       var tInp = document.getElementById('detailTimeInput');
-      var cur = parseFloat(tInp.value) || 0;
-      tInp.value = Math.max(0, Math.round((cur + delta) * 100) / 100);
-    };
-
-    window.adjustDetailDistance = function(delta) {
-      var dInp = document.getElementById('detailDistanceInput');
-      var cur = parseFloat(dInp.value) || 0;
-      dInp.value = Math.max(0, Math.round((cur + delta) * 100) / 100);
+      var curSec = parseCardioTimeToSeconds(tInp.value);
+      if (curSec === null) curSec = 0;
+      var deltaSec = Math.round(delta * 60);
+      var nextSec = Math.max(0, curSec + deltaSec);
+      tInp.value = nextSec > 0 ? formatCardioSecondsToClock(nextSec) : '';
     };
 
     window.clearDetailInputs = function() {
@@ -3681,14 +3733,17 @@
       if (cardioMode) {
         window.triggerHaptic('success');
         var cal = parseOptionalNum(document.getElementById('detailCaloriesInput').value);
-        var mins = parseOptionalNum(document.getElementById('detailTimeInput').value);
+        var timeSec = parseCardioTimeToSeconds(document.getElementById('detailTimeInput').value);
+        var mins = timeSec !== null ? (Math.round((timeSec / 60) * 100) / 100) : null;
+        var timeClock = timeSec !== null ? formatCardioSecondsToClock(timeSec) : '';
         var dist = parseOptionalNum(document.getElementById('detailDistanceInput').value);
 
         var payload = {
           calories: cal,
+          timeSeconds: timeSec,
           timeMinutes: mins,
           distance: dist,
-          time: mins !== null ? String(mins) : '',
+          time: timeClock,
           distanceUnit: dist !== null ? 'mi' : '',
           kind: 'cardio'
         };
@@ -3746,7 +3801,7 @@
       if (isCardioCategory(state.detail.category, exName)) {
         var v = getCardioSetValues(entry.sets[idx]);
         document.getElementById('detailCaloriesInput').value = v.calories !== null ? v.calories : '';
-        document.getElementById('detailTimeInput').value = v.timeMinutes !== null ? v.timeMinutes : '';
+        document.getElementById('detailTimeInput').value = v.timeClock || '';
         document.getElementById('detailDistanceInput').value = v.distance !== null ? v.distance : '';
       } else {
         document.getElementById('detailWeightInput').value = entry.sets[idx].weight || 0;
@@ -3797,7 +3852,7 @@
             var parts = formatCardioSetParts(s);
             var summaryHtml = parts.length
               ? parts.map(function(p) {
-                  return '<span class="cardio-metric-pill">' + escapeHtml(p.val) + '<span>' + escapeHtml(p.unit) + '</span></span>';
+                  return '<span class="cardio-metric-pill">' + escapeHtml(p.val) + (p.unit ? '<span>' + escapeHtml(p.unit) + '</span>' : '') + '</span>';
                 }).join('')
               : '<span class="cardio-quick-entry-tag">COMPLETED</span>';
             return '<div class="set-row detail-set-row' + activeCls + '" onclick="selectDetailSetForEdit(' + idx + ')">' +
@@ -3846,6 +3901,7 @@
           weight: s.weight || 0,
           reps: s.reps || 0,
           calories: s.calories !== undefined ? s.calories : null,
+          timeSeconds: s.timeSeconds !== undefined ? s.timeSeconds : null,
           timeMinutes: s.timeMinutes !== undefined ? s.timeMinutes : null,
           distance: s.distance !== undefined ? s.distance : '',
           distanceUnit: s.distanceUnit || '',
@@ -3893,7 +3949,7 @@
             var parts = formatCardioSetParts(s);
             var pillsHtml = parts.length
               ? parts.map(function(pItem) {
-                  return '<span class="cardio-metric-pill">' + escapeHtml(pItem.val) + '<span>' + escapeHtml(pItem.unit) + '</span></span>';
+                  return '<span class="cardio-metric-pill">' + escapeHtml(pItem.val) + (pItem.unit ? '<span>' + escapeHtml(pItem.unit) + '</span>' : '') + '</span>';
                 }).join('')
               : '<span class="cardio-quick-entry-tag">COMPLETED</span>';
             return '<div class="set-row" style="cursor:default;">' +
@@ -3931,7 +3987,7 @@
 
       if (cardioMode) {
         var maxCal = 0, maxCalDate = '';
-        var maxTime = 0, maxTimeDate = '';
+        var maxTimeSec = 0, maxTimeDate = '';
         var maxDist = 0, maxDistDate = '';
         var bestCalPerMin = 0, bestCalPerMinLabel = '';
         var totalSessions = 0;
@@ -3947,16 +4003,16 @@
               maxCal = cv.calories;
               maxCalDate = cDate;
             }
-            if (cv.timeMinutes !== null && cv.timeMinutes > maxTime) {
-              maxTime = cv.timeMinutes;
+            if (cv.timeSeconds !== null && cv.timeSeconds > maxTimeSec) {
+              maxTimeSec = cv.timeSeconds;
               maxTimeDate = cDate;
             }
             if (cv.distance !== null && cv.distance > maxDist) {
               maxDist = cv.distance;
               maxDistDate = cDate;
             }
-            if (cv.calories !== null && cv.timeMinutes !== null && cv.timeMinutes > 0) {
-              var rate = Math.round((cv.calories / cv.timeMinutes) * 10) / 10;
+            if (cv.calories !== null && cv.timeSeconds !== null && cv.timeSeconds > 0) {
+              var rate = Math.round((cv.calories / (cv.timeSeconds / 60)) * 10) / 10;
               if (rate > bestCalPerMin) {
                 bestCalPerMin = rate;
                 bestCalPerMinLabel = rate + ' CAL/MIN (' + cDate + ')';
@@ -3977,7 +4033,7 @@
               '<div class="tile-label">max calories' + (maxCalDate ? ' • ' + maxCalDate : '') + '</div>' +
             '</div>' +
             '<div class="metro-tile tile-orange">' +
-              '<div class="tile-value">' + maxTime.toLocaleString() + ' <span style="font-size:14px;">min</span></div>' +
+              '<div class="tile-value">' + (maxTimeSec > 0 ? formatCardioSecondsToClock(maxTimeSec) : '00:00') + '</div>' +
               '<div class="tile-label">longest time' + (maxTimeDate ? ' • ' + maxTimeDate : '') + '</div>' +
             '</div>' +
             '<div class="metro-tile tile-cyan">' +
@@ -4421,6 +4477,7 @@
               weight: s.weight || 0,
               reps: s.reps || 0,
               calories: s.calories !== undefined ? s.calories : null,
+              timeSeconds: s.timeSeconds !== undefined ? s.timeSeconds : null,
               timeMinutes: s.timeMinutes !== undefined ? s.timeMinutes : null,
               distance: s.distance !== undefined ? s.distance : '',
               distanceUnit: s.distanceUnit || '',
@@ -5218,13 +5275,16 @@
             }
 
             if (isCardioRow) {
-              var mins = parseTimeToMinutes(timeRaw, timeUnit);
+              var timeSec = parseCardioTimeToSeconds(timeRaw, timeUnit);
+              var mins = timeSec !== null ? (Math.round((timeSec / 60) * 100) / 100) : null;
+              var timeClock = timeSec !== null ? formatCardioSecondsToClock(timeSec) : '';
               var miles = parseDistanceToMiles(distRaw, distUnit);
               dayEntry.sets.push({
                 calories: cal,
+                timeSeconds: timeSec,
                 timeMinutes: mins,
                 distance: miles,
-                time: timeRaw,
+                time: timeClock || timeRaw,
                 distanceUnit: distUnit || (miles !== null ? 'mi' : ''),
                 notes: notes,
                 kind: 'cardio'
@@ -5290,7 +5350,7 @@
                 csvCell(cv.calories !== null ? cv.calories : ''),
                 csvCell(cv.distance !== null ? cv.distance : ''),
                 csvCell(cv.distance !== null ? (s.distanceUnit || 'mi') : ''),
-                csvCell(cv.timeMinutes !== null ? cv.timeMinutes : (s.time || '')),
+                csvCell(cv.timeClock || s.time || ''),
                 csvCell(s.notes || ''),
                 'cardio'
               ].join(','));
