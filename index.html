@@ -472,19 +472,33 @@
       cursor: pointer;
     }
 
+    /* Inline Quick Set Entry Row inside Exercise Card */
+    .quick-add-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
     .card-footer-link {
       margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px solid var(--border-subtle);
+      padding-top: 7px;
+      border-top: 1px dashed var(--border-subtle);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--zune-pink);
+      color: var(--text-secondary);
       cursor: pointer;
+    }
+
+    .card-footer-link:active {
+      color: var(--zune-pink);
     }
 
     .metro-input {
@@ -1111,7 +1125,7 @@
   </div>
 
   <main class="panes-container">
-    <!-- PANE 0: WORKOUT LOG (SWIPE LEFT/RIGHT FOR DAYS; CLICK ANY SET FOR DETAIL) -->
+    <!-- PANE 0: WORKOUT LOG (INLINE SET ENTRY + CLICKABLE SETS/HEADERS FOR DETAIL VIEW) -->
     <section class="pane active" id="pane-0">
       <div id="workoutExercisesContainer" style="height:100%;"></div>
     </section>
@@ -1711,7 +1725,7 @@
     }
 
     /* ========================================================================
-       WORKOUT LOGGING & CLICKABLE SETS
+       WORKOUT LOGGING (BOTH INLINE QUICK LOGGING & CLICKABLE SETS FOR DETAIL)
        ======================================================================== */
     function getDayEntries(dateIso) {
       return state.db.logs[dateIso] || [];
@@ -1759,7 +1773,30 @@
         saveDB();
       }
       window.switchPane(0);
-      window.openExerciseDetail(exName, -1);
+    };
+
+    window.logSetInline = function(entryIdx, ev) {
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      var wInput = document.getElementById('w_entry_' + entryIdx);
+      var rInput = document.getElementById('r_entry_' + entryIdx);
+      var weight = wInput ? (parseFloat(wInput.value) || 0) : 0;
+      var reps = rInput ? (parseInt(rInput.value, 10) || 0) : 0;
+      if (reps <= 0) {
+        showToast('Enter reps to log set');
+        return;
+      }
+
+      var entries = getDayEntries(state.activeDate);
+      if (entries[entryIdx]) {
+        entries[entryIdx].sets.push({
+          weight: weight,
+          reps: reps,
+          kind: weight > 0 ? 'wr' : 'r'
+        });
+        saveDB();
+        renderWorkoutPane();
+        showToast('Logged ' + weight + ' lb × ' + reps);
+      }
     };
 
     window.deleteSet = function(entryIdx, setIdx, ev) {
@@ -1844,6 +1881,9 @@
         var exName = entry.name || entry.exerciseId;
         var safeExName = exName.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
         var priorBest = getHistoricalBestWeight(exName, state.activeDate);
+        var lastSet = entry.sets.length > 0
+          ? entry.sets[entry.sets.length - 1]
+          : { weight: priorBest || '', reps: '' };
 
         var setsHtml = entry.sets.map(function(s, sIdx) {
           var isPR = (s.weight || 0) > 0 && s.weight > priorBest;
@@ -1876,8 +1916,13 @@
               '<button class="icon-btn" onclick="removeExerciseFromDay(' + entryIdx + ',event)">🗑</button>' +
             '</div>' +
             setsHtml +
+            '<div class="quick-add-row">' +
+              '<input id="w_entry_' + entryIdx + '" type="number" step="2.5" class="metro-input" placeholder="lb" value="' + (lastSet.weight !== undefined ? lastSet.weight : '') + '" onkeydown="if(event.key===\'Enter\')logSetInline(' + entryIdx + ',event)" />' +
+              '<input id="r_entry_' + entryIdx + '" type="number" step="1" class="metro-input" placeholder="reps" value="' + (lastSet.reps !== undefined ? lastSet.reps : '') + '" onkeydown="if(event.key===\'Enter\')logSetInline(' + entryIdx + ',event)" />' +
+              '<button class="metro-btn" onclick="logSetInline(' + entryIdx + ',event)">LOG</button>' +
+            '</div>' +
             '<div class="card-footer-link" onclick="openExerciseDetail(\'' + safeExName + '\',-1)">' +
-              '<span>+ log set / history / records</span>' +
+              '<span>history • records • chart</span>' +
               '<span>›</span>' +
             '</div>' +
           '</div>'
@@ -1907,7 +1952,6 @@
       document.getElementById('detailExerciseTitle').textContent = exName;
       document.getElementById('detailExerciseDateSub').textContent = getFriendlyDateLabel(state.activeDate).toUpperCase();
 
-      // Pre-fill weight and reps
       var dayEntry = getDayEntries(state.activeDate).find(function(e) { return e.name === exName || e.exerciseId === exName; });
       var wInput = document.getElementById('detailWeightInput');
       var rInput = document.getElementById('detailRepsInput');
@@ -2148,7 +2192,7 @@
       var maxE1RM = 0;
       var maxSetVol = 0;
       var maxReps = 0;
-      var repMaxes = {}; // reps -> { weight, date }
+      var repMaxes = {};
 
       Object.keys(state.db.logs).sort().forEach(function(date) {
         var entry = state.db.logs[date].find(function(e) { return e.name === exName || e.exerciseId === exName; });
