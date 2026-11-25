@@ -1340,7 +1340,8 @@
     var reader = new FileReader();
     reader.onload = function (e) {
       var text = String(e.target.result || '');
-      var rows = text.split(/?
+      var rows = text.split(/
+?
 /).slice(1);
       rows.forEach(function (line) {
         if (!line.trim()) return;
