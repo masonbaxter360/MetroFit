@@ -24,7 +24,7 @@
     { key: 'maxWeight', label: 'Max Weight' },
     { key: 'volume', label: 'Volume' },
     { key: 'est1rm', label: 'Est. 1RM' },
-    { key: 'reps', Total: 'Reps', label: 'Total Reps' }
+    { key: 'reps', label: 'Total Reps' }
   ];
 
   var CARDIO_DETAIL_METRICS = [
@@ -75,19 +75,19 @@
     theme: 'amoled',
     accent: '#ff007f,#ff6a00',
     exercises: DEFAULT_EXERCISES.slice(),
-    workouts: {}, // { 'YYYY-MM-DD': [ { exerciseId, sets: [ { id, weight, reps, durationSec, distance } ] } ] }
+    workouts: {},
     exerciseFilterCat: 'All',
     exerciseSearch: '',
     chart: {
-      timeframe: 'week', // workout | week | month | year
-      scope: 'all',      // all | category | exercise
+      timeframe: 'week',
+      scope: 'all',
       scopeValue: '',
-      metric: 'volume',  // volume | sets | maxWeight | reps | cardioMin
+      metric: 'volume',
       selectedIdx: -1
     },
     rollingWeek: {
       offset: 0,
-      metric: 'volume', // volume | sets | cardio
+      metric: 'volume',
       selectedDayIdx: -1
     },
     detail: {
@@ -147,12 +147,9 @@
       ctx.fill();
     }
 
-    // Left //
     poly([[108, 160], [146, 160], [92, 352], [54, 352]]);
     poly([[176, 160], [214, 160], [160, 352], [122, 352]]);
-    // Angled center dash -
     poly([[212, 238], [308, 238], [298, 274], [202, 274]]);
-    // Right //
     poly([[352, 160], [390, 160], [336, 352], [298, 352]]);
     poly([[420, 160], [458, 160], [404, 352], [366, 352]]);
 
@@ -763,7 +760,7 @@
     var end = new Date(today);
     end.setDate(end.getDate() + (offset || 0) * 7);
     var start = new Date(end);
-    start.setDate(start.getDate() - 6); // Starts on weekday immediately following today
+    start.setDate(start.getDate() - 6);
     var days = [];
     for (var i = 0; i < 7; i++) {
       var d = new Date(start);
@@ -826,7 +823,6 @@
   }
 
   function renderChartsPane() {
-    // Sync filter pills
     document.querySelectorAll('#chartTimeframePills .pill-btn').forEach(function (b) {
       b.classList.toggle('active', b.getAttribute('data-tf') === state.chart.timeframe);
     });
@@ -860,7 +856,6 @@
       }
     }
 
-    // 1) Draw Line Graph (Above Bars)
     var series = buildLineSeries();
     var lineCanvas = document.getElementById('globalChartCanvas');
     drawLineCanvas(lineCanvas, series, state.chart.selectedIdx);
@@ -874,7 +869,6 @@
       readout.textContent = 'No data yet';
     }
 
-    // 2) Draw Rolling 7-Day Bars (Below Line Graph)
     document.querySelectorAll('#rollingMetricPills .pill-btn').forEach(function (b) {
       b.classList.toggle('active', b.getAttribute('data-rmetric') === state.rollingWeek.metric);
     });
@@ -1269,7 +1263,7 @@
       state.calendarMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
     var dowNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    var startDow = (new Date().getDay() + 1) % 7; // Weekday immediately following today
+    var startDow = (new Date().getDay() + 1) % 7;
     var orderedDows = [];
     for (var i = 0; i < 7; i++) orderedDows.push(dowNames[(startDow + i) % 7]);
 
@@ -1328,8 +1322,7 @@
         });
       });
     });
-    var blob = new Blob([lines.join('
-')], { type: 'text/csv;charset=utf-8;' });
+    var blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = 'gym-bxtr-fitnotes-' + toISODate(new Date()) + '.csv';
@@ -1340,9 +1333,7 @@
     var reader = new FileReader();
     reader.onload = function (e) {
       var text = String(e.target.result || '');
-      var rows = text.split(/
-?
-/).slice(1);
+      var rows = text.split(/\r?\n/).slice(1);
       rows.forEach(function (line) {
         if (!line.trim()) return;
         var cols = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(',');
@@ -1403,23 +1394,16 @@
   }
 
   function downloadServiceWorkerFile() {
-    var swCode =
-      "const CACHE_NAME = 'gym-bxtr-v1';
-" +
-      "const ASSETS = ['./', './index.html', './styles.css', './app.js'];
-" +
-      "self.addEventListener('install', e => {
-" +
-      "  e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
-" +
-      "});
-" +
-      "self.addEventListener('fetch', e => {
-" +
-      "  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
-" +
-      "});
-";
+    var swCode = [
+      "const CACHE_NAME = 'gym-bxtr-v1';",
+      "const ASSETS = ['./', './index.html', './styles.css', './app.js'];",
+      "self.addEventListener('install', e => {",
+      "  e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));",
+      "});",
+      "self.addEventListener('fetch', e => {",
+      "  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));",
+      "});"
+    ].join('\n');
     var blob = new Blob([swCode], { type: 'application/javascript' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -1467,7 +1451,6 @@
       renderWorkoutPane();
     });
 
-    // Horizontal swipe between panes
     var vp = document.getElementById('panesViewport');
     var sx = 0, sy = 0;
     vp.addEventListener('touchstart', function (e) {
@@ -1483,7 +1466,6 @@
       }
     }, { passive: true });
 
-    // Exercises search & new modal
     document.getElementById('exerciseSearchInput').addEventListener('input', function (e) {
       state.exerciseSearch = e.target.value;
       renderExercisesPane();
@@ -1514,7 +1496,6 @@
       setActivePane(0);
     });
 
-    // Charts filters & canvas taps
     document.querySelectorAll('#chartTimeframePills .pill-btn').forEach(function (b) {
       b.addEventListener('click', function () {
         state.chart.timeframe = b.getAttribute('data-tf');
@@ -1585,7 +1566,6 @@
       });
     });
 
-    // Detail tabs & close
     document.querySelectorAll('#detailTabs .dtab-btn').forEach(function (b) {
       b.addEventListener('click', function () {
         state.detail.tab = b.getAttribute('data-dtab');
@@ -1596,7 +1576,6 @@
       document.getElementById('detailOverlay').classList.add('hidden');
     });
 
-    // Calendar buttons
     document.getElementById('calPrevMonthBtn').addEventListener('click', function () {
       state.calendarMonth = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() - 1, 1);
       renderCalendarModal();
@@ -1614,7 +1593,6 @@
       document.getElementById('calendarModal').classList.add('hidden');
     });
 
-    // Settings
     document.querySelectorAll('[data-theme-choice]').forEach(function (b) {
       b.addEventListener('click', function () {
         state.theme = b.getAttribute('data-theme-choice');
@@ -1648,7 +1626,6 @@
       setActivePane(0);
     });
 
-    // Confirm modal
     document.getElementById('confirmCancelBtn').addEventListener('click', function () {
       document.getElementById('confirmModal').classList.add('hidden');
     });
@@ -1657,7 +1634,6 @@
       if (confirmCallback) confirmCallback();
     });
 
-    // Offline indicator
     function updateOnlineStatus() {
       document.getElementById('offlineBadge').classList.toggle('visible', !navigator.onLine);
     }
