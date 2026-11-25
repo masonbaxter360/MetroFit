@@ -544,7 +544,7 @@
           var sec = parseCardioTimeToSeconds(card.querySelector('.ql-time').value);
           var dist = parseFloat(card.querySelector('.ql-dist').value) || 0;
           var kcalEl = card.querySelector('.ql-kcal');
-          var kcal = kcalEl ? (parseInt(kcalEl.value, 10) || 0) : 0;
+          var kcal = kcalEl ? (Math.round((parseFloat(kcalEl.value) || 0) * 10) / 10) : 0;
           entry.sets.push({ id: 's_' + Date.now(), durationSec: sec, distance: dist, calories: kcal });
         } else {
           var w = parseFloat(card.querySelector('.ql-weight').value) || 0;
@@ -1235,7 +1235,7 @@
             id: 's_' + Date.now(),
             durationSec: parseCardioTimeToSeconds(document.getElementById('detTimeInp').value),
             distance: parseFloat(document.getElementById('detDistInp').value) || 0,
-            calories: parseInt(document.getElementById('detKcalInp').value, 10) || 0
+            calories: Math.round((parseFloat(document.getElementById('detKcalInp').value) || 0) * 10) / 10
           });
         } else {
           en.sets.push({
@@ -1416,29 +1416,56 @@
     reader.onload = function (e) {
       var text = String(e.target.result || '');
       var rows = text.split(/\r?\n/).slice(1);
+      function splitCSVLine(rowStr) {
+        var out = [];
+        var cur = '';
+        var inQ = false;
+        for (var i = 0; i < rowStr.length; i++) {
+          var ch = rowStr[i];
+          if (ch === '"') {
+            if (inQ && rowStr[i + 1] === '"') {
+              cur += '"';
+              i++;
+            } else {
+              inQ = !inQ;
+            }
+          } else if (ch === ',' && !inQ) {
+            out.push(cur);
+            cur = '';
+          } else {
+            cur += ch;
+          }
+        }
+        out.push(cur);
+        return out;
+      }
+
       rows.forEach(function (line) {
         if (!line.trim()) return;
-        var cols = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(',');
-        var date = (cols[0] || '').replace(/"/g, '').trim();
-        var name = (cols[1] || '').replace(/^"|"$/g, '').trim();
-        var cat = (cols[2] || 'Chest').replace(/"/g, '').trim();
+        var cols = splitCSVLine(line);
+        var date = (cols[0] || '').trim();
+        var name = (cols[1] || '').trim();
+        var cat = (cols[2] || 'Chest').trim();
         var weight = parseFloat(cols[3]) || 0;
         var reps = parseInt(cols[4], 10) || 0;
         var dist = parseFloat(cols[5]) || 0;
-        var timeStr = (cols[7] || '').replace(/"/g, '').trim();
-        var kcal = parseInt((cols[8] || '').replace(/"/g, '').trim(), 10) || 0;
+        var timeStr = (cols[7] || '').trim();
+        var kcal = parseFloat(cols[8]) || 0;
         if (!date || !name) return;
 
-        var isCardio = Boolean(timeStr || dist || kcal) && !weight && !reps;
+        var catMatch = CATEGORIES.find(function (c) { return c.toLowerCase() === cat.toLowerCase(); }) || cat || 'Chest';
+        var isCardio = catMatch.toLowerCase() === 'cardio' || (Boolean(timeStr || dist || kcal) && !weight && !reps);
         var ex = state.exercises.find(function (x) { return x.name.toLowerCase() === name.toLowerCase(); });
         if (!ex) {
           ex = {
             id: 'ex_' + name.toLowerCase().replace(/[^a-z0-9]+/g, '_'),
             name: name,
-            category: CATEGORIES.indexOf(cat) !== -1 ? cat : (isCardio ? 'Cardio' : 'Chest'),
+            category: catMatch,
             type: isCardio ? 'cardio' : 'strength'
           };
           state.exercises.push(ex);
+        } else if (isCardio && ex.type !== 'cardio') {
+          ex.type = 'cardio';
         }
         var en = ensureWorkoutEntry(date, ex.id);
         if (ex.type === 'cardio') {
