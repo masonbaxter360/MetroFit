@@ -75,6 +75,7 @@
     selectedDate: toISODate(new Date()),
     theme: 'amoled',
     accent: '#ff007f,#ff6a00',
+    weightUnit: 'lb',
     exercises: DEFAULT_EXERCISES.slice(),
     workouts: {},
     exerciseFilterCat: 'All',
@@ -202,6 +203,7 @@
     var payload = {
       theme: state.theme,
       accent: state.accent,
+      weightUnit: state.weightUnit,
       exercises: state.exercises,
       workouts: state.workouts
     };
@@ -232,6 +234,7 @@
       if (data) {
         if (data.theme) state.theme = data.theme;
         if (data.accent) state.accent = data.accent;
+        if (data.weightUnit === 'kg' || data.weightUnit === 'lb') state.weightUnit = data.weightUnit;
         if (Array.isArray(data.exercises) && data.exercises.length) state.exercises = data.exercises;
         if (data.workouts && typeof data.workouts === 'object') state.workouts = data.workouts;
       }
@@ -250,6 +253,36 @@
     document.querySelectorAll('#accentSwatches .swatch-btn').forEach(function (btn) {
       btn.classList.toggle('active', btn.getAttribute('data-accent') === state.accent);
     });
+  }
+
+
+  /* -------------------- WEIGHT UNIT CONVERSION (LB <-> KG) -------------------- */
+  var KG_TO_LB = 2.20462262;
+  function getWeightUnitLabel() {
+    return state.weightUnit === 'kg' ? 'KG' : 'LB';
+  }
+  function formatWeightForDisplay(storedLbVal) {
+    var val = Number(storedLbVal) || 0;
+    if (state.weightUnit === 'kg') {
+      return Math.round((val / KG_TO_LB) * 100) / 100;
+    }
+    return Math.round(val * 10) / 10;
+  }
+  function parseWeightInputToStoredLb(inputVal) {
+    var num = parseFloat(inputVal);
+    if (isNaN(num)) return 0;
+    if (state.weightUnit === 'kg') {
+      return Math.round((num * KG_TO_LB) * 100) / 100;
+    }
+    return Math.round(num * 100) / 100;
+  }
+  function convertCSVWeightColumnToLb(rawWeight) {
+    var num = parseFloat(rawWeight);
+    if (isNaN(num) || num === 0) return 0;
+    // Detect FitNotes kg-in-lbs-column exports: most rows match kg * 2.20462262 to a 0.5 lb increment
+    var asLbFromKg = Math.round(num * KG_TO_LB * 10) / 10;
+    var isHalfLb = Math.abs((asLbFromKg * 2) - Math.round(asLbFromKg * 2)) < 0.02;
+    return isHalfLb ? asLbFromKg : (Math.round(num * 100) / 100);
   }
 
   /* -------------------- CARDIO COLON TIME HELPERS (00:00) -------------------- */
@@ -311,7 +344,7 @@
           calories: last.calories || 0
         };
       }
-      return { weight: last.weight || 45, reps: last.reps || 10 };
+      return { weight: formatWeightForDisplay(last.weight || 45), reps: last.reps || 10 };
     }
     var prev = getLastSessionForExercise(ex.id, state.selectedDate);
     if (prev && prev.sets.length) {
@@ -328,9 +361,9 @@
         return w > 0 && w < m ? w : m;
       }, Infinity);
       var startW = isFinite(minW) ? minW + 5 : 45;
-      return { weight: startW, reps: prev.sets[0].reps || 10 };
+      return { weight: formatWeightForDisplay(startW), reps: prev.sets[0].reps || 10 };
     }
-    return ex.type === 'cardio' ? { timeStr: '20:00', distance: 1.5, calories: 0 } : { weight: 45, reps: 10 };
+    return ex.type === 'cardio' ? { timeStr: '20:00', distance: 1.5, calories: 0 } : { weight: formatWeightForDisplay(45), reps: 10 };
   }
 
   function getNextUpMuscles() {
@@ -458,7 +491,7 @@
           prevNote = 'PREV MAX: ' + formatCardioSecondsToClock(maxSec);
         } else {
           var maxW = Math.max.apply(null, prev.sets.map(function (s) { return s.weight || 0; }));
-          prevNote = 'PREV MAX: ' + maxW + ' LB';
+          prevNote = 'PREV MAX: ' + formatWeightForDisplay(maxW) + ' ' + getWeightUnitLabel();
         }
       }
 
@@ -471,7 +504,7 @@
           ? '<span class="set-val">' + formatCardioSecondsToClock(s.durationSec) + '<span class="set-unit">TIME</span></span>' +
             '<span class="set-val">' + (s.distance || 0) + '<span class="set-unit">MI</span></span>' +
             kcalHtml
-          : '<span class="set-val">' + (s.weight || 0) + '<span class="set-unit">LB</span></span>' +
+          : '<span class="set-val">' + formatWeightForDisplay(s.weight) + '<span class="set-unit">' + getWeightUnitLabel() + '</span></span>' +
             '<span class="set-val">' + (s.reps || 0) + '<span class="set-unit">REPS</span></span>';
 
         return '<div class="set-row-wrap" data-set-idx="' + idx + '">' +
@@ -488,7 +521,7 @@
         ? '<input type="text" inputmode="text" class="metro-input ql-time" placeholder="00:00" value="' + startVals.timeStr + '" />' +
           '<input type="number" step="0.1" inputmode="decimal" class="metro-input ql-dist" placeholder="mi" value="' + startVals.distance + '" />' +
           '<input type="number" step="1" min="0" inputmode="numeric" class="metro-input ql-kcal" placeholder="kcal" value="' + (startVals.calories || '') + '" />'
-        : '<input type="number" step="2.5" inputmode="decimal" class="metro-input ql-weight" placeholder="lb" value="' + startVals.weight + '" />' +
+        : '<input type="number" step="0.5" inputmode="decimal" class="metro-input ql-weight" placeholder="' + getWeightUnitLabel().toLowerCase() + '" value="' + startVals.weight + '" />' +
           '<input type="number" inputmode="numeric" class="metro-input ql-reps" placeholder="reps" value="' + startVals.reps + '" />';
 
       return '<div class="workout-card" data-ex-id="' + ex.id + '">' +
@@ -547,7 +580,7 @@
           var kcal = kcalEl ? (Math.round((parseFloat(kcalEl.value) || 0) * 10) / 10) : 0;
           entry.sets.push({ id: 's_' + Date.now(), durationSec: sec, distance: dist, calories: kcal });
         } else {
-          var w = parseFloat(card.querySelector('.ql-weight').value) || 0;
+          var w = parseWeightInputToStoredLb(card.querySelector('.ql-weight').value);
           var r = parseInt(card.querySelector('.ql-reps').value, 10) || 0;
           entry.sets.push({ id: 's_' + Date.now(), weight: w, reps: r });
         }
@@ -829,9 +862,9 @@
 
         if (!buckets[key]) buckets[key] = 0;
         en.sets.forEach(function (s) {
-          if (metric === 'volume') buckets[key] += (Number(s.weight) || 0) * (Number(s.reps) || 0);
+          if (metric === 'volume') buckets[key] += formatWeightForDisplay(s.weight) * (Number(s.reps) || 0);
           else if (metric === 'sets') buckets[key] += 1;
-          else if (metric === 'maxWeight') buckets[key] = Math.max(buckets[key], Number(s.weight) || 0);
+          else if (metric === 'maxWeight') buckets[key] = Math.max(buckets[key], formatWeightForDisplay(s.weight));
           else if (metric === 'reps') buckets[key] += Number(s.reps) || 0;
           else if (metric === 'cardioMin') buckets[key] += (Number(s.durationSec) || 0) / 60;
           else if (metric === 'calories') buckets[key] += Number(s.calories) || 0;
@@ -917,7 +950,7 @@
       (state.workouts[day.iso] || []).forEach(function (en) {
         (en.sets || []).forEach(function (s) {
           daySets += 1;
-          dayVol += (Number(s.weight) || 0) * (Number(s.reps) || 0);
+          dayVol += formatWeightForDisplay(s.weight) * (Number(s.reps) || 0);
           dayCardio += (Number(s.durationSec) || 0) / 60;
           dayKcal += Number(s.calories) || 0;
         });
@@ -1175,7 +1208,7 @@
           ? '<span class="set-val">' + formatCardioSecondsToClock(s.durationSec) + '<span class="set-unit">TIME</span></span>' +
             '<span class="set-val">' + (s.distance || 0) + '<span class="set-unit">MI</span></span>' +
             detKcalHtml
-          : '<span class="set-val">' + (s.weight || 0) + '<span class="set-unit">LB</span></span>' +
+          : '<span class="set-val">' + formatWeightForDisplay(s.weight) + '<span class="set-unit">' + getWeightUnitLabel() + '</span></span>' +
             '<span class="set-val">' + (s.reps || 0) + '<span class="set-unit">REPS</span></span>';
         return '<div class="set-row-wrap" data-set-idx="' + idx + '">' +
           '<div class="set-swipe-bg">DELETE</div>' +
@@ -1214,10 +1247,10 @@
         var wInp = document.getElementById('detWInp');
         var rInp = document.getElementById('detRInp');
         document.getElementById('detWMinus').addEventListener('click', function () {
-          wInp.value = Math.max(0, (parseFloat(wInp.value) || 0) - 5);
+          var stepW = state.weightUnit === 'kg' ? 2.5 : 5; wInp.value = Math.max(0, Math.round(((parseFloat(wInp.value) || 0) - stepW) * 100) / 100);
         });
         document.getElementById('detWPlus').addEventListener('click', function () {
-          wInp.value = (parseFloat(wInp.value) || 0) + 5;
+          var stepW = state.weightUnit === 'kg' ? 2.5 : 5; wInp.value = Math.round(((parseFloat(wInp.value) || 0) + stepW) * 100) / 100;
         });
         document.getElementById('detRMinus').addEventListener('click', function () {
           rInp.value = Math.max(1, (parseInt(rInp.value, 10) || 1) - 1);
@@ -1240,7 +1273,7 @@
         } else {
           en.sets.push({
             id: 's_' + Date.now(),
-            weight: parseFloat(document.getElementById('detWInp').value) || 0,
+            weight: parseWeightInputToStoredLb(document.getElementById('detWInp').value),
             reps: parseInt(document.getElementById('detRInp').value, 10) || 0
           });
         }
@@ -1262,7 +1295,7 @@
           var summary = en.sets.map(function (s) {
             return ex.type === 'cardio'
               ? formatCardioSecondsToClock(s.durationSec) + ' • ' + (s.distance || 0) + ' mi' + ((Number(s.calories) || 0) > 0 ? ' • ' + (Number(s.calories) || 0) + ' kcal' : '')
-              : (s.weight || 0) + ' lb × ' + (s.reps || 0);
+              : formatWeightForDisplay(s.weight) + ' ' + getWeightUnitLabel().toLowerCase() + ' × ' + (s.reps || 0);
           }).join('  |  ');
           rows.push('<div class="metro-card"><div class="card-kicker">' + d + '</div><div style="margin-top:6px;font-size:14px;">' + summary + '</div></div>');
         }
@@ -1311,9 +1344,9 @@
         if (!en) return;
         var v = 0;
         en.sets.forEach(function (s) {
-          if (state.detail.metric === 'maxWeight') v = Math.max(v, Number(s.weight) || 0);
-          else if (state.detail.metric === 'volume') v += (Number(s.weight) || 0) * (Number(s.reps) || 0);
-          else if (state.detail.metric === 'est1rm') v = Math.max(v, Math.round((Number(s.weight) || 0) * (1 + (Number(s.reps) || 0) / 30)));
+          if (state.detail.metric === 'maxWeight') v = Math.max(v, formatWeightForDisplay(s.weight));
+          else if (state.detail.metric === 'volume') v += formatWeightForDisplay(s.weight) * (Number(s.reps) || 0);
+          else if (state.detail.metric === 'est1rm') v = Math.max(v, Math.round(formatWeightForDisplay(s.weight) * (1 + (Number(s.reps) || 0) / 30)));
           else if (state.detail.metric === 'reps') v += Number(s.reps) || 0;
           else if (state.detail.metric === 'durationMin') v += (Number(s.durationSec) || 0) / 60;
           else if (state.detail.metric === 'distance') v += Number(s.distance) || 0;
@@ -1446,7 +1479,7 @@
         var date = (cols[0] || '').trim();
         var name = (cols[1] || '').trim();
         var cat = (cols[2] || 'Chest').trim();
-        var weight = parseFloat(cols[3]) || 0;
+        var weight = convertCSVWeightColumnToLb(cols[3]);
         var reps = parseInt(cols[4], 10) || 0;
         var dist = parseFloat(cols[5]) || 0;
         var timeStr = (cols[7] || '').trim();
@@ -1726,6 +1759,21 @@
         if (state.activePane === 2) renderChartsPane();
       });
     });
+
+    var unitBtn = document.getElementById('toggleWeightUnitBtn');
+    if (unitBtn) {
+      unitBtn.textContent = 'Display Unit: ' + getWeightUnitLabel();
+      unitBtn.addEventListener('click', function () {
+        window.triggerHaptic('medium');
+        state.weightUnit = state.weightUnit === 'lb' ? 'kg' : 'lb';
+        unitBtn.textContent = 'Display Unit: ' + getWeightUnitLabel();
+        saveDB();
+        renderWorkoutPane();
+        if (state.activePane === 2) renderChartsPane();
+        if (!document.getElementById('detailOverlay').classList.contains('hidden')) renderExerciseDetail();
+      });
+    }
+
     document.getElementById('exportCsvBtn').addEventListener('click', exportFitNotesCSV);
     document.getElementById('importCsvInput').addEventListener('change', function (e) {
       if (e.target.files && e.target.files[0]) importFitNotesCSV(e.target.files[0]);
