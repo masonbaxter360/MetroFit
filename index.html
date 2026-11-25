@@ -184,7 +184,7 @@
       display: inline-block;
     }
 
-    /* Oversized 56px Metro Pivot Menu */
+    /* Oversized 56px Metro Pivot Menu (No Routines Tab) */
     .pivot-header {
       display: flex;
       align-items: baseline;
@@ -839,6 +839,38 @@
       flex-wrap: wrap;
     }
 
+    .rolling-week-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .rolling-week-center {
+      text-align: center;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .rolling-week-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    .rolling-week-range {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--accent-end);
+      margin-top: 2px;
+    }
+
     .range-bar {
       display: flex;
       gap: 4px;
@@ -859,6 +891,11 @@
       background: var(--accent-gradient);
       border-color: transparent;
       color: #ffffff;
+    }
+
+    .range-btn:disabled {
+      opacity: 0.35;
+      cursor: default;
     }
 
     .chart-canvas-wrap {
@@ -882,6 +919,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
     }
 
     .point-readout-sub {
@@ -1254,6 +1292,11 @@
       visibility: hidden;
     }
 
+    .cal-day.in-rolling-week {
+      border-color: rgba(255, 106, 0, 0.55);
+      background: rgba(255, 0, 127, 0.14);
+    }
+
     .cal-day.has-log::after {
       content: '';
       width: 5px;
@@ -1367,13 +1410,42 @@
 
       <!-- PANE 2: CHARTS -->
       <section id="pane_2" class="pane">
-        <div class="metro-section-label">ROLLING 7-DAY OVERVIEW</div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin:10px 0 8px 0;">
+          <div class="metro-section-label" style="margin:0;">ROLLING 7-DAY OVERVIEW</div>
+          <div id="rollingOverviewRangeLabel" style="font-size:10px; font-weight:700; letter-spacing:0.08em; color:var(--accent-end);">THU &ndash; WED</div>
+        </div>
         <div id="globalStatsTiles" class="tile-grid"></div>
 
+        <!-- Rolling 7-Day Daily Bar Chart (Starts on weekday after today: Today-6 through Today) -->
+        <div class="chart-box">
+          <div class="rolling-week-nav">
+            <button type="button" class="date-nav-btn" style="padding:4px 12px;" onclick="stepRollingWeek(-1)" aria-label="Previous Rolling Week">&lt;</button>
+            <div class="rolling-week-center">
+              <div id="rollingWeekTitle" class="rolling-week-title">CURRENT ROLLING WEEK</div>
+              <div id="rollingWeekRange" class="rolling-week-range">THU, NOV 19 &ndash; WED, NOV 25</div>
+            </div>
+            <button type="button" id="rollingWeekNextBtn" class="date-nav-btn" style="padding:4px 12px;" onclick="stepRollingWeek(1)" aria-label="Next Rolling Week">&gt;</button>
+          </div>
+          <div class="chart-toolbar">
+            <button type="button" class="metro-btn" onclick="cycleRollingBarMetric()">
+              BARS: <span id="rollingBarMetricLabel">Daily Volume</span>
+            </button>
+            <div id="rollingWeekTotalBadge" style="font-size:11px; font-weight:700; letter-spacing:0.08em; color:var(--text-secondary);">TOTAL: 0 LB</div>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="rollingWeekBarCanvas"></canvas>
+          </div>
+          <div class="point-readout">
+            <div id="rollingBarReadout">Tap a day bar to inspect</div>
+            <div class="point-readout-sub">STARTS DAY AFTER TODAY</div>
+          </div>
+        </div>
+
+        <!-- Multi-Week Trend Line Chart (Bucketed by same Rolling 7-Day Week) -->
         <div class="chart-box">
           <div class="chart-toolbar">
             <button type="button" class="metro-btn" onclick="cycleGlobalChartMetric()">
-              METRIC: <span id="globalChartMetricLabel">Weekly Volume</span>
+              TREND: <span id="globalChartMetricLabel">Weekly Volume</span>
             </button>
             <div id="globalChartRangeBar" class="range-bar">
               <button type="button" class="range-btn active" data-grange="1M" onclick="setGlobalChartRange('1M')">1M</button>
@@ -1465,7 +1537,7 @@
 
       <button type="button" id="appbar_3" class="appbar-item" onclick="switchPane(3)">
         <span class="appbar-circle">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         </span>
         <span class="appbar-label">settings</span>
       </button>
@@ -1586,23 +1658,18 @@
     </div>
   </div>
 
-  <!-- CALENDAR MODAL -->
+  <!-- CALENDAR MODAL (Aligned to Rolling 7-Day Week starting day after Today) -->
   <div id="calendarModal" class="modal-backdrop" onclick="if(event.target===this) closeCalendarModal()">
     <div class="modal-sheet">
       <div class="modal-header">
         <button type="button" class="date-nav-btn" onclick="stepCalendarMonth(-1)">&lt;</button>
-        <div id="calendarMonthTitle" class="modal-title">November 2026</div>
+        <div style="text-align:center;">
+          <div id="calendarMonthTitle" class="modal-title">November 2026</div>
+          <div id="calendarRollingNote" style="font-size:10px; font-weight:700; letter-spacing:0.08em; color:var(--accent-end); margin-top:2px;">ROLLING WEEK: THU &rarr; WED</div>
+        </div>
         <button type="button" class="date-nav-btn" onclick="stepCalendarMonth(1)">&gt;</button>
       </div>
-      <div class="cal-grid">
-        <div class="cal-dow">SUN</div>
-        <div class="cal-dow">MON</div>
-        <div class="cal-dow">TUE</div>
-        <div class="cal-dow">WED</div>
-        <div class="cal-dow">THU</div>
-        <div class="cal-dow">FRI</div>
-        <div class="cal-dow">SAT</div>
-      </div>
+      <div id="calendarDowRow" class="cal-grid"></div>
       <div id="calendarDaysGrid" class="cal-grid"></div>
       <div style="display:flex; justify-content:space-between; margin-top:14px;">
         <button type="button" class="metro-btn" onclick="jumpToToday()">TODAY</button>
@@ -1720,6 +1787,12 @@
       { name: 'Rowing Machine', category: 'Cardio' }
     ];
 
+    var ROLLING_BAR_METRICS = [
+      { id: 'volume', label: 'Daily Volume', unit: 'lb' },
+      { id: 'sets', label: 'Daily Sets', unit: 'sets' },
+      { id: 'cardioMins', label: 'Cardio Minutes', unit: 'min' }
+    ];
+
     var GLOBAL_CHART_METRICS = [
       { id: 'volume', label: 'Weekly Volume', unit: 'lb' },
       { id: 'sets', label: 'Weekly Sets', unit: 'sets' },
@@ -1753,6 +1826,12 @@
         exercises: [],
         logs: {},
         lastUsedMap: {}
+      },
+      rollingWeek: {
+        weekOffset: 0,
+        metric: 'volume',
+        days: [],
+        selectedBarIdx: 6
       },
       globalChart: {
         metric: 'volume',
@@ -1905,7 +1984,7 @@
     };
 
     /* ========================================================================
-       DATE & FORMATTING HELPERS
+       DATE & ROLLING 7-DAY WEEK HELPERS (ALWAYS STARTS DAY AFTER TODAY)
        ======================================================================== */
     function formatLocalISO(dateObj) {
       var y = dateObj.getFullYear();
@@ -1926,6 +2005,42 @@
       return formatLocalISO(dt);
     }
 
+    /*
+      Rolling 7-Day Week Anchor:
+      - weekOffset = 0 is the current rolling 7-day window ending on `todayIso`
+        and starting on `todayIso - 6 days` (which is always the weekday immediately following today).
+      - E.g. if Today is Wednesday Nov 25, 2026:
+        startIso = Thursday Nov 19, 2026 (day after Wednesday)
+        endIso   = Wednesday Nov 25, 2026 (Today)
+    */
+    function getRollingWeekWindow(weekOffset) {
+      var todayIso = formatLocalISO(new Date());
+      var offset = weekOffset || 0;
+      var endIso = getOffsetISO(todayIso, offset * 7);
+      var startIso = getOffsetISO(endIso, -6);
+      var dates = [];
+      for (var i = 0; i < 7; i++) {
+        dates.push(getOffsetISO(startIso, i));
+      }
+      return {
+        startIso: startIso,
+        endIso: endIso,
+        dates: dates,
+        todayIso: todayIso
+      };
+    }
+
+    /* Bucket any historical date ISO into its corresponding Rolling 7-Day Week start ISO */
+    function getRollingWeekStartISO(isoStr) {
+      var todayIso = formatLocalISO(new Date());
+      var targetDt = parseLocalDate(isoStr);
+      var todayDt = parseLocalDate(todayIso);
+      var diffDays = Math.round((todayDt - targetDt) / 86400000);
+      var weekIdx = Math.floor(diffDays / 7);
+      var weekEndIso = getOffsetISO(todayIso, -weekIdx * 7);
+      return getOffsetISO(weekEndIso, -6);
+    }
+
     function getFriendlyDateLabel(isoStr) {
       var todayIso = formatLocalISO(new Date());
       var yesterdayIso = getOffsetISO(todayIso, -1);
@@ -1940,6 +2055,11 @@
     function formatShortDate(isoStr) {
       var dt = parseLocalDate(isoStr);
       return dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase();
+    }
+
+    function formatWeekdayShort(isoStr) {
+      var dt = parseLocalDate(isoStr);
+      return dt.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
     }
 
     function escapeHtml(str) {
@@ -3663,7 +3783,7 @@
     }
 
     /* ========================================================================
-       GLOBAL ANALYTICS CHARTS PANE
+       GLOBAL ANALYTICS & ROLLING 7-DAY WEEKLY BAR CHART (STARTS DAY AFTER TODAY)
        ======================================================================== */
     function getCutoffDate(sortedDates, range) {
       if (!sortedDates.length || range === 'ALL') return '0000-00-00';
@@ -3672,13 +3792,24 @@
       return getOffsetISO(latest, -days);
     }
 
-    function getMondayISO(isoStr) {
-      var dt = parseLocalDate(isoStr);
-      var day = dt.getDay();
-      var diff = (day === 0 ? -6 : 1) - day;
-      dt.setDate(dt.getDate() + diff);
-      return formatLocalISO(dt);
-    }
+    window.stepRollingWeek = function(deltaWeeks) {
+      var nextOffset = state.rollingWeek.weekOffset + deltaWeeks;
+      if (nextOffset > 0) return;
+      window.triggerHaptic('light');
+      state.rollingWeek.weekOffset = nextOffset;
+      state.rollingWeek.selectedBarIdx = 6;
+      renderGlobalChartsPane();
+    };
+
+    window.cycleRollingBarMetric = function() {
+      window.triggerHaptic('light');
+      var idx = ROLLING_BAR_METRICS.findIndex(function(m) { return m.id === state.rollingWeek.metric; });
+      var next = ROLLING_BAR_METRICS[(idx + 1) % ROLLING_BAR_METRICS.length];
+      state.rollingWeek.metric = next.id;
+      var lbl = document.getElementById('rollingBarMetricLabel');
+      if (lbl) lbl.textContent = next.label;
+      renderGlobalChartsPane();
+    };
 
     window.cycleGlobalChartMetric = function() {
       window.triggerHaptic('light');
@@ -3713,33 +3844,51 @@
       renderGlobalChartsPane();
     };
 
+    function computeDailyStats(dateIso) {
+      var entries = state.db.logs[dateIso] || [];
+      var vol = 0, sets = 0, cardioMins = 0, hasSets = false;
+      entries.forEach(function(e) {
+        (e.sets || []).forEach(function(s) {
+          hasSets = true;
+          sets += 1;
+          if (s.kind === 'cardio' || isCardioCategory(e.category, e.name)) {
+            var cv = getCardioSetValues(s);
+            if (cv.timeMinutes !== null) cardioMins += cv.timeMinutes;
+          } else {
+            vol += (s.weight || 0) * (s.reps || 0);
+          }
+        });
+      });
+      return {
+        date: dateIso,
+        volume: Math.round(vol),
+        sets: sets,
+        cardioMins: Math.round(cardioMins * 10) / 10,
+        hasWorkout: hasSets ? 1 : 0
+      };
+    }
+
     function renderGlobalChartsPane() {
       var tilesEl = document.getElementById('globalStatsTiles');
-      var canvas = document.getElementById('globalChartCanvas');
+      var barCanvas = document.getElementById('rollingWeekBarCanvas');
+      var lineCanvas = document.getElementById('globalChartCanvas');
       var readout = document.getElementById('globalPointReadout');
-      if (!tilesEl || !canvas) return;
+      if (!tilesEl || !lineCanvas) return;
 
-      var todayIso = formatLocalISO(new Date());
-      var weekCutoff = getOffsetISO(todayIso, -6);
-      var allDates = Object.keys(state.db.logs).sort();
+      /* Current Rolling 7-Day Window (Starts on day after Today: Today-6 through Today) */
+      var curWin = getRollingWeekWindow(0);
+      var overviewRangeLbl = document.getElementById('rollingOverviewRangeLabel');
+      if (overviewRangeLbl) {
+        overviewRangeLbl.textContent = formatWeekdayShort(curWin.startIso) + ' \u2013 ' + formatWeekdayShort(curWin.endIso);
+      }
 
       var weekVol = 0, weekSets = 0, weekSessions = 0, weekCardioMins = 0;
-      allDates.filter(function(d) { return d >= weekCutoff && d <= todayIso; }).forEach(function(d) {
-        var entries = state.db.logs[d] || [];
-        var dayHasSets = false;
-        entries.forEach(function(e) {
-          (e.sets || []).forEach(function(s) {
-            dayHasSets = true;
-            weekSets += 1;
-            if (s.kind === 'cardio' || isCardioCategory(e.category, e.name)) {
-              var cv = getCardioSetValues(s);
-              if (cv.timeMinutes !== null) weekCardioMins += cv.timeMinutes;
-            } else {
-              weekVol += (s.weight || 0) * (s.reps || 0);
-            }
-          });
-        });
-        if (dayHasSets) weekSessions += 1;
+      curWin.dates.forEach(function(d) {
+        var ds = computeDailyStats(d);
+        weekVol += ds.volume;
+        weekSets += ds.sets;
+        weekSessions += ds.hasWorkout;
+        weekCardioMins += ds.cardioMins;
       });
 
       tilesEl.innerHTML =
@@ -3748,46 +3897,163 @@
         '<div class="metro-tile tile-cyan"><div class="tile-value">' + weekSessions + '</div><div class="tile-label">workouts</div></div>' +
         '<div class="metro-tile tile-dark"><div class="tile-value">' + Math.round(weekCardioMins) + ' min</div><div class="tile-label">cardio time</div></div>';
 
+      /* Interactive Rolling 7-Day Daily Bar Chart */
+      var activeWin = getRollingWeekWindow(state.rollingWeek.weekOffset);
+      var rwTitle = document.getElementById('rollingWeekTitle');
+      var rwRange = document.getElementById('rollingWeekRange');
+      var rwNextBtn = document.getElementById('rollingWeekNextBtn');
+      if (rwTitle) {
+        if (state.rollingWeek.weekOffset === 0) rwTitle.textContent = 'CURRENT ROLLING WEEK';
+        else if (state.rollingWeek.weekOffset === -1) rwTitle.textContent = 'LAST ROLLING WEEK';
+        else rwTitle.textContent = Math.abs(state.rollingWeek.weekOffset) + ' WEEKS AGO';
+      }
+      if (rwRange) {
+        rwRange.textContent = formatShortDate(activeWin.startIso) + ' \u2013 ' + formatShortDate(activeWin.endIso);
+      }
+      if (rwNextBtn) {
+        rwNextBtn.disabled = state.rollingWeek.weekOffset >= 0;
+      }
+
+      var barMetricObj = ROLLING_BAR_METRICS.find(function(m) { return m.id === state.rollingWeek.metric; }) || ROLLING_BAR_METRICS[0];
+      var dayItems = activeWin.dates.map(function(d) {
+        var ds = computeDailyStats(d);
+        return {
+          date: d,
+          dow: formatWeekdayShort(d),
+          value: ds[barMetricObj.id] || 0
+        };
+      });
+      state.rollingWeek.days = dayItems;
+
+      var totalWeekVal = dayItems.reduce(function(acc, item) { return acc + item.value; }, 0);
+      var totalBadge = document.getElementById('rollingWeekTotalBadge');
+      if (totalBadge) {
+        totalBadge.textContent = 'TOTAL: ' + Math.round(totalWeekVal).toLocaleString() + ' ' + barMetricObj.unit.toUpperCase();
+      }
+
+      if (barCanvas) {
+        drawRollingWeekBarChart(barCanvas, dayItems, barMetricObj.unit, state.rollingWeek.selectedBarIdx);
+      }
+
+      var barReadout = document.getElementById('rollingBarReadout');
+      if (barReadout) {
+        var bIdx = state.rollingWeek.selectedBarIdx;
+        if (bIdx >= 0 && bIdx < dayItems.length) {
+          var selDay = dayItems[bIdx];
+          barReadout.innerHTML = formatShortDate(selDay.date) + ': <strong>' + selDay.value.toLocaleString() + ' ' + barMetricObj.unit + '</strong>';
+        }
+      }
+
+      /* Multi-Week Trend Line Chart (Bucketed by Rolling 7-Day Week starting day after Today) */
+      var allDates = Object.keys(state.db.logs).sort();
       var mObj = GLOBAL_CHART_METRICS.find(function(m) { return m.id === state.globalChart.metric; }) || GLOBAL_CHART_METRICS[0];
       var cutoff = getCutoffDate(allDates, state.globalChart.range);
       var weeklyMap = {};
 
       allDates.filter(function(d) { return d >= cutoff; }).forEach(function(d) {
-        var entries = state.db.logs[d] || [];
-        var mon = getMondayISO(d);
-        if (!weeklyMap[mon]) weeklyMap[mon] = { volume: 0, sets: 0, workouts: 0, cardioMins: 0 };
-        var hasSet = false;
-        entries.forEach(function(e) {
-          (e.sets || []).forEach(function(s) {
-            hasSet = true;
-            weeklyMap[mon].sets += 1;
-            if (s.kind === 'cardio' || isCardioCategory(e.category, e.name)) {
-              var cv = getCardioSetValues(s);
-              if (cv.timeMinutes !== null) weeklyMap[mon].cardioMins += cv.timeMinutes;
-            } else {
-              weeklyMap[mon].volume += (s.weight || 0) * (s.reps || 0);
-            }
-          });
-        });
-        if (hasSet) weeklyMap[mon].workouts += 1;
+        var ds = computeDailyStats(d);
+        var wkStart = getRollingWeekStartISO(d);
+        if (!weeklyMap[wkStart]) weeklyMap[wkStart] = { volume: 0, sets: 0, workouts: 0, cardioMins: 0 };
+        weeklyMap[wkStart].volume += ds.volume;
+        weeklyMap[wkStart].sets += ds.sets;
+        weeklyMap[wkStart].workouts += ds.hasWorkout;
+        weeklyMap[wkStart].cardioMins += ds.cardioMins;
       });
 
-      var points = Object.keys(weeklyMap).sort().map(function(mon) {
-        return { key: mon, value: Math.round(weeklyMap[mon][mObj.id] * 10) / 10 };
+      var points = Object.keys(weeklyMap).sort().map(function(wkStart) {
+        return {
+          key: wkStart,
+          endKey: getOffsetISO(wkStart, 6),
+          value: Math.round(weeklyMap[wkStart][mObj.id] * 10) / 10
+        };
       });
 
       state.globalChart.points = points;
-      drawMetroLineChart(canvas, points, mObj.unit, state.globalChart.selectedIdx);
+      drawMetroLineChart(lineCanvas, points, mObj.unit, state.globalChart.selectedIdx);
 
       if (readout) {
         var idx = state.globalChart.selectedIdx;
-        if (!points.length || idx < 0 || idx >= points.length) {
-          readout.innerHTML = '<div>Week of ' + (points.length ? formatShortDate(points[points.length - 1].key) : '—') + '</div>';
+        if (!points.length) {
+          readout.innerHTML = '<div>No multi-week data yet</div>';
         } else {
-          var pt = points[idx];
-          readout.innerHTML = '<div>WK ' + formatShortDate(pt.key) + ': <strong>' + pt.value.toLocaleString() + ' ' + mObj.unit + '</strong></div>';
+          var targetPt = idx >= 0 && idx < points.length ? points[idx] : points[points.length - 1];
+          readout.innerHTML =
+            '<div>' + formatShortDate(targetPt.key) + ' &ndash; ' + formatShortDate(targetPt.endKey) + ': <strong>' + targetPt.value.toLocaleString() + ' ' + mObj.unit + '</strong></div>';
         }
       }
+    }
+
+    function drawRollingWeekBarChart(canvas, days, unit, selectedIdx) {
+      var wrap = canvas.parentElement;
+      var dpr = window.devicePixelRatio || 1;
+      var w = wrap.clientWidth || 300;
+      var h = wrap.clientHeight || 200;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+
+      var ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, w, h);
+
+      var padL = 12, padR = 12, padT = 22, padB = 28;
+      var plotW = w - padL - padR;
+      var plotH = h - padT - padB;
+      var maxV = Math.max.apply(null, days.map(function(d) { return d.value; }).concat([1]));
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.lineWidth = 1;
+      for (var g = 0; g <= 2; g++) {
+        var gy = padT + (plotH * g) / 2;
+        ctx.beginPath();
+        ctx.moveTo(padL, gy);
+        ctx.lineTo(w - padR, gy);
+        ctx.stroke();
+      }
+
+      var colW = plotW / 7;
+      var barW = Math.min(34, colW * 0.62);
+
+      days.forEach(function(item, i) {
+        var cx = padL + colW * i + colW / 2;
+        var bx = cx - barW / 2;
+        var barH = item.value > 0 ? Math.max(6, (item.value / maxV) * plotH) : 3;
+        var by = padT + plotH - barH;
+        var isSel = i === selectedIdx;
+
+        if (item.value > 0) {
+          var grad = ctx.createLinearGradient(0, by, 0, padT + plotH);
+          grad.addColorStop(0, '#ff007f');
+          grad.addColorStop(1, '#ff6a00');
+          ctx.fillStyle = grad;
+        } else {
+          ctx.fillStyle = 'rgba(255,255,255,0.12)';
+        }
+
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(bx, by, barW, barH, [3, 3, 0, 0]);
+        } else {
+          ctx.rect(bx, by, barW, barH);
+        }
+        ctx.fill();
+
+        if (isSel) {
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        ctx.fillStyle = isSel ? '#ffffff' : '#9a9a9a';
+        ctx.font = (isSel ? '700 ' : '600 ') + '10px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(item.dow, cx, h - 10);
+      });
+
+      ctx.fillStyle = '#888888';
+      ctx.font = '10px Segoe UI, sans-serif';
+      ctx.textAlign = 'left';
+      var topLabel = Math.max.apply(null, days.map(function(d) { return d.value; }));
+      ctx.fillText('PEAK: ' + Math.round(topLabel).toLocaleString() + ' ' + unit, padL, 13);
     }
 
     function drawMetroLineChart(canvas, points, unit, selectedIdx) {
@@ -3875,14 +4141,14 @@
         if (!pts || !pts.length) return;
         var rect = canvas.getBoundingClientRect();
         var x = e.clientX - rect.left;
-        var ratio = Math.max(0, Math.min(1, (x - 14) / Math.max(1, rect.width - 28)));
-        var idx = pts.length === 1 ? 0 : Math.round(ratio * (pts.length - 1));
+        var ratio = Math.max(0, Math.min(1, (x - 12) / Math.max(1, rect.width - 24)));
+        var idx = pts.length === 1 ? 0 : Math.min(pts.length - 1, Math.floor(ratio * pts.length));
         onSelect(idx);
       });
     }
 
     /* ========================================================================
-       CALENDAR MODAL
+       CALENDAR MODAL (ALIGNED TO ROLLING 7-DAY WEEK STARTING DAY AFTER TODAY)
        ======================================================================== */
     window.openCalendarModal = function() {
       window.triggerHaptic('light');
@@ -3916,20 +4182,44 @@
       var month = dt.getMonth();
       document.getElementById('calendarMonthTitle').textContent = dt.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
-      var firstDow = new Date(year, month, 1).getDay();
+      /* Rolling week starts on weekday immediately following Today: (today.getDay() + 1) % 7 */
+      var todayObj = new Date();
+      var rollingStartDow = (todayObj.getDay() + 1) % 7;
+      var dowNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+      var orderedDows = [];
+      for (var k = 0; k < 7; k++) {
+        orderedDows.push(dowNames[(rollingStartDow + k) % 7]);
+      }
+
+      var noteEl = document.getElementById('calendarRollingNote');
+      if (noteEl) {
+        noteEl.textContent = 'ROLLING WEEK: ' + orderedDows[0] + ' \u2192 ' + orderedDows[6];
+      }
+
+      var dowRow = document.getElementById('calendarDowRow');
+      if (dowRow) {
+        dowRow.innerHTML = orderedDows.map(function(lbl) {
+          return '<div class="cal-dow">' + lbl + '</div>';
+        }).join('');
+      }
+
+      var curWin = getRollingWeekWindow(0);
+      var firstMonthDow = new Date(year, month, 1).getDay();
+      var leadingBlanks = (firstMonthDow - rollingStartDow + 7) % 7;
       var daysInMonth = new Date(year, month + 1, 0).getDate();
       var grid = document.getElementById('calendarDaysGrid');
       var cells = [];
 
-      for (var b = 0; b < firstDow; b++) {
+      for (var b = 0; b < leadingBlanks; b++) {
         cells.push('<div class="cal-day empty"></div>');
       }
 
       for (var d = 1; d <= daysInMonth; d++) {
         var iso = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
         var hasLog = (state.db.logs[iso] || []).some(function(e) { return e.sets && e.sets.length > 0; });
+        var inRolling = iso >= curWin.startIso && iso <= curWin.endIso;
         var isSel = iso === state.selectedDate;
-        var cls = 'cal-day' + (hasLog ? ' has-log' : '') + (isSel ? ' selected' : '');
+        var cls = 'cal-day' + (inRolling ? ' in-rolling-week' : '') + (hasLog ? ' has-log' : '') + (isSel ? ' selected' : '');
         cells.push('<button type="button" class="' + cls + '" onclick="selectCalendarDay(\'' + iso + '\')">' + d + '</button>');
       }
 
@@ -4265,12 +4555,20 @@
         });
       }
 
+      bindChartCanvasTap('rollingWeekBarCanvas', function() { return state.rollingWeek.days; }, function(idx) {
+        window.triggerHaptic('light');
+        state.rollingWeek.selectedBarIdx = idx;
+        renderGlobalChartsPane();
+      });
+
       bindChartCanvasTap('globalChartCanvas', function() { return state.globalChart.points; }, function(idx) {
+        window.triggerHaptic('light');
         state.globalChart.selectedIdx = idx;
         renderGlobalChartsPane();
       });
 
       bindChartCanvasTap('detailChartCanvas', function() { return state.detail.chartPoints; }, function(idx) {
+        window.triggerHaptic('light');
         state.detail.chartSelectedIdx = idx;
         renderDetailChart();
       });
