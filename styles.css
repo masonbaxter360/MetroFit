@@ -410,6 +410,10 @@ html[data-theme="glass"] .set-row {
   gap: 8px;
 }
 
+.quick-log-row.cardio-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+}
+
 .metro-input,
 .metro-select {
   width: 100%;

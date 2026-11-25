@@ -29,7 +29,8 @@
 
   var CARDIO_DETAIL_METRICS = [
     { key: 'durationMin', label: 'Duration (min)' },
-    { key: 'distance', label: 'Distance' }
+    { key: 'distance', label: 'Distance' },
+    { key: 'calories', label: 'Calories' }
   ];
 
   var DEFAULT_EXERCISES = [
@@ -306,7 +307,8 @@
       if (ex.type === 'cardio') {
         return {
           timeStr: formatCardioSecondsToClock(last.durationSec || 1200),
-          distance: last.distance || 1.5
+          distance: last.distance || 1.5,
+          calories: last.calories || 0
         };
       }
       return { weight: last.weight || 45, reps: last.reps || 10 };
@@ -317,7 +319,8 @@
         var lastC = prev.sets[prev.sets.length - 1];
         return {
           timeStr: formatCardioSecondsToClock(lastC.durationSec || 1200),
-          distance: lastC.distance || 1.5
+          distance: lastC.distance || 1.5,
+          calories: lastC.calories || 0
         };
       }
       var minW = prev.sets.reduce(function (m, s) {
@@ -327,7 +330,7 @@
       var startW = isFinite(minW) ? minW + 5 : 45;
       return { weight: startW, reps: prev.sets[0].reps || 10 };
     }
-    return ex.type === 'cardio' ? { timeStr: '20:00', distance: 1.5 } : { weight: 45, reps: 10 };
+    return ex.type === 'cardio' ? { timeStr: '20:00', distance: 1.5, calories: 0 } : { weight: 45, reps: 10 };
   }
 
   function getNextUpMuscles() {
@@ -461,9 +464,13 @@
 
       var startVals = getSuggestedStartValues(ex, entry.sets);
       var setsHtml = entry.sets.map(function (s, idx) {
+        var kcalHtml = (Number(s.calories) || 0) > 0
+          ? '<span class="set-val">' + (Number(s.calories) || 0) + '<span class="set-unit">KCAL</span></span>'
+          : '';
         var metricsHtml = ex.type === 'cardio'
           ? '<span class="set-val">' + formatCardioSecondsToClock(s.durationSec) + '<span class="set-unit">TIME</span></span>' +
-            '<span class="set-val">' + (s.distance || 0) + '<span class="set-unit">MI</span></span>'
+            '<span class="set-val">' + (s.distance || 0) + '<span class="set-unit">MI</span></span>' +
+            kcalHtml
           : '<span class="set-val">' + (s.weight || 0) + '<span class="set-unit">LB</span></span>' +
             '<span class="set-val">' + (s.reps || 0) + '<span class="set-unit">REPS</span></span>';
 
@@ -479,7 +486,8 @@
 
       var inputsHtml = ex.type === 'cardio'
         ? '<input type="text" inputmode="text" class="metro-input ql-time" placeholder="00:00" value="' + startVals.timeStr + '" />' +
-          '<input type="number" step="0.1" inputmode="decimal" class="metro-input ql-dist" placeholder="mi" value="' + startVals.distance + '" />'
+          '<input type="number" step="0.1" inputmode="decimal" class="metro-input ql-dist" placeholder="mi" value="' + startVals.distance + '" />' +
+          '<input type="number" step="1" min="0" inputmode="numeric" class="metro-input ql-kcal" placeholder="kcal" value="' + (startVals.calories || '') + '" />'
         : '<input type="number" step="2.5" inputmode="decimal" class="metro-input ql-weight" placeholder="lb" value="' + startVals.weight + '" />' +
           '<input type="number" inputmode="numeric" class="metro-input ql-reps" placeholder="reps" value="' + startVals.reps + '" />';
 
@@ -492,7 +500,7 @@
           '<button type="button" class="delete-ex-btn">DELETE</button>' +
         '</div>' +
         '<div class="sets-list">' + setsHtml + '</div>' +
-        '<div class="quick-log-row">' +
+        '<div class="quick-log-row' + (ex.type === 'cardio' ? ' cardio-row' : '') + '">' +
           inputsHtml +
           '<button type="button" class="metro-btn-accent ql-log-btn">LOG</button>' +
         '</div>' +
@@ -535,7 +543,9 @@
         if (ex && ex.type === 'cardio') {
           var sec = parseCardioTimeToSeconds(card.querySelector('.ql-time').value);
           var dist = parseFloat(card.querySelector('.ql-dist').value) || 0;
-          entry.sets.push({ id: 's_' + Date.now(), durationSec: sec, distance: dist });
+          var kcalEl = card.querySelector('.ql-kcal');
+          var kcal = kcalEl ? (parseInt(kcalEl.value, 10) || 0) : 0;
+          entry.sets.push({ id: 's_' + Date.now(), durationSec: sec, distance: dist, calories: kcal });
         } else {
           var w = parseFloat(card.querySelector('.ql-weight').value) || 0;
           var r = parseInt(card.querySelector('.ql-reps').value, 10) || 0;
@@ -824,6 +834,7 @@
           else if (metric === 'maxWeight') buckets[key] = Math.max(buckets[key], Number(s.weight) || 0);
           else if (metric === 'reps') buckets[key] += Number(s.reps) || 0;
           else if (metric === 'cardioMin') buckets[key] += (Number(s.durationSec) || 0) / 60;
+          else if (metric === 'calories') buckets[key] += Number(s.calories) || 0;
         });
       });
     });
@@ -896,23 +907,28 @@
     var totalVol = 0;
     var totalSets = 0;
     var totalCardioMin = 0;
+    var totalCalories = 0;
 
     var bars = rw.days.map(function (day) {
       var dayVol = 0;
       var daySets = 0;
       var dayCardio = 0;
+      var dayKcal = 0;
       (state.workouts[day.iso] || []).forEach(function (en) {
         (en.sets || []).forEach(function (s) {
           daySets += 1;
           dayVol += (Number(s.weight) || 0) * (Number(s.reps) || 0);
           dayCardio += (Number(s.durationSec) || 0) / 60;
+          dayKcal += Number(s.calories) || 0;
         });
       });
       totalVol += dayVol;
       totalSets += daySets;
       totalCardioMin += dayCardio;
+      totalCalories += dayKcal;
       var val = state.rollingWeek.metric === 'sets' ? daySets
         : state.rollingWeek.metric === 'cardio' ? Math.round(dayCardio * 10) / 10
+        : state.rollingWeek.metric === 'calories' ? Math.round(dayKcal)
         : Math.round(dayVol);
       return { label: day.dow, sub: day.shortDate, value: val };
     });
@@ -930,7 +946,7 @@
     document.getElementById('rollingSummaryTiles').innerHTML =
       '<div class="sum-tile"><div class="sum-val">' + Math.round(totalVol).toLocaleString() + '</div><div class="sum-lbl">7d Volume</div></div>' +
       '<div class="sum-tile"><div class="sum-val">' + totalSets + '</div><div class="sum-lbl">7d Sets</div></div>' +
-      '<div class="sum-tile"><div class="sum-val">' + Math.round(totalCardioMin) + 'm</div><div class="sum-lbl">7d Cardio</div></div>';
+      '<div class="sum-tile"><div class="sum-val">' + Math.round(totalCalories).toLocaleString() + '</div><div class="sum-lbl">7d Kcal</div></div>';
   }
 
   function formatAxisNumber(val) {
@@ -1129,7 +1145,13 @@
                 '<input type="number" step="0.1" id="detDistInp" class="metro-input" value="' + start.distance + '" />' +
                 '<button type="button" class="mini-step-btn" id="detDistPlus">+</button>' +
               '</div></div>' +
-          '</div>'
+          '</div>' +
+          '<div class="step-box" style="margin-bottom:10px;"><div class="card-kicker">CALORIES (KCAL)</div>' +
+            '<div class="step-controls">' +
+              '<button type="button" class="mini-step-btn" id="detKcalMinus">-</button>' +
+              '<input type="number" step="10" id="detKcalInp" class="metro-input" value="' + (start.calories || 0) + '" />' +
+              '<button type="button" class="mini-step-btn" id="detKcalPlus">+</button>' +
+            '</div></div>'
         : '<div class="stepper-grid">' +
             '<div class="step-box"><div class="card-kicker">WEIGHT (LB)</div>' +
               '<div class="step-controls">' +
@@ -1146,9 +1168,13 @@
           '</div>';
 
       var setsHtml = entry.sets.map(function (s, idx) {
+        var detKcalHtml = (Number(s.calories) || 0) > 0
+          ? '<span class="set-val">' + (Number(s.calories) || 0) + '<span class="set-unit">KCAL</span></span>'
+          : '';
         var m = ex.type === 'cardio'
           ? '<span class="set-val">' + formatCardioSecondsToClock(s.durationSec) + '<span class="set-unit">TIME</span></span>' +
-            '<span class="set-val">' + (s.distance || 0) + '<span class="set-unit">MI</span></span>'
+            '<span class="set-val">' + (s.distance || 0) + '<span class="set-unit">MI</span></span>' +
+            detKcalHtml
           : '<span class="set-val">' + (s.weight || 0) + '<span class="set-unit">LB</span></span>' +
             '<span class="set-val">' + (s.reps || 0) + '<span class="set-unit">REPS</span></span>';
         return '<div class="set-row-wrap" data-set-idx="' + idx + '">' +
@@ -1177,6 +1203,13 @@
         document.getElementById('detDistPlus').addEventListener('click', function () {
           dInp.value = ((parseFloat(dInp.value) || 0) + 0.1).toFixed(1);
         });
+        var kInp = document.getElementById('detKcalInp');
+        document.getElementById('detKcalMinus').addEventListener('click', function () {
+          kInp.value = Math.max(0, (parseInt(kInp.value, 10) || 0) - 10);
+        });
+        document.getElementById('detKcalPlus').addEventListener('click', function () {
+          kInp.value = (parseInt(kInp.value, 10) || 0) + 10;
+        });
       } else {
         var wInp = document.getElementById('detWInp');
         var rInp = document.getElementById('detRInp');
@@ -1201,7 +1234,8 @@
           en.sets.push({
             id: 's_' + Date.now(),
             durationSec: parseCardioTimeToSeconds(document.getElementById('detTimeInp').value),
-            distance: parseFloat(document.getElementById('detDistInp').value) || 0
+            distance: parseFloat(document.getElementById('detDistInp').value) || 0,
+            calories: parseInt(document.getElementById('detKcalInp').value, 10) || 0
           });
         } else {
           en.sets.push({
@@ -1227,7 +1261,7 @@
         if (en) {
           var summary = en.sets.map(function (s) {
             return ex.type === 'cardio'
-              ? formatCardioSecondsToClock(s.durationSec) + ' • ' + (s.distance || 0) + ' mi'
+              ? formatCardioSecondsToClock(s.durationSec) + ' • ' + (s.distance || 0) + ' mi' + ((Number(s.calories) || 0) > 0 ? ' • ' + (Number(s.calories) || 0) + ' kcal' : '')
               : (s.weight || 0) + ' lb × ' + (s.reps || 0);
           }).join('  |  ');
           rows.push('<div class="metro-card"><div class="card-kicker">' + d + '</div><div style="margin-top:6px;font-size:14px;">' + summary + '</div></div>');
@@ -1235,7 +1269,7 @@
       });
       body.innerHTML = rows.length ? rows.join('') : '<div class="empty-state">No history recorded yet.</div>';
     } else if (state.detail.tab === 'records') {
-      var maxW = 0, maxVol = 0, max1RM = 0, maxSec = 0, maxDist = 0;
+      var maxW = 0, maxVol = 0, max1RM = 0, maxSec = 0, maxDist = 0, maxKcal = 0;
       Object.keys(state.workouts).forEach(function (d) {
         (state.workouts[d] || []).forEach(function (en) {
           if (en.exerciseId !== ex.id) return;
@@ -1243,6 +1277,7 @@
             if (ex.type === 'cardio') {
               maxSec = Math.max(maxSec, Number(s.durationSec) || 0);
               maxDist = Math.max(maxDist, Number(s.distance) || 0);
+              maxKcal = Math.max(maxKcal, Number(s.calories) || 0);
             } else {
               var w = Number(s.weight) || 0;
               var r = Number(s.reps) || 0;
@@ -1254,9 +1289,10 @@
         });
       });
       body.innerHTML = ex.type === 'cardio'
-        ? '<div class="summary-tiles" style="grid-template-columns:1fr 1fr;">' +
+        ? '<div class="summary-tiles">' +
             '<div class="sum-tile"><div class="sum-val">' + formatCardioSecondsToClock(maxSec) + '</div><div class="sum-lbl">Longest Time</div></div>' +
             '<div class="sum-tile"><div class="sum-val">' + maxDist + ' mi</div><div class="sum-lbl">Max Distance</div></div>' +
+            '<div class="sum-tile"><div class="sum-val">' + maxKcal + ' kcal</div><div class="sum-lbl">Max Calories</div></div>' +
           '</div>'
         : '<div class="summary-tiles">' +
             '<div class="sum-tile"><div class="sum-val">' + maxW + ' lb</div><div class="sum-lbl">Max Weight</div></div>' +
@@ -1281,6 +1317,7 @@
           else if (state.detail.metric === 'reps') v += Number(s.reps) || 0;
           else if (state.detail.metric === 'durationMin') v += (Number(s.durationSec) || 0) / 60;
           else if (state.detail.metric === 'distance') v += Number(s.distance) || 0;
+          else if (state.detail.metric === 'calories') v += Number(s.calories) || 0;
         });
         pts.push({ label: d.slice(5), fullKey: d, value: Math.round(v * 10) / 10 });
       });
@@ -1352,7 +1389,7 @@
 
   /* -------------------- FITNOTES CSV IMPORT / EXPORT -------------------- */
   function exportFitNotesCSV() {
-    var lines = ['Date,Exercise,Category,Weight (lbs),Reps,Distance,Distance Unit,Time'];
+    var lines = ['Date,Exercise,Category,Weight (lbs),Reps,Distance,Distance Unit,Time,Calories'];
     Object.keys(state.workouts).sort().forEach(function (d) {
       (state.workouts[d] || []).forEach(function (en) {
         var ex = getExerciseById(en.exerciseId) || { name: en.exerciseId, category: 'Other', type: 'strength' };
@@ -1362,7 +1399,8 @@
           var dist = ex.type === 'cardio' ? (s.distance || 0) : '';
           var unit = ex.type === 'cardio' ? 'mi' : '';
           var t = ex.type === 'cardio' ? formatCardioSecondsToClock(s.durationSec) : '';
-          lines.push([d, '"' + ex.name.replace(/"/g, '""') + '"', ex.category, w, r, dist, unit, t].join(','));
+          var kcal = ex.type === 'cardio' ? (Number(s.calories) || 0) : '';
+          lines.push([d, '"' + ex.name.replace(/"/g, '""') + '"', ex.category, w, r, dist, unit, t, kcal].join(','));
         });
       });
     });
@@ -1388,9 +1426,10 @@
         var reps = parseInt(cols[4], 10) || 0;
         var dist = parseFloat(cols[5]) || 0;
         var timeStr = (cols[7] || '').replace(/"/g, '').trim();
+        var kcal = parseInt((cols[8] || '').replace(/"/g, '').trim(), 10) || 0;
         if (!date || !name) return;
 
-        var isCardio = Boolean(timeStr || dist) && !weight && !reps;
+        var isCardio = Boolean(timeStr || dist || kcal) && !weight && !reps;
         var ex = state.exercises.find(function (x) { return x.name.toLowerCase() === name.toLowerCase(); });
         if (!ex) {
           ex = {
@@ -1403,7 +1442,7 @@
         }
         var en = ensureWorkoutEntry(date, ex.id);
         if (ex.type === 'cardio') {
-          en.sets.push({ id: 's_' + Math.random().toString(36).slice(2), durationSec: parseCardioTimeToSeconds(timeStr), distance: dist });
+          en.sets.push({ id: 's_' + Math.random().toString(36).slice(2), durationSec: parseCardioTimeToSeconds(timeStr), distance: dist, calories: kcal });
         } else {
           en.sets.push({ id: 's_' + Math.random().toString(36).slice(2), weight: weight, reps: reps });
         }
