@@ -9,24 +9,107 @@
   <meta name="theme-color" content="#000000" />
   <link id="dynamicAppManifest" rel="manifest" />
   <link id="dynamicAppleTouchIcon" rel="apple-touch-icon" sizes="180x180" />
+  <link id="dynamicFavicon" rel="icon" type="image/png" sizes="512x512" />
   <title>GYM // BXTR</title>
   <script>
     (function() {
       try {
+        // Exact '//-//' geometry on a 512x512 coordinate space:
+        // Forward slash slope: dx = +66 over dy = -208 (ratio 0.3173077)
+        // Center dash height: dy = -42 -> matching slanted sides dx = +13.33
         var iconSvg =
           '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">' +
             '<defs>' +
-              '<linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">' +
+              '<linearGradient id="g" gradientUnits="userSpaceOnUse" x1="48" y1="256" x2="464" y2="256">' +
                 '<stop offset="0%" stop-color="#ff007f"/>' +
                 '<stop offset="100%" stop-color="#ff6a00"/>' +
               '</linearGradient>' +
             '</defs>' +
-            '<rect width="512" height="512" rx="112" fill="#000000"/>' +
-            '<polygon points="104,384 156,384 220,128 168,128" fill="url(#g)"/>' +
-            '<rect x="208" y="232" width="96" height="48" fill="url(#g)"/>' +
-            '<polygon points="292,384 344,384 408,128 356,128" fill="url(#g)"/>' +
+            '<rect width="512" height="512" fill="#000000"/>' +
+            '<polygon points="48,360 88,360 154,152 114,152" fill="url(#g)"/>' +
+            '<polygon points="116,360 156,360 222,152 182,152" fill="url(#g)"/>' +
+            '<polygon points="203,277 296,277 309,235 216,235" fill="url(#g)"/>' +
+            '<polygon points="290,360 330,360 396,152 356,152" fill="url(#g)"/>' +
+            '<polygon points="358,360 398,360 464,152 424,152" fill="url(#g)"/>' +
           '</svg>';
         var iconUri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(iconSvg);
+
+        function renderLogoPngDataUrl(size) {
+          var c = document.createElement('canvas');
+          c.width = size;
+          c.height = size;
+          var ctx = c.getContext('2d');
+          if (!ctx) return '';
+
+          ctx.fillStyle = '#000000';
+          ctx.fillRect(0, 0, size, size);
+
+          var s = size / 512;
+          var grad = ctx.createLinearGradient(48 * s, 256 * s, 464 * s, 256 * s);
+          grad.addColorStop(0, '#ff007f');
+          grad.addColorStop(1, '#ff6a00');
+          ctx.fillStyle = grad;
+
+          var polys = [
+            [[48, 360], [88, 360], [154, 152], [114, 152]],
+            [[116, 360], [156, 360], [222, 152], [182, 152]],
+            [[203, 277], [296, 277], [309, 235], [216, 235]],
+            [[290, 360], [330, 360], [396, 152], [356, 152]],
+            [[358, 360], [398, 360], [464, 152], [424, 152]]
+          ];
+
+          for (var i = 0; i < polys.length; i++) {
+            var pts = polys[i];
+            ctx.beginPath();
+            ctx.moveTo(pts[0][0] * s, pts[0][1] * s);
+            ctx.lineTo(pts[1][0] * s, pts[1][1] * s);
+            ctx.lineTo(pts[2][0] * s, pts[2][1] * s);
+            ctx.lineTo(pts[3][0] * s, pts[3][1] * s);
+            ctx.closePath();
+            ctx.fill();
+          }
+
+          return c.toDataURL('image/png');
+        }
+
+        var png180 = renderLogoPngDataUrl(180);
+        var png512 = renderLogoPngDataUrl(512);
+
+        var appleIconEl = document.getElementById('dynamicAppleTouchIcon');
+        if (appleIconEl && png180) {
+          appleIconEl.setAttribute('href', png180);
+        }
+
+        var faviconEl = document.getElementById('dynamicFavicon');
+        if (faviconEl && png512) {
+          faviconEl.setAttribute('href', png512);
+        }
+
+        var manifestIcons = [
+          {
+            src: iconUri,
+            sizes: '512x512',
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
+          }
+        ];
+        if (png512) {
+          manifestIcons.push({
+            src: png512,
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
+          });
+        }
+        if (png180) {
+          manifestIcons.push({
+            src: png180,
+            sizes: '180x180',
+            type: 'image/png',
+            purpose: 'any'
+          });
+        }
+
         var manifestObj = {
           name: 'GYM // BXTR',
           short_name: 'GYM // BXTR',
@@ -36,59 +119,11 @@
           orientation: 'portrait',
           background_color: '#000000',
           theme_color: '#000000',
-          icons: [
-            {
-              src: iconUri,
-              sizes: '512x512',
-              type: 'image/svg+xml',
-              purpose: 'any maskable'
-            }
-          ]
+          icons: manifestIcons
         };
         var linkEl = document.getElementById('dynamicAppManifest');
         if (linkEl) {
           linkEl.setAttribute('href', 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifestObj)));
-        }
-
-        // Generate 180x180 PNG apple-touch-icon for iOS Home Screen Add to Home Screen
-        var c = document.createElement('canvas');
-        c.width = 180;
-        c.height = 180;
-        var ctx = c.getContext('2d');
-        if (ctx) {
-          ctx.fillStyle = '#000000';
-          ctx.fillRect(0, 0, 180, 180);
-          var grad = ctx.createLinearGradient(28, 28, 152, 152);
-          grad.addColorStop(0, '#ff007f');
-          grad.addColorStop(1, '#ff6a00');
-          ctx.fillStyle = grad;
-
-          var s = 180 / 512;
-          // Left slash
-          ctx.beginPath();
-          ctx.moveTo(104 * s, 384 * s);
-          ctx.lineTo(156 * s, 384 * s);
-          ctx.lineTo(220 * s, 128 * s);
-          ctx.lineTo(168 * s, 128 * s);
-          ctx.closePath();
-          ctx.fill();
-
-          // Center hyphen bar
-          ctx.fillRect(208 * s, 232 * s, 96 * s, 48 * s);
-
-          // Right slash
-          ctx.beginPath();
-          ctx.moveTo(292 * s, 384 * s);
-          ctx.lineTo(344 * s, 384 * s);
-          ctx.lineTo(408 * s, 128 * s);
-          ctx.lineTo(356 * s, 128 * s);
-          ctx.closePath();
-          ctx.fill();
-
-          var appleIconEl = document.getElementById('dynamicAppleTouchIcon');
-          if (appleIconEl) {
-            appleIconEl.setAttribute('href', c.toDataURL('image/png'));
-          }
         }
       } catch (e) {}
     })();
@@ -235,30 +270,6 @@
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 6px 18px rgba(0, 0, 0, 0.22);
       padding: 12px 14px;
       margin-bottom: 8px;
-    }
-
-    html[data-theme="glass"] .routine-tile {
-      background: rgba(255, 255, 255, 0.10);
-      backdrop-filter: blur(22px) saturate(165%);
-      -webkit-backdrop-filter: blur(22px) saturate(165%);
-      border: 1px solid rgba(255, 255, 255, 0.20);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 8px 24px rgba(0, 0, 0, 0.26);
-      color: #ffffff;
-    }
-
-    html[data-theme="glass"] .routine-tile.tile-pink {
-      border-left: 4px solid #ec008c;
-      background: linear-gradient(135deg, rgba(236, 0, 140, 0.24) 0%, rgba(255, 255, 255, 0.09) 100%);
-    }
-
-    html[data-theme="glass"] .routine-tile.tile-orange {
-      border-left: 4px solid #f26522;
-      background: linear-gradient(135deg, rgba(242, 101, 34, 0.24) 0%, rgba(255, 255, 255, 0.09) 100%);
-    }
-
-    html[data-theme="glass"] .routine-tile.tile-cyan {
-      border-left: 4px solid #00a3bf;
-      background: linear-gradient(135deg, rgba(0, 163, 191, 0.24) 0%, rgba(255, 255, 255, 0.09) 100%);
     }
 
     * {
@@ -1705,9 +1716,8 @@
     <nav class="pivot-strip" id="pivotStrip">
       <div class="pivot-tab active" data-pane="0">workout</div>
       <div class="pivot-tab" data-pane="1">exercises</div>
-      <div class="pivot-tab" data-pane="2">routines</div>
-      <div class="pivot-tab" data-pane="3">charts</div>
-      <div class="pivot-tab" data-pane="4">settings</div>
+      <div class="pivot-tab" data-pane="2">charts</div>
+      <div class="pivot-tab" data-pane="3">settings</div>
     </nav>
   </header>
 
@@ -1742,19 +1752,8 @@
       <div id="exerciseLibraryList"></div>
     </section>
 
-    <!-- PANE 2: ROUTINES -->
+    <!-- PANE 2: MULTI-DIMENSIONAL CHARTS -->
     <section class="pane" id="pane-2">
-      <div class="metro-section-label">ONE-TAP SPLIT TEMPLATES</div>
-      <div id="routinesContainer"></div>
-      <div class="metro-section-label" style="margin-top:20px;">WORKOUT SHORTCUTS</div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <button type="button" class="metro-btn-outline" data-action="copy-prev" onclick="copyLastWorkout()">COPY PREVIOUS WORKOUT</button>
-        <button type="button" class="metro-btn-outline" data-action="export-csv" onclick="exportFitNotesCSV()">EXPORT .CSV</button>
-      </div>
-    </section>
-
-    <!-- PANE 3: MULTI-DIMENSIONAL CHARTS -->
-    <section class="pane" id="pane-3">
       <div class="chart-filter-stack">
         <button type="button" class="chart-dropdown-btn" onclick="openChartDropdown('metric')">
           <span class="chart-dropdown-caret">▶</span>
@@ -1809,8 +1808,8 @@
       </div>
     </section>
 
-    <!-- PANE 4: SETTINGS (APPEARANCE & THEMES + FITNOTES CSV DATA) -->
-    <section class="pane" id="pane-4">
+    <!-- PANE 3: SETTINGS (APPEARANCE & THEMES + FITNOTES CSV DATA) -->
+    <section class="pane" id="pane-3">
       <div class="metro-section-label" style="margin-top:4px;">APPEARANCE &amp; THEMES</div>
       <div class="theme-selector-grid">
         <button type="button" class="theme-choice-tile active" id="themeTile_dark" onclick="selectTheme('dark')">
@@ -1941,11 +1940,11 @@
       <div class="circle-icon">▦</div>
       <span class="appbar-label">calendar</span>
     </button>
-    <button type="button" class="appbar-action" id="appbar_3" onclick="switchPane(3)">
+    <button type="button" class="appbar-action" id="appbar_2" onclick="switchPane(2)">
       <div class="circle-icon">↗</div>
       <span class="appbar-label">charts</span>
     </button>
-    <button type="button" class="appbar-action" id="appbar_4" onclick="switchPane(4)">
+    <button type="button" class="appbar-action" id="appbar_3" onclick="switchPane(3)">
       <div class="circle-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
@@ -2228,24 +2227,6 @@
       { id: 'Rowing Machine', name: 'Rowing Machine', category: 'Cardio' }
     ];
 
-    var DEFAULT_ROUTINES = [
-      {
-        name: 'PUSH DAY // CHEST & SHOULDERS',
-        color: 'tile-pink',
-        exerciseIds: ['Barbell Bench Press', 'Incline Dumbbell Press', 'Overhead Press', 'Dumbbell Lateral Raise', 'Triceps Rope Pushdown']
-      },
-      {
-        name: 'PULL DAY // BACK & BICEPS',
-        color: 'tile-orange',
-        exerciseIds: ['Deadlift', 'Lat Pulldown', 'Seated Cable Row', 'EZ-Bar Curl']
-      },
-      {
-        name: 'LEGS & CORE',
-        color: 'tile-cyan',
-        exerciseIds: ['Barbell Back Squat', 'Romanian Deadlift', 'Leg Press', 'Standing Calf Raise', 'Hanging Leg Raise']
-      }
-    ];
-
     /* ========================================================================
        PURE LOCAL-NOON CALENDAR DATE MATH (ZERO UTC SHIFTING)
        ======================================================================== */
@@ -2314,7 +2295,6 @@
       restTimerId: null,
       db: {
         exercises: DEFAULT_EXERCISES.slice(),
-        routines: DEFAULT_ROUTINES.slice(),
         logs: {},
         recentOrder: []
       },
@@ -2535,7 +2515,7 @@
         } catch (e) {}
       }
       if (state.detail.open && state.detail.tab === 'charts') renderDetailChart();
-      if (state.activePane === 3) renderChartsPane();
+      if (state.activePane === 2) renderChartsPane();
     }
 
     function renderGradientPresets() {
@@ -2614,7 +2594,6 @@
       try {
         localStorage.setItem(LS_FALLBACK_KEY, JSON.stringify({
           exercises: state.db.exercises,
-          routines: state.db.routines,
           recentOrder: state.db.recentOrder || []
         }));
       } catch (e) {}
@@ -2634,7 +2613,6 @@
         req.onsuccess = function() {
           if (req.result && req.result.logs) {
             state.db.exercises = req.result.exercises && req.result.exercises.length ? req.result.exercises : DEFAULT_EXERCISES.slice();
-            state.db.routines = req.result.routines && req.result.routines.length ? req.result.routines : DEFAULT_ROUTINES.slice();
             state.db.logs = normalizeLogsKeys(req.result.logs || {});
             state.db.recentOrder = Array.isArray(req.result.recentOrder) ? req.result.recentOrder : [];
             refreshActivePane();
@@ -2727,14 +2705,13 @@
     function refreshActivePane() {
       if (state.activePane === 0) renderWorkoutPane();
       else if (state.activePane === 1) renderExerciseLibrary();
-      else if (state.activePane === 2) renderRoutinesPane();
-      else if (state.activePane === 3) renderChartsPane();
-      else if (state.activePane === 4) updateDataSummary();
+      else if (state.activePane === 2) renderChartsPane();
+      else if (state.activePane === 3) updateDataSummary();
     }
 
     window.switchPane = function(idx) {
       var numIdx = parseInt(idx, 10);
-      if (isNaN(numIdx) || numIdx < 0 || numIdx > 4) numIdx = 0;
+      if (isNaN(numIdx) || numIdx < 0 || numIdx > 3) numIdx = 0;
       state.activePane = numIdx;
 
       var tabs = document.querySelectorAll('.pivot-tab');
@@ -2751,7 +2728,7 @@
         panes[j].classList.toggle('active', j === numIdx);
       }
 
-      [0, 1, 3, 4].forEach(function(pIdx) {
+      [0, 1, 2, 3].forEach(function(pIdx) {
         var btn = document.getElementById('appbar_' + pIdx);
         if (btn) btn.classList.toggle('active', numIdx === pIdx);
       });
@@ -2791,7 +2768,7 @@
         var dx = t.clientX - startX;
         var dy = t.clientY - startY;
         if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.3) {
-          if (dx < 0 && state.activePane < 4) {
+          if (dx < 0 && state.activePane < 3) {
             window.switchPane(state.activePane + 1);
           } else if (dx > 0 && state.activePane > 0) {
             window.switchPane(state.activePane - 1);
@@ -4497,40 +4474,8 @@
     };
 
     /* ========================================================================
-       ROUTINES & COPY PREVIOUS WORKOUT (STRICTLY INTO state.selectedDate)
+       COPY PREVIOUS WORKOUT (STRICTLY INTO state.selectedDate)
        ======================================================================== */
-    function renderRoutinesPane() {
-      var el = document.getElementById('routinesContainer');
-      if (!el) return;
-      el.innerHTML = state.db.routines.map(function(rt, idx) {
-        return '<div class="metro-tile routine-tile ' + rt.color + '" style="margin-bottom:10px;" onclick="loadRoutine(' + idx + ')">' +
-          '<div style="font-size:20px; font-weight:400;">' + escapeHtml(rt.name) + '</div>' +
-          '<div style="font-size:12px; opacity:0.9; margin-top:6px;">' + escapeHtml(rt.exerciseIds.join(' • ')) + '</div>' +
-        '</div>';
-      }).join('');
-    }
-
-    window.loadRoutine = function(idx) {
-      var rt = state.db.routines[idx];
-      if (!rt) return;
-      window.triggerHaptic('success');
-      var entries = ensureDayEntries(state.selectedDate);
-      rt.exerciseIds.forEach(function(exName) {
-        if (!entries.some(function(e) { return e.exerciseId === exName; })) {
-          var exObj = state.db.exercises.find(function(x) { return x.name === exName; });
-          entries.push({
-            exerciseId: exName,
-            name: exName,
-            category: exObj ? exObj.category : 'General',
-            sets: []
-          });
-        }
-        touchExerciseRecency(exName);
-      });
-      saveDB();
-      window.switchPane(0);
-    };
-
     window.copyLastWorkout = function() {
       var targetDate = state.selectedDate;
       var priorDates = Object.keys(state.db.logs)
