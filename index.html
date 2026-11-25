@@ -92,10 +92,17 @@
                 <button type="button" class="pill-btn" data-metric="reps">Reps</button>
                 <button type="button" class="pill-btn" data-metric="cardioMin">Cardio Min</button>
               </div>
+              <div class="pill-row" id="chartRangePills">
+                <button type="button" class="pill-btn active" data-range="all">All</button>
+                <button type="button" class="pill-btn" data-range="1y">1y</button>
+                <button type="button" class="pill-btn" data-range="6mo">6mo</button>
+                <button type="button" class="pill-btn" data-range="3mo">3mo</button>
+                <button type="button" class="pill-btn" data-range="1mo">1mo</button>
+              </div>
             </div>
 
             <div class="canvas-wrap">
-              <canvas id="globalChartCanvas" height="190"></canvas>
+              <canvas id="globalChartCanvas" height="225"></canvas>
             </div>
           </div>
 
@@ -179,23 +186,46 @@
     <!-- WINDOWS PHONE 7 APPLICATION BAR -->
     <footer class="app-bar" aria-label="Application Bar">
       <button type="button" class="appbar-btn active" data-action="pane-0">
-        <span class="appbar-circle">W</span>
+        <span class="appbar-circle" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter">
+            <path d="M6.5 7v10M17.5 7v10M4 9v6M20 9v6M6.5 12h11" />
+          </svg>
+        </span>
         <span>workout</span>
       </button>
       <button type="button" class="appbar-btn" data-action="add">
-        <span class="appbar-circle">+</span>
+        <span class="appbar-circle" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter">
+            <path d="M12 6v12M6 12h12" />
+          </svg>
+        </span>
         <span>add</span>
       </button>
       <button type="button" class="appbar-btn" data-action="calendar">
-        <span class="appbar-circle">C</span>
+        <span class="appbar-circle" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter">
+            <rect x="4" y="6" width="16" height="14" />
+            <path d="M8 4v4M16 4v4M4 10h16" />
+          </svg>
+        </span>
         <span>calendar</span>
       </button>
       <button type="button" class="appbar-btn" data-action="pane-2">
-        <span class="appbar-circle">G</span>
+        <span class="appbar-circle" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter">
+            <path d="M5 16l4-5 4 3 6-7" />
+            <path d="M16 7h3v3" />
+          </svg>
+        </span>
         <span>charts</span>
       </button>
       <button type="button" class="appbar-btn" data-action="pane-3">
-        <span class="appbar-circle">S</span>
+        <span class="appbar-circle" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M12 4v2.2M12 17.8V20M4 12h2.2M17.8 12H20M6.3 6.3l1.6 1.6M16.1 16.1l1.6 1.6M17.7 6.3l-1.6 1.6M7.9 16.1l-1.6 1.6" />
+          </svg>
+        </span>
         <span>settings</span>
       </button>
     </footer>

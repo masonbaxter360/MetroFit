@@ -83,6 +83,7 @@
       scope: 'all',
       scopeValue: '',
       metric: 'volume',
+      range: 'all',
       selectedIdx: -1
     },
     rollingWeek: {
@@ -784,14 +785,26 @@
     return toISODate(bucketStart);
   }
 
+  function getRangeCutoffISO(rangeKey) {
+    if (!rangeKey || rangeKey === 'all') return '';
+    var d = parseISODate(toISODate(new Date()));
+    if (rangeKey === '1y') d.setFullYear(d.getFullYear() - 1);
+    else if (rangeKey === '6mo') d.setMonth(d.getMonth() - 6);
+    else if (rangeKey === '3mo') d.setMonth(d.getMonth() - 3);
+    else if (rangeKey === '1mo') d.setMonth(d.getMonth() - 1);
+    return toISODate(d);
+  }
+
   function buildLineSeries() {
     var tf = state.chart.timeframe;
     var scope = state.chart.scope;
     var scopeVal = state.chart.scopeValue;
     var metric = state.chart.metric;
+    var cutoffISO = getRangeCutoffISO(state.chart.range);
     var buckets = {};
 
     Object.keys(state.workouts).sort().forEach(function (dateISO) {
+      if (cutoffISO && dateISO < cutoffISO) return;
       (state.workouts[dateISO] || []).forEach(function (en) {
         if (!en.sets || !en.sets.length) return;
         var ex = getExerciseById(en.exerciseId);
@@ -815,7 +828,7 @@
       });
     });
 
-    var keys = Object.keys(buckets).sort().slice(-12);
+    var keys = Object.keys(buckets).sort();
     return keys.map(function (k) {
       var lbl = tf === 'month' ? k : tf === 'year' ? k : k.slice(5);
       return { label: lbl, fullKey: k, value: Math.round(buckets[k] * 10) / 10 };
@@ -831,6 +844,9 @@
     });
     document.querySelectorAll('#chartMetricPills .pill-btn').forEach(function (b) {
       b.classList.toggle('active', b.getAttribute('data-metric') === state.chart.metric);
+    });
+    document.querySelectorAll('#chartRangePills .pill-btn').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-range') === state.chart.range);
     });
 
     var scopeWrap = document.getElementById('chartScopeSelectWrap');
@@ -917,11 +933,17 @@
       '<div class="sum-tile"><div class="sum-val">' + Math.round(totalCardioMin) + 'm</div><div class="sum-lbl">7d Cardio</div></div>';
   }
 
+  function formatAxisNumber(val) {
+    if (Math.abs(val) >= 10000) return Math.round(val / 1000) + 'k';
+    if (Math.abs(val) >= 1000) return (Math.round(val / 100) / 10) + 'k';
+    return String(Math.round(val * 10) / 10);
+  }
+
   function drawLineCanvas(canvas, points, selectedIdx) {
     if (!canvas) return;
     var dpr = window.devicePixelRatio || 1;
     var w = canvas.parentElement.clientWidth || 320;
-    var h = 190;
+    var h = 225;
     canvas.width = w * dpr;
     canvas.height = h * dpr;
     canvas.style.height = h + 'px';
@@ -936,7 +958,7 @@
       return;
     }
 
-    var padL = 14, padR = 14, padT = 20, padB = 26;
+    var padL = 44, padR = 14, padT = 18, padB = 34;
     var plotW = w - padL - padR;
     var plotH = h - padT - padB;
     var maxVal = Math.max.apply(null, points.map(function (p) { return p.value; })) || 1;
@@ -948,24 +970,31 @@
     grad.addColorStop(0, c1);
     grad.addColorStop(1, c2);
 
-    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    var gridSteps = 4;
     ctx.lineWidth = 1;
-    for (var g = 0; g <= 2; g++) {
-      var gy = padT + (plotH * g) / 2;
+    for (var g = 0; g <= gridSteps; g++) {
+      var frac = (gridSteps - g) / gridSteps;
+      var gy = padT + (plotH * g) / gridSteps;
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
       ctx.beginPath();
       ctx.moveTo(padL, gy);
       ctx.lineTo(w - padR, gy);
       ctx.stroke();
+
+      ctx.fillStyle = 'rgba(255,255,255,0.52)';
+      ctx.font = '10px Segoe UI, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(formatAxisNumber(maxVal * frac), padL - 6, gy + 3);
     }
 
     var coords = points.map(function (pt, idx) {
       var x = points.length === 1 ? padL + plotW / 2 : padL + (plotW * idx) / (points.length - 1);
       var y = padT + plotH - (pt.value / maxVal) * plotH;
-      return { x: x, y: y, label: pt.label };
+      return { x: x, y: y, label: pt.label, fullKey: pt.fullKey };
     });
 
     ctx.strokeStyle = grad;
-    ctx.lineWidth = 3;
+    ctx.lineWidth = points.length > 35 ? 2 : 3;
     ctx.beginPath();
     coords.forEach(function (c, i) {
       if (i === 0) ctx.moveTo(c.x, c.y);
@@ -973,19 +1002,34 @@
     });
     ctx.stroke();
 
+    var showDots = points.length <= 24;
     coords.forEach(function (c, i) {
-      ctx.fillStyle = i === selectedIdx ? '#ffffff' : c2;
-      ctx.beginPath();
-      ctx.arc(c.x, c.y, i === selectedIdx ? 5 : 3.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      if (points.length <= 8 || i % 2 === 0 || i === points.length - 1) {
-        ctx.fillStyle = 'rgba(255,255,255,0.55)';
-        ctx.font = '10px Segoe UI, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(c.label, c.x, h - 8);
+      if (showDots || i === selectedIdx) {
+        ctx.fillStyle = i === selectedIdx ? '#ffffff' : c2;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, i === selectedIdx ? 5 : 3, 0, Math.PI * 2);
+        ctx.fill();
       }
     });
+
+    var startPt = coords[0];
+    var midPt = coords[Math.floor((coords.length - 1) / 2)];
+    var endPt = coords[coords.length - 1];
+    ctx.fillStyle = 'rgba(255,255,255,0.62)';
+    ctx.font = '10px Segoe UI, sans-serif';
+
+    ctx.textAlign = 'left';
+    ctx.fillText(startPt.fullKey, padL, h - 10);
+
+    if (coords.length >= 3) {
+      ctx.textAlign = 'center';
+      ctx.fillText(midPt.fullKey, midPt.x, h - 10);
+    }
+
+    if (coords.length >= 2) {
+      ctx.textAlign = 'right';
+      ctx.fillText(endPt.fullKey, w - padR, h - 10);
+    }
 
     canvas._hitCoords = coords;
   }
@@ -1518,6 +1562,14 @@
     document.querySelectorAll('#chartMetricPills .pill-btn').forEach(function (b) {
       b.addEventListener('click', function () {
         state.chart.metric = b.getAttribute('data-metric');
+        renderChartsPane();
+      });
+    });
+    document.querySelectorAll('#chartRangePills .pill-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        window.triggerHaptic('light');
+        state.chart.range = b.getAttribute('data-range');
+        state.chart.selectedIdx = -1;
         renderChartsPane();
       });
     });
