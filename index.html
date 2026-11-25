@@ -667,7 +667,7 @@
 
     .set-row {
       display: grid;
-      grid-template-columns: 30px 1fr 1fr 44px;
+      grid-template-columns: 36px 1fr 1fr 44px;
       align-items: center;
       gap: 6px;
       padding: 10px 8px;
@@ -689,8 +689,71 @@
     }
 
     .set-row.detail-set-row {
-      grid-template-columns: 30px 1fr 1fr 44px 30px;
+      grid-template-columns: 36px 1fr 1fr 44px 30px;
       padding: 9px 6px;
+    }
+
+    /* Press-and-Hold Vertical Set Reorder Styles */
+    .set-num {
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .set-drag-grip {
+      display: inline-block;
+      font-size: 11px;
+      line-height: 1;
+      letter-spacing: -1px;
+      color: var(--text-muted);
+      opacity: 0.72;
+    }
+
+    .set-reorder-list {
+      position: relative;
+    }
+
+    .set-reorder-item {
+      position: relative;
+      transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.16s ease;
+    }
+
+    .set-reorder-item.is-reordering-source {
+      opacity: 0.22;
+      background: var(--tile-tint-pink);
+      outline: 1px dashed var(--zune-pink);
+      outline-offset: -1px;
+    }
+
+    .set-drag-ghost {
+      position: fixed;
+      z-index: 9995;
+      pointer-events: none;
+      margin: 0;
+      background: var(--bg-card-alt);
+      border: 1px solid var(--zune-pink);
+      border-left: 3px solid var(--zune-orange);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+      transform: scale(1.02);
+      cursor: grabbing;
+      user-select: none;
+      touch-action: none;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+    }
+
+    html[data-theme="frosted"] .set-drag-ghost {
+      background: linear-gradient(135deg, rgba(var(--grad-start-rgb), 0.88) 0%, rgba(var(--grad-end-rgb), 0.82) 100%);
+    }
+
+    body.set-dragging-active,
+    body.set-dragging-active * {
+      cursor: grabbing !important;
+      user-select: none !important;
+      -webkit-user-select: none !important;
     }
 
     .set-row:active,
@@ -754,12 +817,6 @@
 
     .set-swipe-content.dragging {
       transition: none;
-    }
-
-    .set-num {
-      color: var(--text-secondary);
-      font-weight: 600;
-      font-size: 12px;
     }
 
     .set-val {
@@ -3334,11 +3391,11 @@
               : '<span class="cardio-quick-entry-tag">COMPLETED</span>';
 
             return (
-              '<div class="set-swipe-wrap">' +
+              '<div class="set-swipe-wrap set-reorder-item" data-entry-idx="' + entryIdx + '" data-set-idx="' + sIdx + '">' +
                 '<button type="button" class="set-swipe-action" onclick="deleteSet(' + entryIdx + ',' + sIdx + ',event)">DELETE</button>' +
                 '<div class="set-swipe-content" data-entry-idx="' + entryIdx + '" data-set-idx="' + sIdx + '" data-ex-name="' + escapeHtml(exName) + '">' +
                   '<div class="set-row">' +
-                    '<div class="set-num">' + (sIdx + 1) + '</div>' +
+                    '<div class="set-num"><span class="set-drag-grip" aria-hidden="true">⋮⋮</span><span class="set-num-val">' + (sIdx + 1) + '</span></div>' +
                     '<div class="cardio-set-summary">' + pillsHtml + '</div>' +
                     '<div style="text-align:right;"></div>' +
                   '</div>' +
@@ -3355,11 +3412,11 @@
           var unit2 = s.kind === 'dt' || s.kind === 't' ? '' : 'reps';
 
           return (
-            '<div class="set-swipe-wrap">' +
+            '<div class="set-swipe-wrap set-reorder-item" data-entry-idx="' + entryIdx + '" data-set-idx="' + sIdx + '">' +
               '<button type="button" class="set-swipe-action" onclick="deleteSet(' + entryIdx + ',' + sIdx + ',event)">DELETE</button>' +
               '<div class="set-swipe-content" data-entry-idx="' + entryIdx + '" data-set-idx="' + sIdx + '" data-ex-name="' + escapeHtml(exName) + '">' +
                 '<div class="set-row">' +
-                  '<div class="set-num">' + (sIdx + 1) + '</div>' +
+                  '<div class="set-num"><span class="set-drag-grip" aria-hidden="true">⋮⋮</span><span class="set-num-val">' + (sIdx + 1) + '</span></div>' +
                   '<div class="set-val">' + escapeHtml(col1) + '<span>' + escapeHtml(unit1) + '</span></div>' +
                   '<div class="set-val">' + escapeHtml(col2) + '<span>' + escapeHtml(unit2) + '</span></div>' +
                   '<div style="text-align:right;">' + (isPR ? '<span class="pr-badge">PR</span>' : '') + '</div>' +
@@ -3410,7 +3467,7 @@
               '</div>' +
               '<button type="button" class="delete-ex-btn" onclick="removeExerciseFromDay(' + entryIdx + ',event)">Delete</button>' +
             '</div>' +
-            setsHtml +
+            '<div class="set-reorder-list" data-entry-idx="' + entryIdx + '">' + setsHtml + '</div>' +
             quickAddHtml +
             '<div class="card-footer-link" onclick="openExerciseDetail(\'' + safeExName + '\',-1)">' +
               '<span>HISTORY • RECORDS • CHART</span>' +
@@ -3425,7 +3482,222 @@
     }
 
     /* ========================================================================
-       SWIPE-TO-DELETE SET ROW GESTURE HANDLERS (SYNCHRONOUS HAPTIC ON RELEASE)
+       COMMIT REORDERED SETS & SHARED PRESS-AND-HOLD DRAG-REORDER CONTROLLER
+       ======================================================================== */
+    window.reorderExerciseSets = function(entryIdx, fromIdx, toIdx) {
+      var entries = getDayEntries(state.selectedDate);
+      var entry = entries[entryIdx];
+      if (!entry || !Array.isArray(entry.sets)) return;
+      if (fromIdx < 0 || fromIdx >= entry.sets.length) return;
+      if (toIdx < 0 || toIdx >= entry.sets.length) return;
+      if (fromIdx === toIdx) return;
+
+      var moved = entry.sets.splice(fromIdx, 1)[0];
+      entry.sets.splice(toIdx, 0, moved);
+      saveDB();
+    };
+
+    function createSetDragController(opts) {
+      var listEl = opts.listEl;
+      var entryIdx = opts.entryIdx;
+      var onComplete = opts.onComplete;
+
+      var isReordering = false;
+      var holdTimer = null;
+      var startX = 0;
+      var startY = 0;
+      var grabOffsetY = 0;
+      var sourceItemEl = null;
+      var ghostEl = null;
+      var origIdx = -1;
+      var targetIdx = -1;
+      var itemEls = [];
+      var itemRects = [];
+      var suppressNextClick = false;
+
+      function clearHoldTimer() {
+        if (holdTimer) {
+          clearTimeout(holdTimer);
+          holdTimer = null;
+        }
+      }
+
+      function updateLiveShift(clientY) {
+        if (!isReordering || !ghostEl) return;
+        ghostEl.style.top = (clientY - grabOffsetY) + 'px';
+
+        var ghostCenterY = (clientY - grabOffsetY) + (ghostEl.offsetHeight / 2);
+        var nextTarget = origIdx;
+
+        for (var i = 0; i < itemRects.length; i++) {
+          var midY = itemRects[i].top + (itemRects[i].height / 2);
+          if (i < origIdx && ghostCenterY < midY) {
+            nextTarget = i;
+            break;
+          }
+          if (i > origIdx && ghostCenterY > midY) {
+            nextTarget = i;
+          }
+        }
+
+        if (nextTarget !== targetIdx) {
+          targetIdx = nextTarget;
+          window.triggerHaptic('light');
+        }
+
+        var rowHeight = itemRects[origIdx] ? itemRects[origIdx].height : 44;
+        for (var j = 0; j < itemEls.length; j++) {
+          var el = itemEls[j];
+          var numSpan = el.querySelector('.set-num-val');
+          if (j === origIdx) {
+            el.style.transform = 'translateY(0px)';
+            if (numSpan) numSpan.textContent = String(targetIdx + 1);
+            continue;
+          }
+          var shiftY = 0;
+          var displayNum = j + 1;
+          if (origIdx < targetIdx && j > origIdx && j <= targetIdx) {
+            shiftY = -rowHeight;
+            displayNum = j;
+          } else if (origIdx > targetIdx && j >= targetIdx && j < origIdx) {
+            shiftY = rowHeight;
+            displayNum = j + 2;
+          }
+          el.style.transform = 'translateY(' + shiftY + 'px)';
+          if (numSpan) numSpan.textContent = String(displayNum);
+        }
+
+        var ghostNumSpan = ghostEl.querySelector('.set-num-val');
+        if (ghostNumSpan) {
+          ghostNumSpan.textContent = String(targetIdx + 1);
+        }
+      }
+
+      function activateReorder(clientY) {
+        if (!sourceItemEl || !listEl) return;
+        itemEls = Array.prototype.slice.call(listEl.querySelectorAll('.set-reorder-item'));
+        if (itemEls.length < 2) return;
+
+        origIdx = itemEls.indexOf(sourceItemEl);
+        if (origIdx < 0) return;
+        targetIdx = origIdx;
+
+        itemRects = itemEls.map(function(el) {
+          return el.getBoundingClientRect();
+        });
+
+        var srcRect = itemRects[origIdx];
+        grabOffsetY = Math.max(8, Math.min(srcRect.height - 8, clientY - srcRect.top));
+
+        isReordering = true;
+        suppressNextClick = true;
+        document.body.classList.add('set-dragging-active');
+        window.triggerHaptic('medium');
+
+        sourceItemEl.classList.add('is-reordering-source');
+
+        ghostEl = sourceItemEl.cloneNode(true);
+        ghostEl.classList.remove('is-reordering-source');
+        ghostEl.classList.add('set-drag-ghost');
+        var swipeAction = ghostEl.querySelector('.set-swipe-action');
+        if (swipeAction) swipeAction.remove();
+        var swipeContent = ghostEl.querySelector('.set-swipe-content');
+        if (swipeContent) {
+          swipeContent.style.transform = 'translateX(0px)';
+          swipeContent.style.background = 'transparent';
+        }
+        ghostEl.style.left = srcRect.left + 'px';
+        ghostEl.style.top = srcRect.top + 'px';
+        ghostEl.style.width = srcRect.width + 'px';
+        document.body.appendChild(ghostEl);
+      }
+
+      function finishReorder(commit) {
+        clearHoldTimer();
+        if (!isReordering) {
+          sourceItemEl = null;
+          return;
+        }
+
+        var didMove = commit && origIdx >= 0 && targetIdx >= 0 && origIdx !== targetIdx;
+        if (ghostEl && ghostEl.parentNode) {
+          ghostEl.parentNode.removeChild(ghostEl);
+        }
+        ghostEl = null;
+
+        for (var i = 0; i < itemEls.length; i++) {
+          itemEls[i].style.transform = '';
+          itemEls[i].classList.remove('is-reordering-source');
+        }
+
+        document.body.classList.remove('set-dragging-active');
+        isReordering = false;
+        sourceItemEl = null;
+
+        if (didMove) {
+          window.triggerHaptic('success');
+          window.reorderExerciseSets(entryIdx, origIdx, targetIdx);
+        }
+        if (typeof onComplete === 'function') {
+          onComplete(didMove, origIdx, targetIdx);
+        }
+      }
+
+      return {
+        isActive: function() { return isReordering; },
+        consumeSuppressedClick: function() {
+          if (suppressNextClick) {
+            suppressNextClick = false;
+            return true;
+          }
+          return false;
+        },
+        onPressStart: function(itemEl, clientX, clientY) {
+          clearHoldTimer();
+          sourceItemEl = itemEl;
+          startX = clientX;
+          startY = clientY;
+          suppressNextClick = false;
+          holdTimer = setTimeout(function() {
+            activateReorder(startY);
+          }, 260);
+        },
+        onPressMove: function(clientX, clientY, ev) {
+          if (isReordering) {
+            if (ev) {
+              ev.stopPropagation();
+              if (ev.cancelable) ev.preventDefault();
+            }
+            updateLiveShift(clientY);
+            return true;
+          }
+          if (holdTimer) {
+            var dx = Math.abs(clientX - startX);
+            var dy = Math.abs(clientY - startY);
+            if (dx > 8 || dy > 8) {
+              clearHoldTimer();
+            }
+          }
+          return false;
+        },
+        onPressEnd: function(ev) {
+          if (isReordering) {
+            if (ev) ev.stopPropagation();
+            finishReorder(true);
+            return true;
+          }
+          clearHoldTimer();
+          sourceItemEl = null;
+          return false;
+        },
+        cancel: function() {
+          finishReorder(false);
+        }
+      };
+    }
+
+    /* ========================================================================
+       SWIPE-TO-DELETE + PRESS-AND-HOLD REORDER HANDLERS (WORKOUT SCREEN)
        ======================================================================== */
     var activeSwipeRowEl = null;
 
@@ -3437,6 +3709,188 @@
           activeSwipeRowEl.parentElement.classList.remove('swiping');
         }
         activeSwipeRowEl = null;
+      }
+    }
+
+    function bindSetSwipeHandlers(rootEl) {
+      var lists = rootEl.querySelectorAll('.set-reorder-list');
+      for (var l = 0; l < lists.length; l++) {
+        (function(listEl) {
+          var listEntryIdx = parseInt(listEl.getAttribute('data-entry-idx'), 10);
+          var reorderCtrl = createSetDragController({
+            listEl: listEl,
+            entryIdx: listEntryIdx,
+            onComplete: function(didMove) {
+              if (didMove) {
+                renderWorkoutPane();
+                showToast('Set order updated');
+              }
+            }
+          });
+
+          var items = listEl.querySelectorAll('.set-swipe-content');
+          for (var i = 0; i < items.length; i++) {
+            (function(el) {
+              var wrapEl = el.parentElement;
+              var startX = 0;
+              var startY = 0;
+              var baseOffset = 0;
+              var curX = 0;
+              var isDragging = false;
+              var isHorizontal = false;
+              var wasDragged = false;
+
+              function onStart(clientX, clientY) {
+                closeOpenSwipeRow(el);
+                startX = clientX;
+                startY = clientY;
+                baseOffset = el.dataset.open === '1' ? -76 : 0;
+                curX = baseOffset;
+                isDragging = true;
+                isHorizontal = false;
+                wasDragged = false;
+                if (el.dataset.open !== '1') {
+                  reorderCtrl.onPressStart(wrapEl, clientX, clientY);
+                }
+              }
+
+              function onMove(clientX, clientY, ev) {
+                if (reorderCtrl.onPressMove(clientX, clientY, ev)) {
+                  isDragging = false;
+                  return;
+                }
+                if (!isDragging) return;
+                var dx = clientX - startX;
+                var dy = clientY - startY;
+
+                if (!isHorizontal) {
+                  if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy) * 1.15) {
+                    isHorizontal = true;
+                    wasDragged = true;
+                    el.classList.add('dragging');
+                  } else if (Math.abs(dy) > 10) {
+                    isDragging = false;
+                    return;
+                  } else {
+                    return;
+                  }
+                }
+
+                if (ev) {
+                  ev.stopPropagation();
+                  if (ev.cancelable) ev.preventDefault();
+                }
+
+                var nextX = baseOffset + dx;
+                if (nextX > 0) nextX = 0;
+                if (nextX < -118) nextX = -118;
+                curX = nextX;
+                if (wrapEl) {
+                  wrapEl.classList.toggle('swiping', curX < -6);
+                }
+                el.style.transform = 'translateX(' + curX + 'px)';
+              }
+
+              function onEnd(ev) {
+                if (reorderCtrl.onPressEnd(ev)) {
+                  isDragging = false;
+                  return;
+                }
+                if (!isDragging) return;
+                isDragging = false;
+                el.classList.remove('dragging');
+
+                if (isHorizontal) {
+                  if (ev) ev.stopPropagation();
+                  var entryIdx = parseInt(el.getAttribute('data-entry-idx'), 10);
+                  var setIdx = parseInt(el.getAttribute('data-set-idx'), 10);
+
+                  if (curX <= -88) {
+                    // Fire haptic synchronously inside the direct touchend/mouseup user gesture
+                    window.triggerHaptic('medium');
+                    el.style.transform = 'translateX(-100%)';
+                    activeSwipeRowEl = null;
+                    setTimeout(function() {
+                      window.deleteSet(entryIdx, setIdx, null, true);
+                      showToast('Set deleted');
+                    }, 160);
+                  } else if (curX <= -38) {
+                    window.triggerHaptic('light');
+                    el.style.transform = 'translateX(-76px)';
+                    el.dataset.open = '1';
+                    if (wrapEl) wrapEl.classList.add('swiping');
+                    activeSwipeRowEl = el;
+                  } else {
+                    el.style.transform = 'translateX(0px)';
+                    el.dataset.open = '0';
+                    if (wrapEl) wrapEl.classList.remove('swiping');
+                    if (activeSwipeRowEl === el) activeSwipeRowEl = null;
+                  }
+                }
+              }
+
+              el.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 1) {
+                  onStart(e.touches[0].clientX, e.touches[0].clientY);
+                }
+              }, { passive: true });
+
+              el.addEventListener('touchmove', function(e) {
+                if (e.touches.length === 1) {
+                  onMove(e.touches[0].clientX, e.touches[0].clientY, e);
+                }
+              }, { passive: false });
+
+              el.addEventListener('touchend', function(e) {
+                onEnd(e);
+              }, { passive: true });
+
+              el.addEventListener('touchcancel', function() {
+                reorderCtrl.cancel();
+                isDragging = false;
+                el.classList.remove('dragging');
+                var stayOpen = el.dataset.open === '1';
+                if (wrapEl) wrapEl.classList.toggle('swiping', stayOpen);
+                el.style.transform = stayOpen ? 'translateX(-76px)' : 'translateX(0px)';
+              }, { passive: true });
+
+              el.addEventListener('mousedown', function(e) {
+                if (e.button !== 0) return;
+                onStart(e.clientX, e.clientY);
+                var moveFn = function(me) { onMove(me.clientX, me.clientY, me); };
+                var upFn = function(ue) {
+                  window.removeEventListener('mousemove', moveFn);
+                  window.removeEventListener('mouseup', upFn);
+                  onEnd(ue);
+                };
+                window.addEventListener('mousemove', moveFn);
+                window.addEventListener('mouseup', upFn);
+              });
+
+              el.addEventListener('click', function(e) {
+                if (reorderCtrl.consumeSuppressedClick()) {
+                  e.stopPropagation();
+                  return;
+                }
+                if (wasDragged) {
+                  e.stopPropagation();
+                  wasDragged = false;
+                  return;
+                }
+                if (el.dataset.open === '1') {
+                  el.style.transform = 'translateX(0px)';
+                  el.dataset.open = '0';
+                  if (wrapEl) wrapEl.classList.remove('swiping');
+                  if (activeSwipeRowEl === el) activeSwipeRowEl = null;
+                  return;
+                }
+                var exName = el.getAttribute('data-ex-name');
+                var setIdx = parseInt(el.getAttribute('data-set-idx'), 10);
+                window.openExerciseDetail(exName, setIdx);
+              });
+            })(items[i]);
+          }
+        })(lists[l]);
       }
     }
 
@@ -3892,7 +4346,8 @@
       var exName = state.detail.exerciseName;
       var cardioMode = isCardioCategory(state.detail.category, exName);
       var entries = getDayEntries(state.selectedDate);
-      var entry = entries.find(function(e) { return e.name === exName || e.exerciseId === exName; });
+      var entryIdx = entries.findIndex(function(e) { return e.name === exName || e.exerciseId === exName; });
+      var entry = entryIdx >= 0 ? entries[entryIdx] : null;
       var sets = entry ? entry.sets : [];
       var priorBest = cardioMode ? 0 : getHistoricalBestWeight(exName, state.selectedDate);
 
@@ -3902,8 +4357,8 @@
       }
 
       listEl.innerHTML =
-        '<div class="metro-section-label">LOGGED SETS (' + sets.length + ') — TAP ROW TO EDIT</div>' +
-        '<div class="exercise-card" style="padding:4px 12px;">' +
+        '<div class="metro-section-label">LOGGED SETS (' + sets.length + ') — TAP TO EDIT • HOLD TO REORDER</div>' +
+        '<div class="exercise-card set-reorder-list" data-entry-idx="' + entryIdx + '" style="padding:4px 12px;">' +
         sets.map(function(s, idx) {
           var activeCls = state.detail.editingSetIdx === idx ? ' editing-set' : '';
           if (cardioMode || s.kind === 'cardio') {
@@ -3913,16 +4368,16 @@
                   return '<span class="cardio-metric-pill">' + escapeHtml(p.val) + (p.unit ? '<span>' + escapeHtml(p.unit) + '</span>' : '') + '</span>';
                 }).join('')
               : '<span class="cardio-quick-entry-tag">COMPLETED</span>';
-            return '<div class="set-row detail-set-row' + activeCls + '" onclick="selectDetailSetForEdit(' + idx + ')">' +
-              '<div class="set-num">' + (idx + 1) + '</div>' +
+            return '<div class="set-row detail-set-row set-reorder-item' + activeCls + '" data-set-idx="' + idx + '">' +
+              '<div class="set-num"><span class="set-drag-grip" aria-hidden="true">⋮⋮</span><span class="set-num-val">' + (idx + 1) + '</span></div>' +
               '<div class="cardio-set-summary">' + summaryHtml + '</div>' +
               '<div></div>' +
               '<button type="button" class="icon-btn" onclick="deleteDetailSet(' + idx + ',event)">×</button>' +
             '</div>';
           }
           var isPR = (s.weight || 0) > 0 && s.weight > priorBest;
-          return '<div class="set-row detail-set-row' + activeCls + '" onclick="selectDetailSetForEdit(' + idx + ')">' +
-            '<div class="set-num">' + (idx + 1) + '</div>' +
+          return '<div class="set-row detail-set-row set-reorder-item' + activeCls + '" data-set-idx="' + idx + '">' +
+            '<div class="set-num"><span class="set-drag-grip" aria-hidden="true">⋮⋮</span><span class="set-num-val">' + (idx + 1) + '</span></div>' +
             '<div class="set-val">' + (s.weight || 0) + '<span>lb</span></div>' +
             '<div class="set-val">' + (s.reps || 0) + '<span>reps</span></div>' +
             '<div>' + (isPR ? '<span class="pr-badge">PR</span>' : '') + '</div>' +
@@ -3930,359 +4385,77 @@
           '</div>';
         }).join('') +
         '</div>';
+
+      bindDetailSetReorderHandlers(listEl, entryIdx);
     }
 
-    window.copyExerciseSessionToSelectedDate = function(sourceDate) {
-      var targetDate = state.selectedDate;
-      if (!sourceDate || sourceDate === targetDate) return;
+    function bindDetailSetReorderHandlers(rootEl, entryIdx) {
+      var listEl = rootEl.querySelector('.set-reorder-list');
+      if (!listEl || entryIdx < 0) return;
 
-      var exName = state.detail.exerciseName;
-      var srcEntries = state.db.logs[sourceDate] || [];
-      var srcEntry = srcEntries.find(function(e) { return e.name === exName || e.exerciseId === exName; });
-      if (!srcEntry || !srcEntry.sets.length) return;
-
-      window.triggerHaptic('success');
-      var destEntries = ensureDayEntries(targetDate);
-      var destEntry = destEntries.find(function(e) { return e.name === exName || e.exerciseId === exName; });
-      if (!destEntry) {
-        destEntry = {
-          exerciseId: exName,
-          name: exName,
-          category: srcEntry.category || state.detail.category || 'General',
-          sets: []
-        };
-        destEntries.push(destEntry);
-      }
-
-      srcEntry.sets.forEach(function(s) {
-        destEntry.sets.push({
-          weight: s.weight || 0,
-          reps: s.reps || 0,
-          calories: s.calories !== undefined ? s.calories : null,
-          timeSeconds: s.timeSeconds !== undefined ? s.timeSeconds : null,
-          timeMinutes: s.timeMinutes !== undefined ? s.timeMinutes : null,
-          distance: s.distance !== undefined ? s.distance : '',
-          distanceUnit: s.distanceUnit || '',
-          time: s.time || '',
-          notes: s.notes || '',
-          kind: s.kind || 'wr'
-        });
+      var reorderCtrl = createSetDragController({
+        listEl: listEl,
+        entryIdx: entryIdx,
+        onComplete: function(didMove) {
+          if (didMove) {
+            state.detail.editingSetIdx = -1;
+            var saveBtn = document.getElementById('detailSaveBtn');
+            if (saveBtn) saveBtn.textContent = 'Save';
+            renderDetailTrackTab();
+            showToast('Set order updated');
+          }
+        }
       });
 
-      touchExerciseRecency(exName);
-      saveDB();
-      updateDateHeader();
-      showToast('Copied ' + srcEntry.sets.length + ' sets to ' + getFriendlyDateLabel(targetDate));
-      window.switchDetailTab('track');
-    };
-
-    function renderDetailHistoryTab() {
-      var container = document.getElementById('detailHistoryList');
-      if (!container) return;
-      var exName = state.detail.exerciseName;
-      var cardioMode = isCardioCategory(state.detail.category, exName);
-      var dates = Object.keys(state.db.logs).sort().reverse();
-      var sessions = [];
-
-      for (var i = 0; i < dates.length; i++) {
-        var d = dates[i];
-        var entry = state.db.logs[d].find(function(e) { return e.name === exName || e.exerciseId === exName; });
-        if (entry && entry.sets.length > 0) {
-          sessions.push({ date: d, sets: entry.sets });
-        }
-      }
-
-      if (sessions.length === 0) {
-        container.innerHTML = '<div class="exercise-meta" style="text-align:center; padding:24px 0;">No workout history recorded for ' + escapeHtml(exName) + ' yet.</div>';
-        return;
-      }
-
-      container.innerHTML = sessions.map(function(sess) {
-        var dt = parseLocalDate(sess.date);
-        var fullDateLabel = dt.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase();
-        var isCurrent = sess.date === state.selectedDate;
-
-        var rows = sess.sets.map(function(s, idx) {
-          if (cardioMode || s.kind === 'cardio') {
-            var parts = formatCardioSetParts(s);
-            var pillsHtml = parts.length
-              ? parts.map(function(pItem) {
-                  return '<span class="cardio-metric-pill">' + escapeHtml(pItem.val) + (pItem.unit ? '<span>' + escapeHtml(pItem.unit) + '</span>' : '') + '</span>';
-                }).join('')
-              : '<span class="cardio-quick-entry-tag">COMPLETED</span>';
-            return '<div class="set-row" style="cursor:default;">' +
-              '<div class="set-num">' + (idx + 1) + '</div>' +
-              '<div class="cardio-set-summary">' + pillsHtml + '</div>' +
-              '<div></div>' +
-            '</div>';
-          }
-          return '<div class="set-row" style="cursor:default;">' +
-            '<div class="set-num">' + (idx + 1) + '</div>' +
-            '<div class="set-val">' + (s.weight || 0) + '<span>lb</span></div>' +
-            '<div class="set-val">' + (s.reps || 0) + '<span>reps</span></div>' +
-            '<div></div>' +
-          '</div>';
-        }).join('');
-
-        return (
-          '<div class="hist-session-header">' +
-            '<span class="hist-session-date">' + fullDateLabel + '</span>' +
-            (isCurrent
-              ? '<span class="exercise-meta" style="color:var(--text-muted);">CURRENT</span>'
-              : '<button type="button" class="hist-copy-btn" onclick="copyExerciseSessionToSelectedDate(\'' + sess.date + '\')">COPY</button>') +
-          '</div>' +
-          '<div class="exercise-card" style="padding:4px 12px; margin-bottom:8px;">' + rows + '</div>'
-        );
-      }).join('');
-    }
-
-    function renderDetailRecordsTab() {
-      var container = document.getElementById('detailRecordsContainer');
-      if (!container) return;
-      var exName = state.detail.exerciseName;
-      var cardioMode = isCardioCategory(state.detail.category, exName);
-      var dates = Object.keys(state.db.logs).sort();
-
-      if (cardioMode) {
-        var maxCal = 0, maxCalDate = '';
-        var maxTimeSec = 0, maxTimeDate = '';
-        var maxDist = 0, maxDistDate = '';
-        var bestCalPerMin = 0, bestCalPerMinLabel = '';
-        var totalSessions = 0;
-
-        for (var ci = 0; ci < dates.length; ci++) {
-          var cDate = dates[ci];
-          var cEntry = state.db.logs[cDate].find(function(e) { return e.name === exName || e.exerciseId === exName; });
-          if (!cEntry || !cEntry.sets.length) continue;
-          totalSessions++;
-          for (var cj = 0; cj < cEntry.sets.length; cj++) {
-            var cv = getCardioSetValues(cEntry.sets[cj]);
-            if (cv.calories !== null && cv.calories > maxCal) {
-              maxCal = cv.calories;
-              maxCalDate = cDate;
+      var rows = listEl.querySelectorAll('.set-reorder-item');
+      for (var i = 0; i < rows.length; i++) {
+        (function(rowEl) {
+          rowEl.addEventListener('touchstart', function(e) {
+            if (e.target.closest('button')) return;
+            if (e.touches.length === 1) {
+              reorderCtrl.onPressStart(rowEl, e.touches[0].clientX, e.touches[0].clientY);
             }
-            if (cv.timeSeconds !== null && cv.timeSeconds > maxTimeSec) {
-              maxTimeSec = cv.timeSeconds;
-              maxTimeDate = cDate;
+          }, { passive: true });
+
+          rowEl.addEventListener('touchmove', function(e) {
+            if (e.touches.length === 1) {
+              reorderCtrl.onPressMove(e.touches[0].clientX, e.touches[0].clientY, e);
             }
-            if (cv.distance !== null && cv.distance > maxDist) {
-              maxDist = cv.distance;
-              maxDistDate = cDate;
+          }, { passive: false });
+
+          rowEl.addEventListener('touchend', function(e) {
+            reorderCtrl.onPressEnd(e);
+          }, { passive: true });
+
+          rowEl.addEventListener('touchcancel', function() {
+            reorderCtrl.cancel();
+          }, { passive: true });
+
+          rowEl.addEventListener('mousedown', function(e) {
+            if (e.button !== 0 || e.target.closest('button')) return;
+            reorderCtrl.onPressStart(rowEl, e.clientX, e.clientY);
+            var moveFn = function(me) { reorderCtrl.onPressMove(me.clientX, me.clientY, me); };
+            var upFn = function(ue) {
+              window.removeEventListener('mousemove', moveFn);
+              window.removeEventListener('mouseup', upFn);
+              reorderCtrl.onPressEnd(ue);
+            };
+            window.addEventListener('mousemove', moveFn);
+            window.addEventListener('mouseup', upFn);
+          });
+
+          rowEl.addEventListener('click', function(e) {
+            if (e.target.closest('button')) return;
+            if (reorderCtrl.consumeSuppressedClick()) {
+              e.stopPropagation();
+              return;
             }
-            if (cv.calories !== null && cv.timeSeconds !== null && cv.timeSeconds > 0) {
-              var rate = Math.round((cv.calories / (cv.timeSeconds / 60)) * 10) / 10;
-              if (rate > bestCalPerMin) {
-                bestCalPerMin = rate;
-                bestCalPerMinLabel = rate + ' CAL/MIN (' + cDate + ')';
-              }
+            var idx = parseInt(rowEl.getAttribute('data-set-idx'), 10);
+            if (!isNaN(idx)) {
+              window.selectDetailSetForEdit(idx);
             }
-          }
-        }
-
-        if (totalSessions === 0) {
-          container.innerHTML = '<div class="exercise-meta" style="text-align:center; padding:24px 0;">Log cardio entries for ' + escapeHtml(exName) + ' to calculate personal bests.</div>';
-          return;
-        }
-
-        container.innerHTML =
-          '<div class="tile-grid">' +
-            '<div class="metro-tile tile-pink">' +
-              '<div class="tile-value">' + maxCal.toLocaleString() + ' <span style="font-size:14px;">cal</span></div>' +
-              '<div class="tile-label">max calories' + (maxCalDate ? ' • ' + maxCalDate : '') + '</div>' +
-            '</div>' +
-            '<div class="metro-tile tile-orange">' +
-              '<div class="tile-value">' + (maxTimeSec > 0 ? formatCardioSecondsToClock(maxTimeSec) : '00:00') + '</div>' +
-              '<div class="tile-label">longest time' + (maxTimeDate ? ' • ' + maxTimeDate : '') + '</div>' +
-            '</div>' +
-            '<div class="metro-tile tile-cyan">' +
-              '<div class="tile-value">' + maxDist.toLocaleString() + ' <span style="font-size:14px;">mi</span></div>' +
-              '<div class="tile-label">farthest distance' + (maxDistDate ? ' • ' + maxDistDate : '') + '</div>' +
-            '</div>' +
-            '<div class="metro-tile tile-dark">' +
-              '<div class="tile-value">' + (bestCalPerMin > 0 ? bestCalPerMin : totalSessions) + ' <span style="font-size:13px;">' + (bestCalPerMin > 0 ? 'cal/m' : 'days') + '</span></div>' +
-              '<div class="tile-label">' + (bestCalPerMin > 0 ? 'peak burn rate' : 'sessions logged') + '</div>' +
-            '</div>' +
-          '</div>' +
-          (bestCalPerMinLabel ? '<div class="exercise-meta">BEST BURN RATE: ' + escapeHtml(bestCalPerMinLabel) + '</div>' : '');
-        return;
-      }
-
-      var maxWeight = 0;
-      var maxWeightDate = '';
-      var maxE1RM = 0;
-      var maxE1RMDate = '';
-      var maxSetVol = 0;
-      var maxSetVolLabel = '';
-      var maxReps = 0;
-      var maxRepsDate = '';
-      var repMaxes = {};
-
-      for (var i = 0; i < dates.length; i++) {
-        var d = dates[i];
-        var entry = state.db.logs[d].find(function(e) { return e.name === exName || e.exerciseId === exName; });
-        if (!entry) continue;
-        for (var j = 0; j < entry.sets.length; j++) {
-          var s = entry.sets[j];
-          var w = s.weight || 0;
-          var r = s.reps || 0;
-          if (w > maxWeight) { maxWeight = w; maxWeightDate = d; }
-          var e1 = calcE1RM(w, r);
-          if (e1 > maxE1RM) { maxE1RM = e1; maxE1RMDate = d; }
-          if (w * r > maxSetVol) { maxSetVol = w * r; maxSetVolLabel = w + ' lb × ' + r + ' (' + d + ')'; }
-          if (r > maxReps) { maxReps = r; maxRepsDate = d; }
-          if (r >= 1 && r <= 12 && w > 0) {
-            if (!repMaxes[r] || w > repMaxes[r].weight) {
-              repMaxes[r] = { weight: w, date: d };
-            }
-          }
-        }
-      }
-
-      if (maxWeight === 0 && maxReps === 0) {
-        container.innerHTML = '<div class="exercise-meta" style="text-align:center; padding:24px 0;">Log sets for ' + escapeHtml(exName) + ' to calculate personal records.</div>';
-        return;
-      }
-
-      var rmRows = '';
-      for (var rm = 1; rm <= 12; rm++) {
-        var rec = repMaxes[rm];
-        rmRows +=
-          '<div class="set-row" style="cursor:default; grid-template-columns: 56px 1fr 110px;">' +
-            '<div class="set-num" style="color:var(--zune-orange);">' + rm + ' RM</div>' +
-            '<div class="set-val">' + (rec ? rec.weight + '<span>lb</span>' : '—') + '</div>' +
-            '<div class="exercise-meta" style="text-align:right;">' + (rec ? rec.date : '') + '</div>' +
-          '</div>';
-      }
-
-      container.innerHTML =
-        '<div class="tile-grid">' +
-          '<div class="metro-tile tile-pink">' +
-            '<div class="tile-value">' + maxWeight + ' <span style="font-size:14px;">lb</span></div>' +
-            '<div class="tile-label">max weight' + (maxWeightDate ? ' • ' + maxWeightDate : '') + '</div>' +
-          '</div>' +
-          '<div class="metro-tile tile-orange">' +
-            '<div class="tile-value">' + maxE1RM + ' <span style="font-size:14px;">lb</span></div>' +
-            '<div class="tile-label">est. 1rm' + (maxE1RMDate ? ' • ' + maxE1RMDate : '') + '</div>' +
-          '</div>' +
-          '<div class="metro-tile tile-dark">' +
-            '<div class="tile-value">' + Math.round(maxSetVol).toLocaleString() + ' <span style="font-size:14px;">lb</span></div>' +
-            '<div class="tile-label">max set volume</div>' +
-          '</div>' +
-          '<div class="metro-tile tile-cyan">' +
-            '<div class="tile-value">' + maxReps + '</div>' +
-            '<div class="tile-label">max reps' + (maxRepsDate ? ' • ' + maxRepsDate : '') + '</div>' +
-          '</div>' +
-        '</div>' +
-        (maxSetVolLabel ? '<div class="exercise-meta" style="margin:-6px 0 12px 0;">BEST SINGLE SET: ' + escapeHtml(maxSetVolLabel) + '</div>' : '') +
-        '<div class="metro-section-label">ALL-TIME REP MAXES</div>' +
-        '<div class="exercise-card" style="padding:4px 12px;">' + rmRows + '</div>';
-    }
-
-    var STRENGTH_DETAIL_METRICS = [
-      { id: 'volume', label: 'Workout Volume', unit: 'lb' },
-      { id: 'maxWeight', label: 'Max Weight', unit: 'lb' },
-      { id: 'e1rm', label: 'Estimated 1RM', unit: 'lb' }
-    ];
-
-    var CARDIO_DETAIL_METRICS = [
-      { id: 'calories', label: 'Calories', unit: 'cal' },
-      { id: 'timeMinutes', label: 'Time', unit: 'min' },
-      { id: 'distance', label: 'Distance', unit: 'mi' }
-    ];
-
-    window.cycleDetailChartMetric = function() {
-      var list = isCardioCategory(state.detail.category, state.detail.exerciseName)
-        ? CARDIO_DETAIL_METRICS
-        : STRENGTH_DETAIL_METRICS;
-      var idx = list.findIndex(function(m) { return m.id === state.detail.chartMetric; });
-      var next = list[(idx + 1) % list.length];
-      state.detail.chartMetric = next.id;
-      state.detail.chartSelectedIdx = -1;
-      document.getElementById('detailChartMetricLabel').textContent = next.label;
-      renderDetailChart();
-    };
-
-    window.setDetailChartRange = function(range) {
-      state.detail.chartRange = range;
-      state.detail.chartSelectedIdx = -1;
-      var btns = document.querySelectorAll('#detailChartRangeBar .range-btn');
-      for (var i = 0; i < btns.length; i++) {
-        btns[i].classList.toggle('active', btns[i].getAttribute('data-drange') === range);
-      }
-      renderDetailChart();
-    };
-
-    window.stepDetailChartPoint = function(delta) {
-      var pts = state.detail.chartPoints;
-      if (!pts || pts.length === 0) return;
-      if (state.detail.chartSelectedIdx === -1) {
-        state.detail.chartSelectedIdx = delta > 0 ? 0 : pts.length - 1;
-      } else {
-        state.detail.chartSelectedIdx = Math.max(0, Math.min(pts.length - 1, state.detail.chartSelectedIdx + delta));
-      }
-      renderDetailChart();
-    };
-
-    function renderDetailChart() {
-      var canvas = document.getElementById('detailChartCanvas');
-      var readout = document.getElementById('detailPointReadout');
-      if (!canvas) return;
-
-      var exName = state.detail.exerciseName;
-      var cardioMode = isCardioCategory(state.detail.category, exName);
-      var metricList = cardioMode ? CARDIO_DETAIL_METRICS : STRENGTH_DETAIL_METRICS;
-      var mObj = metricList.find(function(m) { return m.id === state.detail.chartMetric; }) || metricList[0];
-
-      var sortedDates = Object.keys(state.db.logs).sort();
-      var cutoff = getCutoffDate(sortedDates, state.detail.chartRange);
-      var metric = mObj.id;
-      var pts = [];
-
-      for (var i = 0; i < sortedDates.length; i++) {
-        var d = sortedDates[i];
-        if (d < cutoff) continue;
-        var entry = state.db.logs[d].find(function(e) { return e.name === exName || e.exerciseId === exName; });
-        if (!entry || entry.sets.length === 0) continue;
-
-        if (cardioMode || metric === 'calories' || metric === 'timeMinutes' || metric === 'distance') {
-          var cSum = 0, tSum = 0, dSum = 0;
-          for (var ck = 0; ck < entry.sets.length; ck++) {
-            var cv = getCardioSetValues(entry.sets[ck]);
-            if (cv.calories !== null) cSum += cv.calories;
-            if (cv.timeMinutes !== null) tSum += cv.timeMinutes;
-            if (cv.distance !== null) dSum += cv.distance;
-          }
-          var cVal = metric === 'calories' ? Math.round(cSum) : (metric === 'timeMinutes' ? Math.round(tSum * 100) / 100 : Math.round(dSum * 100) / 100);
-          pts.push({ key: d, value: cVal });
-          continue;
-        }
-
-        var vol = 0, maxW = 0, maxE1 = 0;
-        for (var j = 0; j < entry.sets.length; j++) {
-          var s = entry.sets[j];
-          var w = s.weight || 0;
-          var r = s.reps || 0;
-          vol += w * r;
-          if (w > maxW) maxW = w;
-          var e1 = calcE1RM(w, r);
-          if (e1 > maxE1) maxE1 = e1;
-        }
-        var val = metric === 'volume' ? Math.round(vol) : (metric === 'maxWeight' ? maxW : maxE1);
-        pts.push({ key: d, value: val });
-      }
-
-      state.detail.chartPoints = pts;
-      drawMetroLineChart(canvas, pts, mObj.unit, state.detail.chartSelectedIdx);
-
-      if (readout) {
-        var idx = state.detail.chartSelectedIdx;
-        if (!pts.length || idx < 0 || idx >= pts.length) {
-          readout.innerHTML = '<div>Select a point on the graph</div><div class="point-readout-sub">TAP GRAPH OR USE ARROWS</div>';
-        } else {
-          readout.innerHTML =
-            '<div>' + formatShortDate(pts[idx].key) + ' — <strong>' + pts[idx].value.toLocaleString() + ' ' + mObj.unit + '</strong></div>' +
-            '<div class="point-readout-sub">SESSION ' + (idx + 1) + ' OF ' + pts.length + '</div>';
-        }
+          });
+        })(rows[i]);
       }
     }
 
