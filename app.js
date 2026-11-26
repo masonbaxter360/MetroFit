@@ -440,6 +440,25 @@
     return entry;
   }
 
+
+  function scrollToExerciseBottom(exId) {
+    if (!exId) return;
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        var pane = document.getElementById('pane-0');
+        var card = document.querySelector('#workoutList .workout-card[data-ex-id="' + exId + '"]');
+        if (!pane || !card) return;
+        var paneRect = pane.getBoundingClientRect();
+        var cardRect = card.getBoundingClientRect();
+        var targetTop = pane.scrollTop + (cardRect.bottom - paneRect.bottom) + 16;
+        pane.scrollTo({
+          top: Math.max(0, targetTop),
+          behavior: 'smooth'
+        });
+      });
+    });
+  }
+
   function renderWorkoutPane() {
     updateDateHeader();
     var nextUpBox = document.getElementById('nextUpContainer');
@@ -586,6 +605,7 @@
         }
         saveDB();
         renderWorkoutPane();
+        scrollToExerciseBottom(exId);
       });
 
       bindSetRowGestures(card.querySelector('.sets-list'), state.selectedDate, exId, renderWorkoutPane);
@@ -790,6 +810,7 @@
           ensureWorkoutEntry(state.selectedDate, id);
           saveDB();
           setActivePane(0);
+          scrollToExerciseBottom(id);
           return;
         }
         window.triggerHaptic('light');
@@ -1637,6 +1658,7 @@
       document.getElementById('newExNameInput').value = '';
       document.getElementById('newExerciseModal').classList.add('hidden');
       setActivePane(0);
+      scrollToExerciseBottom(id);
     });
 
     document.querySelectorAll('#chartTimeframePills .pill-btn').forEach(function (b) {
