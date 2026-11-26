@@ -276,18 +276,13 @@
     }
     return Math.round(num * 100) / 100;
   }
-  var LBS_PER_KG = 1 / 0.45359237;
-
   function convertCSVWeightColumnToLb(rawWeight) {
     var num = parseFloat(rawWeight);
     if (isNaN(num) || num === 0) return 0;
-    // FitNotes CSV exports store kg values inside the "Weight (lbs)" column (e.g. 99.79 kg -> 220 lb, 113.40 kg -> 250 lb)
-    var exactLb = num * LBS_PER_KG;
-    var nearestHalfLb = Math.round(exactLb * 2) / 2;
-    if (Math.abs(exactLb - nearestHalfLb) <= 0.03) {
-      return Math.round(nearestHalfLb * 10) / 10;
-    }
-    return Math.round(exactLb * 10) / 10;
+    // Detect FitNotes kg-in-lbs-column exports: most rows match kg * 2.20462262 to a 0.5 lb increment
+    var asLbFromKg = Math.round(num * KG_TO_LB * 10) / 10;
+    var isHalfLb = Math.abs((asLbFromKg * 2) - Math.round(asLbFromKg * 2)) < 0.02;
+    return isHalfLb ? asLbFromKg : (Math.round(num * 100) / 100);
   }
 
   /* -------------------- CARDIO COLON TIME HELPERS (00:00) -------------------- */
