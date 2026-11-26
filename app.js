@@ -441,21 +441,47 @@
   }
 
 
-  function scrollToExerciseBottom(exId) {
+  function scrollToExerciseBottom(exId, opts) {
     if (!exId) return;
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        var pane = document.getElementById('pane-0');
-        var card = document.querySelector('#workoutList .workout-card[data-ex-id="' + exId + '"]');
-        if (!pane || !card) return;
-        var paneRect = pane.getBoundingClientRect();
-        var cardRect = card.getBoundingClientRect();
-        var targetTop = pane.scrollTop + (cardRect.bottom - paneRect.bottom) + 16;
+    var options = opts || {};
+    var focusInput = Boolean(options.focusInput);
+    var behavior = options.behavior || 'auto';
+
+    function performScroll() {
+      var pane = document.getElementById('pane-0');
+      var card = document.querySelector('#workoutList .workout-card[data-ex-id="' + exId + '"]');
+      if (!pane || !card) return;
+
+      var appBar = document.querySelector('.app-bar');
+      var barHeight = appBar ? appBar.getBoundingClientRect().height : 56;
+      var visibleBottom = window.visualViewport
+        ? (window.visualViewport.offsetTop + window.visualViewport.height)
+        : window.innerHeight;
+
+      // Keep clear of the bottom bar and any open keyboard
+      var safeBottom = Math.min(pane.getBoundingClientRect().bottom, visibleBottom - barHeight);
+      var cardRect = card.getBoundingClientRect();
+      var quickLog = card.querySelector('.quick-log-row');
+      var anchorRect = quickLog ? quickLog.getBoundingClientRect() : cardRect;
+
+      var delta = anchorRect.bottom - safeBottom + 14;
+      if (delta > 2 || delta < -120) {
         pane.scrollTo({
-          top: Math.max(0, targetTop),
-          behavior: 'smooth'
+          top: Math.max(0, pane.scrollTop + delta),
+          behavior: behavior
         });
-      });
+      }
+
+      if (focusInput && quickLog) {
+        var firstInp = quickLog.querySelector('input');
+        if (firstInp) {
+          try { firstInp.focus({ preventScroll: true }); } catch (e) {}
+        }
+      }
+    }
+
+    requestAnimationFrame(function () {
+      requestAnimationFrame(performScroll);
     });
   }
 
@@ -605,7 +631,7 @@
         }
         saveDB();
         renderWorkoutPane();
-        scrollToExerciseBottom(exId);
+        scrollToExerciseBottom(exId, { behavior: 'auto' });
       });
 
       bindSetRowGestures(card.querySelector('.sets-list'), state.selectedDate, exId, renderWorkoutPane);
@@ -810,7 +836,7 @@
           ensureWorkoutEntry(state.selectedDate, id);
           saveDB();
           setActivePane(0);
-          scrollToExerciseBottom(id);
+          scrollToExerciseBottom(id, { behavior: 'auto' });
           return;
         }
         window.triggerHaptic('light');
@@ -1658,7 +1684,7 @@
       document.getElementById('newExNameInput').value = '';
       document.getElementById('newExerciseModal').classList.add('hidden');
       setActivePane(0);
-      scrollToExerciseBottom(id);
+      scrollToExerciseBottom(id, { behavior: 'auto' });
     });
 
     document.querySelectorAll('#chartTimeframePills .pill-btn').forEach(function (b) {
@@ -1838,7 +1864,21 @@
     }
   });
 
+
+  function syncViewportHeight() {
+    var shell = document.querySelector('.app-shell');
+    if (!shell) return;
+    if (window.visualViewport) {
+      shell.style.height = Math.round(window.visualViewport.height) + 'px';
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    syncViewportHeight();
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', syncViewportHeight);
+      window.visualViewport.addEventListener('scroll', syncViewportHeight);
+    }
     initBrandAssets();
     initEvents();
     loadDB().then(function () {
