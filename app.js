@@ -1336,18 +1336,80 @@
     } else if (state.detail.tab === 'history') {
       var dates = Object.keys(state.workouts).sort().reverse();
       var rows = [];
+      var unitLbl = getWeightUnitLabel().toLowerCase();
       dates.forEach(function (d) {
         var en = (state.workouts[d] || []).find(function (e) { return e.exerciseId === ex.id && e.sets && e.sets.length; });
         if (en) {
-          var summary = en.sets.map(function (s) {
-            return ex.type === 'cardio'
-              ? formatCardioSecondsToClock(s.durationSec) + ' • ' + (s.distance || 0) + ' mi' + ((Number(s.calories) || 0) > 0 ? ' • ' + (Number(s.calories) || 0) + ' kcal' : '')
-              : formatWeightForDisplay(s.weight) + ' ' + getWeightUnitLabel().toLowerCase() + ' × ' + (s.reps || 0);
-          }).join('  |  ');
-          rows.push('<div class="metro-card"><div class="card-kicker">' + d + '</div><div style="margin-top:6px;font-size:14px;">' + summary + '</div></div>');
+          var dObj = parseISODate(d);
+          var fullDateLabel = dObj.toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+          }).toUpperCase();
+          var isSelectedDay = (d === state.selectedDate);
+
+          var setLinesHtml = en.sets.map(function (s) {
+            if (ex.type === 'cardio') {
+              var kcalBit = (Number(s.calories) || 0) > 0
+                ? '<span class="hist-col-sub">' + (Number(s.calories) || 0) + ' <span class="hist-unit">kcal</span></span>'
+                : '';
+              return '<div class="hist-set-line cardio">' +
+                '<div class="hist-col-primary"><span class="hist-num">' + formatCardioSecondsToClock(s.durationSec) + '</span></div>' +
+                '<div class="hist-col-secondary"><span class="hist-num">' + (s.distance || 0) + '</span> <span class="hist-unit">mi</span></div>' +
+                kcalBit +
+              '</div>';
+            }
+            var wDisp = Number(formatWeightForDisplay(s.weight) || 0).toFixed(1);
+            return '<div class="hist-set-line">' +
+              '<div class="hist-col-primary"><span class="hist-num">' + wDisp + '</span> <span class="hist-unit">' + unitLbl + '</span></div>' +
+              '<div class="hist-col-secondary"><span class="hist-num">' + (s.reps || 0) + '</span> <span class="hist-unit">reps</span></div>' +
+            '</div>';
+          }).join('');
+
+          rows.push(
+            '<div class="hist-session">' +
+              '<div class="hist-session-head">' +
+                '<div class="hist-date-label">' + fullDateLabel + '</div>' +
+                '<button type="button" class="hist-copy-btn' + (isSelectedDay ? ' disabled' : '') + '" data-copy-date="' + d + '"' + (isSelectedDay ? ' disabled' : '') + '>Copy</button>' +
+              '</div>' +
+              '<div class="hist-card">' + setLinesHtml + '</div>' +
+            '</div>'
+          );
         }
       });
       body.innerHTML = rows.length ? rows.join('') : '<div class="empty-state">No history recorded yet.</div>';
+
+      body.querySelectorAll('.hist-copy-btn:not([disabled])').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var srcDate = btn.getAttribute('data-copy-date');
+          var srcEntry = (state.workouts[srcDate] || []).find(function (e) { return e.exerciseId === ex.id && e.sets && e.sets.length; });
+          if (!srcEntry) return;
+          window.triggerHaptic('medium');
+          var destEntry = ensureWorkoutEntry(state.selectedDate, ex.id);
+          srcEntry.sets.forEach(function (s) {
+            if (ex.type === 'cardio') {
+              destEntry.sets.push({
+                id: 's_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                durationSec: Number(s.durationSec) || 0,
+                distance: Number(s.distance) || 0,
+                calories: Number(s.calories) || 0
+              });
+            } else {
+              destEntry.sets.push({
+                id: 's_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                weight: Number(s.weight) || 0,
+                reps: Number(s.reps) || 0
+              });
+            }
+          });
+          saveDB();
+          state.detail.tab = 'track';
+          renderExerciseDetail();
+          renderWorkoutPane();
+          scrollToExerciseBottom(ex.id, { behavior: 'auto' });
+        });
+      });
     } else if (state.detail.tab === 'records') {
       var maxW = 0, maxVol = 0, max1RM = 0, maxSec = 0, maxDist = 0, maxKcal = 0;
       Object.keys(state.workouts).forEach(function (d) {
@@ -1375,9 +1437,9 @@
             '<div class="sum-tile"><div class="sum-val">' + maxKcal + ' kcal</div><div class="sum-lbl">Max Calories</div></div>' +
           '</div>'
         : '<div class="summary-tiles">' +
-            '<div class="sum-tile"><div class="sum-val">' + maxW + ' lb</div><div class="sum-lbl">Max Weight</div></div>' +
-            '<div class="sum-tile"><div class="sum-val">' + maxVol + '</div><div class="sum-lbl">Best Set Vol</div></div>' +
-            '<div class="sum-tile"><div class="sum-val">' + max1RM + ' lb</div><div class="sum-lbl">Est. 1RM</div></div>' +
+            '<div class="sum-tile"><div class="sum-val">' + formatWeightForDisplay(maxW) + ' ' + getWeightUnitLabel().toLowerCase() + '</div><div class="sum-lbl">Max Weight</div></div>' +
+            '<div class="sum-tile"><div class="sum-val">' + Math.round(formatWeightForDisplay(maxVol)).toLocaleString() + '</div><div class="sum-lbl">Best Set Vol</div></div>' +
+            '<div class="sum-tile"><div class="sum-val">' + formatWeightForDisplay(max1RM) + ' ' + getWeightUnitLabel().toLowerCase() + '</div><div class="sum-lbl">Est. 1RM</div></div>' +
           '</div>';
     } else if (state.detail.tab === 'charts') {
       var metrics = ex.type === 'cardio' ? CARDIO_DETAIL_METRICS : STRENGTH_DETAIL_METRICS;
