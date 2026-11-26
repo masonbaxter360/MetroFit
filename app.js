@@ -1582,17 +1582,39 @@
         return out;
       }
 
+      var headerCols = splitCSVLine(text.split(/\r?\n/)[0] || '').map(function (h) {
+        return h.trim().toLowerCase();
+      });
+      var hasWeightKgAndLbs = headerCols.indexOf('weight (kg)') !== -1 && headerCols.indexOf('weight (lbs)') !== -1;
+      var idxDate = headerCols.indexOf('date');
+      var idxEx = headerCols.indexOf('exercise');
+      var idxCat = headerCols.indexOf('category');
+      var idxWeightLb = hasWeightKgAndLbs ? headerCols.indexOf('weight (lbs)') : 3;
+      var idxReps = headerCols.indexOf('reps');
+      var idxDist = headerCols.indexOf('distance');
+      var idxTime = headerCols.indexOf('time');
+      var idxKcal = headerCols.indexOf('calories');
+      if (idxDate < 0) idxDate = 0;
+      if (idxEx < 0) idxEx = 1;
+      if (idxCat < 0) idxCat = 2;
+      if (idxWeightLb < 0) idxWeightLb = 3;
+      if (idxReps < 0) idxReps = 4;
+      if (idxDist < 0) idxDist = 5;
+      if (idxTime < 0) idxTime = 7;
+      if (idxKcal < 0) idxKcal = 8;
+
       rows.forEach(function (line) {
         if (!line.trim()) return;
         var cols = splitCSVLine(line);
-        var date = (cols[0] || '').trim();
-        var name = (cols[1] || '').trim();
-        var cat = (cols[2] || 'Chest').trim();
-        var weight = convertCSVWeightColumnToLb(cols[3]);
-        var reps = parseInt(cols[4], 10) || 0;
-        var dist = parseFloat(cols[5]) || 0;
-        var timeStr = (cols[7] || '').trim();
-        var kcal = parseFloat(cols[8]) || 0;
+        var date = (cols[idxDate] || '').trim();
+        var name = (cols[idxEx] || '').trim();
+        var cat = (cols[idxCat] || 'Chest').trim();
+        var rawWeightCol = (cols[idxWeightLb] || '').trim();
+        var weight = rawWeightCol === '' ? 0 : (hasWeightKgAndLbs ? (Math.round((parseFloat(rawWeightCol) || 0) * 100) / 100) : convertCSVWeightColumnToLb(rawWeightCol));
+        var reps = parseInt(cols[idxReps], 10) || 0;
+        var dist = parseFloat(cols[idxDist]) || 0;
+        var timeStr = (cols[idxTime] || '').trim();
+        var kcal = parseFloat(cols[idxKcal]) || 0;
         if (!date || !name) return;
 
         var catMatch = CATEGORIES.find(function (c) { return c.toLowerCase() === cat.toLowerCase(); }) || cat || 'Chest';
