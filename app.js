@@ -453,19 +453,18 @@
       if (!pane || !card) return;
 
       var appBar = document.querySelector('.app-bar');
-      var barHeight = appBar ? appBar.getBoundingClientRect().height : 56;
-      var visibleBottom = window.visualViewport
-        ? (window.visualViewport.offsetTop + window.visualViewport.height)
-        : window.innerHeight;
+      var barHeight = appBar ? appBar.getBoundingClientRect().height : 58;
+      var vv = window.visualViewport;
+      var visibleBottom = vv ? vv.height : window.innerHeight;
 
-      // Keep clear of the bottom bar and any open keyboard
-      var safeBottom = Math.min(pane.getBoundingClientRect().bottom, visibleBottom - barHeight);
+      // Keep clear of the bottom app bar + iOS keyboard accessory bar
+      var safeBottom = Math.min(pane.getBoundingClientRect().bottom, visibleBottom - barHeight - 10);
       var cardRect = card.getBoundingClientRect();
       var quickLog = card.querySelector('.quick-log-row');
       var anchorRect = quickLog ? quickLog.getBoundingClientRect() : cardRect;
 
       var delta = anchorRect.bottom - safeBottom + 14;
-      if (delta > 2 || delta < -120) {
+      if (delta > 2 || delta < -140) {
         pane.scrollTo({
           top: Math.max(0, pane.scrollTop + delta),
           behavior: behavior
@@ -482,6 +481,32 @@
 
     requestAnimationFrame(function () {
       requestAnimationFrame(performScroll);
+    });
+  }
+
+  function keepFocusedWorkoutInputVisible(targetEl) {
+    if (!targetEl || !targetEl.closest) return;
+    var card = targetEl.closest('#workoutList .workout-card');
+    if (!card) return;
+    var exId = card.getAttribute('data-ex-id');
+    if (!exId) return;
+
+    // Reset any iOS Safari window/body offset scroll so fixed shell stays aligned
+    if (window.scrollY !== 0 || window.scrollX !== 0) {
+      window.scrollTo(0, 0);
+    }
+    syncViewportHeight();
+    scrollToExerciseBottom(exId, { behavior: 'auto' });
+
+    // Re-check after iOS keyboard + accessory toolbar finishes animating
+    [80, 220, 420].forEach(function (delay) {
+      setTimeout(function () {
+        if (window.scrollY !== 0 || window.scrollX !== 0) {
+          window.scrollTo(0, 0);
+        }
+        syncViewportHeight();
+        scrollToExerciseBottom(exId, { behavior: 'auto' });
+      }, delay);
     });
   }
 
@@ -1951,18 +1976,48 @@
 
   function syncViewportHeight() {
     var shell = document.querySelector('.app-shell');
+    var appBar = document.querySelector('.app-bar');
     if (!shell) return;
     if (window.visualViewport) {
-      shell.style.height = Math.round(window.visualViewport.height) + 'px';
+      var vvHeight = Math.round(window.visualViewport.height);
+      var vvTop = Math.max(0, Math.round(window.visualViewport.offsetTop));
+      shell.style.top = vvTop + 'px';
+      shell.style.height = vvHeight + 'px';
+      if (appBar) {
+        var bottomGap = Math.max(0, Math.round(window.innerHeight - (vvTop + vvHeight)));
+        appBar.style.bottom = bottomGap + 'px';
+      }
     }
   }
 
   document.addEventListener('DOMContentLoaded', function () {
     syncViewportHeight();
     if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', syncViewportHeight);
-      window.visualViewport.addEventListener('scroll', syncViewportHeight);
+      window.visualViewport.addEventListener('resize', function () {
+        syncViewportHeight();
+        if (document.activeElement) keepFocusedWorkoutInputVisible(document.activeElement);
+      });
+      window.visualViewport.addEventListener('scroll', function () {
+        syncViewportHeight();
+        if (document.activeElement) keepFocusedWorkoutInputVisible(document.activeElement);
+      });
     }
+    document.addEventListener('focusin', function (e) {
+      keepFocusedWorkoutInputVisible(e.target);
+    });
+    document.addEventListener('focusout', function () {
+      setTimeout(function () {
+        if (!document.activeElement || document.activeElement === document.body) {
+          var shell = document.querySelector('.app-shell');
+          var appBar = document.querySelector('.app-bar');
+          if (shell) {
+            shell.style.top = '0px';
+            shell.style.height = '100dvh';
+          }
+          if (appBar) appBar.style.bottom = '0px';
+        }
+      }, 120);
+    });
     initBrandAssets();
     initEvents();
     loadDB().then(function () {
