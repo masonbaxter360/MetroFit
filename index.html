@@ -70,35 +70,45 @@
               <div id="globalChartReadout" class="chart-readout"></div>
             </div>
 
-            <div class="filter-group">
-              <div class="pill-row" id="chartTimeframePills">
-                <button type="button" class="pill-btn" data-tf="workout">Per Workout</button>
-                <button type="button" class="pill-btn active" data-tf="week">Per Week</button>
-                <button type="button" class="pill-btn" data-tf="month">Per Month</button>
-                <button type="button" class="pill-btn" data-tf="year">Per Year</button>
+            <div class="filter-group chart-dropdown-stack">
+              <div class="chart-dd-wrap">
+                <span class="chart-dd-arrow" aria-hidden="true">&#9654;</span>
+                <select id="chartMetricSelect" class="chart-dd-select" aria-label="Chart Metric">
+                  <option value="volume" selected>Volume</option>
+                  <option value="sets">Sets</option>
+                  <option value="maxWeight">Max Weight</option>
+                  <option value="reps">Reps</option>
+                  <option value="cardioMin">Cardio Min</option>
+                  <option value="calories">Calories</option>
+                </select>
               </div>
-              <div class="pill-row" id="chartScopePills">
-                <button type="button" class="pill-btn active" data-scope="all">All</button>
-                <button type="button" class="pill-btn" data-scope="category">Category</button>
-                <button type="button" class="pill-btn" data-scope="exercise">Exercise</button>
+              <div class="chart-dd-wrap">
+                <span class="chart-dd-arrow" aria-hidden="true">&#9654;</span>
+                <select id="chartTimeframeSelect" class="chart-dd-select" aria-label="Chart Interval">
+                  <option value="workout">Per Workout</option>
+                  <option value="week" selected>Per Week</option>
+                  <option value="month">Per Month</option>
+                  <option value="year">Per Year</option>
+                </select>
               </div>
-              <div id="chartScopeSelectWrap" class="scope-select-wrap hidden">
-                <select id="chartScopeSelect" class="metro-select"></select>
+              <div class="chart-dd-wrap">
+                <span class="chart-dd-arrow" aria-hidden="true">&#9654;</span>
+                <select id="chartScopeTypeSelect" class="chart-dd-select" aria-label="Chart Scope">
+                  <option value="all" selected>All</option>
+                  <option value="category">Category</option>
+                  <option value="exercise">Exercise</option>
+                </select>
               </div>
-              <div class="pill-row" id="chartMetricPills">
-                <button type="button" class="pill-btn active" data-metric="volume">Volume</button>
-                <button type="button" class="pill-btn" data-metric="sets">Sets</button>
-                <button type="button" class="pill-btn" data-metric="maxWeight">Max Weight</button>
-                <button type="button" class="pill-btn" data-metric="reps">Reps</button>
-                <button type="button" class="pill-btn" data-metric="cardioMin">Cardio Min</button>
-                <button type="button" class="pill-btn" data-metric="calories">Calories</button>
+              <div id="chartScopeSelectWrap" class="chart-dd-wrap hidden">
+                <span class="chart-dd-arrow" aria-hidden="true">&#9654;</span>
+                <select id="chartScopeSelect" class="chart-dd-select" aria-label="Select Category or Exercise"></select>
               </div>
-              <div class="pill-row" id="chartRangePills">
-                <button type="button" class="pill-btn active" data-range="all">All</button>
-                <button type="button" class="pill-btn" data-range="1y">1y</button>
-                <button type="button" class="pill-btn" data-range="6mo">6mo</button>
-                <button type="button" class="pill-btn" data-range="3mo">3mo</button>
-                <button type="button" class="pill-btn" data-range="1mo">1mo</button>
+              <div class="range-segment-bar" id="chartRangePills">
+                <button type="button" class="range-seg-btn active" data-range="all">All</button>
+                <button type="button" class="range-seg-btn" data-range="1y">1y</button>
+                <button type="button" class="range-seg-btn" data-range="6mo">6mo</button>
+                <button type="button" class="range-seg-btn" data-range="3mo">3mo</button>
+                <button type="button" class="range-seg-btn" data-range="1mo">1mo</button>
               </div>
             </div>
 

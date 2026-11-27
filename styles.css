@@ -489,12 +489,91 @@ html[data-theme="glass"] .set-row {
   margin: 8px 0;
 }
 
-.scope-select-wrap {
-  margin-bottom: 8px;
+.chart-dropdown-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
-.scope-select-wrap.hidden {
+.chart-dd-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  min-height: 38px;
+}
+
+.chart-dd-wrap.hidden {
   display: none;
+}
+
+.chart-dd-wrap:focus-within {
+  border-color: var(--accent-1);
+}
+
+.chart-dd-arrow {
+  position: absolute;
+  left: 14px;
+  font-size: 9px;
+  color: var(--accent-2);
+  pointer-events: none;
+  transition: transform 0.16s ease;
+}
+
+.chart-dd-select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  text-align-last: center;
+  padding: 9px 32px;
+  cursor: pointer;
+  outline: none;
+}
+
+.chart-dd-select option {
+  background: #0d0d0f;
+  color: #ffffff;
+  text-transform: none;
+}
+
+.range-segment-bar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 2px;
+  gap: 2px;
+}
+
+.range-seg-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 7px 4px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.range-seg-btn.active {
+  background: var(--accent-grad);
+  color: #ffffff;
 }
 
 .canvas-wrap {

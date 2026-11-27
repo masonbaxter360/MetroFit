@@ -959,16 +959,28 @@
   }
 
   function renderChartsPane() {
-    document.querySelectorAll('#chartTimeframePills .pill-btn').forEach(function (b) {
-      b.classList.toggle('active', b.getAttribute('data-tf') === state.chart.timeframe);
-    });
-    document.querySelectorAll('#chartScopePills .pill-btn').forEach(function (b) {
-      b.classList.toggle('active', b.getAttribute('data-scope') === state.chart.scope);
-    });
-    document.querySelectorAll('#chartMetricPills .pill-btn').forEach(function (b) {
-      b.classList.toggle('active', b.getAttribute('data-metric') === state.chart.metric);
-    });
-    document.querySelectorAll('#chartRangePills .pill-btn').forEach(function (b) {
+    var metricSel = document.getElementById('chartMetricSelect');
+    var tfSel = document.getElementById('chartTimeframeSelect');
+    var scopeTypeSel = document.getElementById('chartScopeTypeSelect');
+    if (metricSel) metricSel.value = state.chart.metric;
+    if (tfSel) tfSel.value = state.chart.timeframe;
+    if (scopeTypeSel) scopeTypeSel.value = state.chart.scope;
+
+    var tfTitleMap = { workout: 'Per Workout', week: 'Weekly', month: 'Monthly', year: 'Yearly' };
+    var metricTitleMap = {
+      volume: 'Volume',
+      sets: 'Sets',
+      maxWeight: 'Max Weight',
+      reps: 'Reps',
+      cardioMin: 'Cardio Minutes',
+      calories: 'Calories'
+    };
+    var titleEl = document.getElementById('globalChartTitle');
+    if (titleEl) {
+      titleEl.textContent = (tfTitleMap[state.chart.timeframe] || 'Weekly') + ' ' + (metricTitleMap[state.chart.metric] || 'Volume');
+    }
+
+    document.querySelectorAll('#chartRangePills .range-seg-btn').forEach(function (b) {
       b.classList.toggle('active', b.getAttribute('data-range') === state.chart.range);
     });
 
@@ -1803,32 +1815,32 @@
       scrollToExerciseBottom(id, { behavior: 'auto' });
     });
 
-    document.querySelectorAll('#chartTimeframePills .pill-btn').forEach(function (b) {
-      b.addEventListener('click', function () {
-        state.chart.timeframe = b.getAttribute('data-tf');
-        state.chart.selectedIdx = -1;
-        renderChartsPane();
-      });
-    });
-    document.querySelectorAll('#chartScopePills .pill-btn').forEach(function (b) {
-      b.addEventListener('click', function () {
-        state.chart.scope = b.getAttribute('data-scope');
-        state.chart.scopeValue = '';
-        state.chart.selectedIdx = -1;
-        renderChartsPane();
-      });
-    });
-    document.getElementById('chartScopeSelect').addEventListener('change', function (e) {
-      state.chart.scopeValue = e.target.value;
+    document.getElementById('chartMetricSelect').addEventListener('change', function (e) {
+      window.triggerHaptic('light');
+      state.chart.metric = e.target.value;
+      state.chart.selectedIdx = -1;
       renderChartsPane();
     });
-    document.querySelectorAll('#chartMetricPills .pill-btn').forEach(function (b) {
-      b.addEventListener('click', function () {
-        state.chart.metric = b.getAttribute('data-metric');
-        renderChartsPane();
-      });
+    document.getElementById('chartTimeframeSelect').addEventListener('change', function (e) {
+      window.triggerHaptic('light');
+      state.chart.timeframe = e.target.value;
+      state.chart.selectedIdx = -1;
+      renderChartsPane();
     });
-    document.querySelectorAll('#chartRangePills .pill-btn').forEach(function (b) {
+    document.getElementById('chartScopeTypeSelect').addEventListener('change', function (e) {
+      window.triggerHaptic('light');
+      state.chart.scope = e.target.value;
+      state.chart.scopeValue = '';
+      state.chart.selectedIdx = -1;
+      renderChartsPane();
+    });
+    document.getElementById('chartScopeSelect').addEventListener('change', function (e) {
+      window.triggerHaptic('light');
+      state.chart.scopeValue = e.target.value;
+      state.chart.selectedIdx = -1;
+      renderChartsPane();
+    });
+    document.querySelectorAll('#chartRangePills .range-seg-btn').forEach(function (b) {
       b.addEventListener('click', function () {
         window.triggerHaptic('light');
         state.chart.range = b.getAttribute('data-range');
