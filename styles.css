@@ -201,6 +201,10 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+.pane.keyboard-open {
+  padding-bottom: 320px;
+}
+
 /* CARDS & GLASSMORPHISM */
 .metro-card,
 .workout-card,

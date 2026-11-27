@@ -452,13 +452,24 @@
       var card = document.querySelector('#workoutList .workout-card[data-ex-id="' + exId + '"]');
       if (!pane || !card) return;
 
-      var safeBottom = pane.getBoundingClientRect().bottom - 8;
-      var cardRect = card.getBoundingClientRect();
+      var paneRect = pane.getBoundingClientRect();
       var quickLog = card.querySelector('.quick-log-row');
-      var anchorRect = quickLog ? quickLog.getBoundingClientRect() : cardRect;
+      var anchorRect = quickLog ? quickLog.getBoundingClientRect() : card.getBoundingClientRect();
+      var activeEl = document.activeElement;
+      var focusedInCard = activeEl && card.contains(activeEl) && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT');
+      var targetRect = focusedInCard ? activeEl.getBoundingClientRect() : anchorRect;
 
-      var delta = anchorRect.bottom - safeBottom + 10;
-      if (delta > 2 || delta < -140) {
+      var safeTop = paneRect.top + 16;
+      var safeBottom = paneRect.bottom - 18;
+      var delta = 0;
+
+      if (targetRect.bottom > safeBottom) {
+        delta = targetRect.bottom - safeBottom + 12;
+      } else if (targetRect.top < safeTop) {
+        delta = targetRect.top - safeTop - 12;
+      }
+
+      if (delta !== 0) {
         pane.scrollTo({
           top: Math.max(0, pane.scrollTop + delta),
           behavior: behavior
@@ -480,19 +491,22 @@
 
   function keepFocusedWorkoutInputVisible(targetEl) {
     if (!targetEl || !targetEl.closest) return;
+    var pane = document.getElementById('pane-0');
     var card = targetEl.closest('#workoutList .workout-card');
     if (!card) return;
     var exId = card.getAttribute('data-ex-id');
     if (!exId) return;
 
+    if (pane) pane.classList.add('keyboard-open');
     if (window.scrollY !== 0 || window.scrollX !== 0) {
       window.scrollTo(0, 0);
     }
     syncViewportHeight();
     scrollToExerciseBottom(exId, { behavior: 'auto' });
 
-    [80, 220, 420].forEach(function (delay) {
+    [90, 260, 480].forEach(function (delay) {
       setTimeout(function () {
+        if (!document.activeElement || !card.contains(document.activeElement)) return;
         if (window.scrollY !== 0 || window.scrollX !== 0) {
           window.scrollTo(0, 0);
         }
@@ -822,10 +836,17 @@
   }
 
   function renderExercisesPane() {
+    var searchInp = document.getElementById('exerciseSearchInput');
+    if (searchInp && searchInp.value !== state.exerciseSearch) {
+      state.exerciseSearch = searchInp.value;
+    }
+
     var chips = document.getElementById('categoryChips');
     var allCats = ['All'].concat(CATEGORIES);
+    var activeCatLower = String(state.exerciseFilterCat || 'All').toLowerCase();
     chips.innerHTML = allCats.map(function (c) {
-      return '<button type="button" class="chip-btn' + (state.exerciseFilterCat === c ? ' active' : '') + '" data-cat="' + c + '">' + c + '</button>';
+      var isAct = c.toLowerCase() === activeCatLower;
+      return '<button type="button" class="chip-btn' + (isAct ? ' active' : '') + '" data-cat="' + c + '">' + c + '</button>';
     }).join('');
 
     chips.querySelectorAll('.chip-btn').forEach(function (btn) {
@@ -836,10 +857,12 @@
       });
     });
 
-    var q = state.exerciseSearch.trim().toLowerCase();
-    var filtered = state.exercises.filter(function (ex) {
-      var catOk = state.exerciseFilterCat === 'All' || ex.category === state.exerciseFilterCat;
-      var qOk = !q || ex.name.toLowerCase().indexOf(q) !== -1 || ex.category.toLowerCase().indexOf(q) !== -1;
+    var q = String(state.exerciseSearch || '').trim().toLowerCase();
+    var filtered = (state.exercises || []).filter(function (ex) {
+      if (!ex || !ex.name) return false;
+      var exCat = String(ex.category || '').toLowerCase();
+      var catOk = activeCatLower === 'all' || exCat === activeCatLower;
+      var qOk = !q || ex.name.toLowerCase().indexOf(q) !== -1 || exCat.indexOf(q) !== -1;
       return catOk && qOk;
     }).map(function (ex) {
       return { ex: ex, lastUsed: getLastUsedDateForExercise(ex.id) };
@@ -849,6 +872,24 @@
     });
 
     var list = document.getElementById('exerciseLibraryList');
+    if (!filtered.length) {
+      list.innerHTML =
+        '<div class="empty-state">' +
+          '<p style="margin-bottom:12px;">No exercises match "' + (state.exerciseFilterCat || 'All') + '"' + (q ? ' with "' + q + '"' : '') + '.</p>' +
+          '<button type="button" id="resetExFilterBtn" class="metro-btn-outline">SHOW ALL EXERCISES</button>' +
+        '</div>';
+      var resetBtn = document.getElementById('resetExFilterBtn');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function () {
+          state.exerciseFilterCat = 'All';
+          state.exerciseSearch = '';
+          if (searchInp) searchInp.value = '';
+          renderExercisesPane();
+        });
+      }
+      return;
+    }
+
     list.innerHTML = filtered.map(function (item) {
       var sub = item.lastUsed ? 'LAST USED: ' + item.lastUsed : 'NEVER LOGGED';
       return '<div class="lib-item" data-lib-id="' + item.ex.id + '">' +
@@ -1798,19 +1839,25 @@
       document.getElementById('newExerciseModal').classList.add('hidden');
     });
     document.getElementById('saveNewExBtn').addEventListener('click', function () {
-      var nm = document.getElementById('newExNameInput').value.trim();
+      var nameInp = document.getElementById('newExNameInput');
+      var nm = nameInp.value.trim();
       if (!nm) return;
       var id = 'ex_' + Date.now();
+      var chosenCat = newExCat.value;
       state.exercises.push({
         id: id,
         name: nm,
-        category: newExCat.value,
+        category: chosenCat,
         type: document.getElementById('newExTypeSelect').value
       });
       ensureWorkoutEntry(state.selectedDate, id);
       saveDB();
-      document.getElementById('newExNameInput').value = '';
+      nameInp.value = '';
+      try { nameInp.blur(); } catch (e) {}
       document.getElementById('newExerciseModal').classList.add('hidden');
+      var shell = document.querySelector('.app-shell');
+      if (shell) shell.style.height = '';
+      if (window.scrollY !== 0 || window.scrollX !== 0) window.scrollTo(0, 0);
       setActivePane(0);
       scrollToExerciseBottom(id, { behavior: 'auto' });
     });
@@ -1996,12 +2043,17 @@
   function syncViewportHeight() {
     var shell = document.querySelector('.app-shell');
     if (!shell) return;
-    var activeTag = document.activeElement && document.activeElement.tagName;
+    var activeEl = document.activeElement;
+    var activeTag = activeEl && activeEl.tagName;
     var isInputFocused = activeTag === 'INPUT' || activeTag === 'SELECT' || activeTag === 'TEXTAREA';
     if (isInputFocused && window.visualViewport) {
-      shell.style.height = Math.round(window.visualViewport.height) + 'px';
+      var vv = window.visualViewport;
+      shell.style.height = Math.round(vv.height) + 'px';
+      var topOffset = Math.max(0, Math.round(vv.offsetTop || 0));
+      shell.style.transform = topOffset > 0 ? ('translateY(' + topOffset + 'px)') : '';
     } else {
       shell.style.height = '';
+      shell.style.transform = '';
     }
   }
 
@@ -2009,11 +2061,9 @@
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', function () {
         syncViewportHeight();
-        if (document.activeElement) keepFocusedWorkoutInputVisible(document.activeElement);
       });
       window.visualViewport.addEventListener('scroll', function () {
         syncViewportHeight();
-        if (document.activeElement) keepFocusedWorkoutInputVisible(document.activeElement);
       });
     }
     document.addEventListener('focusin', function (e) {
@@ -2021,9 +2071,18 @@
     });
     document.addEventListener('focusout', function () {
       setTimeout(function () {
-        var shell = document.querySelector('.app-shell');
-        if (shell) shell.style.height = '';
-        if (window.scrollY !== 0 || window.scrollX !== 0) window.scrollTo(0, 0);
+        var activeEl = document.activeElement;
+        var stillInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT' || activeEl.tagName === 'TEXTAREA');
+        if (!stillInput) {
+          var pane0 = document.getElementById('pane-0');
+          if (pane0) pane0.classList.remove('keyboard-open');
+          var shell = document.querySelector('.app-shell');
+          if (shell) {
+            shell.style.height = '';
+            shell.style.transform = '';
+          }
+          if (window.scrollY !== 0 || window.scrollX !== 0) window.scrollTo(0, 0);
+        }
       }, 120);
     });
     initBrandAssets();
