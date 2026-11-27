@@ -493,7 +493,8 @@ html[data-theme="glass"] .set-row {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 10px;
+  width: 100%;
+  margin-bottom: 12px;
 }
 
 .chart-dd-wrap {
@@ -501,13 +502,17 @@ html[data-theme="glass"] .set-row {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 38px;
   background: var(--surface-2);
   border: 1px solid var(--border);
-  min-height: 38px;
+  border-radius: 999px;
+  overflow: hidden;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .chart-dd-wrap.hidden {
-  display: none;
+  display: none !important;
 }
 
 .chart-dd-wrap:focus-within {
@@ -515,30 +520,28 @@ html[data-theme="glass"] .set-row {
 }
 
 .chart-dd-arrow {
-  position: absolute;
-  left: 14px;
-  font-size: 9px;
-  color: var(--accent-2);
-  pointer-events: none;
-  transition: transform 0.16s ease;
+  display: none;
 }
 
 .chart-dd-select {
   width: 100%;
+  height: 100%;
   appearance: none;
   -webkit-appearance: none;
-  background: transparent;
+  -moz-appearance: none;
+  background-color: transparent;
+  background-image: none;
   border: none;
-  border-radius: 0;
+  border-radius: 999px;
   color: var(--text);
   font-family: var(--font);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: none;
   text-align: center;
   text-align-last: center;
-  padding: 9px 32px;
+  padding: 0 20px;
   cursor: pointer;
   outline: none;
 }
@@ -552,21 +555,30 @@ html[data-theme="glass"] .set-row {
 .range-segment-bar {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  width: 100%;
+  height: 36px;
   background: var(--surface-2);
   border: 1px solid var(--border);
-  padding: 2px;
+  border-radius: 999px;
+  padding: 3px;
   gap: 2px;
+  margin-top: 2px;
 }
 
 .range-seg-btn {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 100%;
   background: transparent;
   border: none;
+  border-radius: 999px;
   color: var(--muted);
   font-family: var(--font);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  padding: 7px 4px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0 4px;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }

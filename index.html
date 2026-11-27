@@ -11,7 +11,7 @@
   <link id="appleTouchIcon" rel="apple-touch-icon" href="" />
   <link id="faviconIcon" rel="icon" type="image/png" href="" />
   <link id="manifestLink" rel="manifest" href="" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=18" />
 </head>
 <body>
   <div class="app-shell">
@@ -72,31 +72,28 @@
 
             <div class="filter-group chart-dropdown-stack">
               <div class="chart-dd-wrap">
-                <span class="chart-dd-arrow" aria-hidden="true">&#9654;</span>
                 <select id="chartMetricSelect" class="chart-dd-select" aria-label="Chart Metric">
-                  <option value="volume" selected>Volume</option>
-                  <option value="sets">Sets</option>
-                  <option value="maxWeight">Max Weight</option>
-                  <option value="reps">Reps</option>
-                  <option value="cardioMin">Cardio Min</option>
-                  <option value="calories">Calories</option>
+                  <option value="volume" selected>&#9654; Volume</option>
+                  <option value="sets">&#9654; Sets</option>
+                  <option value="maxWeight">&#9654; Max Weight</option>
+                  <option value="reps">&#9654; Reps</option>
+                  <option value="cardioMin">&#9654; Cardio Min</option>
+                  <option value="calories">&#9654; Calories</option>
                 </select>
               </div>
               <div class="chart-dd-wrap">
-                <span class="chart-dd-arrow" aria-hidden="true">&#9654;</span>
                 <select id="chartTimeframeSelect" class="chart-dd-select" aria-label="Chart Interval">
-                  <option value="workout">Per Workout</option>
-                  <option value="week" selected>Per Week</option>
-                  <option value="month">Per Month</option>
-                  <option value="year">Per Year</option>
+                  <option value="workout">&#9654; Per Workout</option>
+                  <option value="week" selected>&#9654; Per Week</option>
+                  <option value="month">&#9654; Per Month</option>
+                  <option value="year">&#9654; Per Year</option>
                 </select>
               </div>
               <div class="chart-dd-wrap">
-                <span class="chart-dd-arrow" aria-hidden="true">&#9654;</span>
                 <select id="chartScopeTypeSelect" class="chart-dd-select" aria-label="Chart Scope">
-                  <option value="all" selected>All</option>
-                  <option value="category">Category</option>
-                  <option value="exercise">Exercise</option>
+                  <option value="all" selected>&#9654; All</option>
+                  <option value="category">&#9654; Category</option>
+                  <option value="exercise">&#9654; Exercise</option>
                 </select>
               </div>
               <div id="chartScopeSelectWrap" class="chart-dd-wrap hidden">
@@ -316,6 +313,6 @@
     </div>
   </div>
 
-  <script src="./app.js" defer></script>
+  <script src="./app.js?v=18" defer></script>
 </body>
 </html>

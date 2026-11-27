@@ -995,14 +995,14 @@
           state.chart.scopeValue = CATEGORIES[0];
         }
         scopeSel.innerHTML = CATEGORIES.map(function (c) {
-          return '<option value="' + c + '"' + (c === state.chart.scopeValue ? ' selected' : '') + '>' + c + '</option>';
+          return '<option value="' + c + '"' + (c === state.chart.scopeValue ? ' selected' : '') + '>&#9654; ' + c + '</option>';
         }).join('');
       } else {
         if (!state.chart.scopeValue || !getExerciseById(state.chart.scopeValue)) {
           state.chart.scopeValue = state.exercises[0].id;
         }
         scopeSel.innerHTML = state.exercises.map(function (e) {
-          return '<option value="' + e.id + '"' + (e.id === state.chart.scopeValue ? ' selected' : '') + '>' + e.name + '</option>';
+          return '<option value="' + e.id + '"' + (e.id === state.chart.scopeValue ? ' selected' : '') + '>&#9654; ' + e.name + '</option>';
         }).join('');
       }
     }
